@@ -6,12 +6,25 @@ Two pieces:
    `tariff-board.html` tool): the Apple product catalog, international country tax/FX
    assumptions, and US state sales-tax rates, plus the pricing formulas. Run it locally
    for a quick report, and to (re)generate `frontend/data.json`.
-2. **`frontend/`** — a static site (no build step, no server) with an interactive
-   USA choropleth map: pick a product/configuration, optionally apply the employee
-   discount, and see every state colour-coded from cheapest to most expensive total
-   price (list price + that state's sales tax). Hover (or tab + Enter) a state for
-   the price/tax/total breakdown; a full sortable table and a ZIP lookup ("find my
-   state") are included too.
+2. **`frontend/`** — a static site (no build step, no server), organized as five tabs
+   that all share the same product/variant/currency/employee-discount filters at the top:
+   - **USA Map** — choropleth of all 50 states + DC, colour-coded from cheapest to
+     most expensive total price (list price + that state's sales tax). Hover (or
+     tab + Enter) a state for the price/tax/total breakdown; a sortable table and a
+     ZIP lookup ("find my state") are included too.
+   - **World Prices** — a world choropleth (same hover/colour treatment as the USA
+     map) for the 11 countries this tool tracks, plus a table view with editable
+     "real" local prices, a tourist VAT/GST refund toggle, and a side-by-side bar chart.
+   - **Compare Countries** — three independent what-if columns (different country,
+     tax override, employee discount, tourist refund per column) side by side.
+   - **Ship & Customs** — model buying in one country and shipping/carrying the item
+     to another, with a flat customs-% estimate.
+   - **Tax Data** — edit any country's tax rate, FX rate, and refund eligibility live;
+     add or remove countries; reset all edits.
+   Paste an Apple product URL into the box above the tabs to jump straight to that
+   product (or add it on the spot with just its price, if it's newer than the catalog) —
+   or skip the link entirely and type a product name, category and US price directly
+   into the "no link needed" row right below it.
 
 ## Using the Python tool
 
@@ -59,7 +72,7 @@ New site from Git → pick the repo → set **Base directory** to `frontend` and
 **Publish directory** to `frontend` (there's no build command; `netlify.toml`
 already sets `publish = "."` relative to that base directory).
 
-The map pulls the US states outline and D3 from a CDN at load time (see
+Both maps pull their outlines and D3 from a CDN at load time (see
 `frontend/index.html`), so the deployed site needs normal internet access —
 nothing else is fetched, and no data leaves the visitor's browser.
 
@@ -69,7 +82,7 @@ nothing else is fetched, and no data leaves the visitor's browser.
   so state-to-state differences are driven entirely by each state's approximate
   combined state + average local sales tax. City/county add-ons vary within a
   state — treat it as a planning estimate, not a receipt.
-- `apple_price_data.py` also carries the original tool's international country data
-  (FX, VAT/GST, tourist refunds) for reuse if you want to extend the frontend with
-  a country-comparison view later — the shipped site focuses on the USA map that
-  was asked for.
+- Every tab reads the same product/variant/currency/employee-discount filters at the
+  top, and the World/Compare/Ship tabs share one set of editable country assumptions
+  (edited in the Tax Data tab, or inline in the World Prices table) — a change in one
+  tab is reflected everywhere else immediately.

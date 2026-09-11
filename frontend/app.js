@@ -18,6 +18,16 @@ const FIPS_TO_STATE = {
   56:'WY', 72:'PR',
 };
 
+// 50m resolution so tiny territories we track (Singapore, Hong Kong) still render.
+const WORLD_TOPOJSON_URL = 'https://cdn.jsdelivr.net/npm/world-atlas@2/countries-50m.json';
+
+// ISO 3166-1 numeric -> our country code (topojson feature ids are zero-padded numeric strings)
+const NUMERIC_TO_COUNTRY = {
+  840:'US', 276:'DE', 826:'GB', 756:'CH', 784:'AE', 392:'JP',
+  702:'SG', 356:'IN', 36:'AU', 344:'HK', 124:'CA',
+  158:'TW', 446:'MO', 410:'KR', 458:'MY', 764:'TH', 634:'QA', 554:'NZ', 484:'MX', 682:'SA',
+};
+
 // Sequential blue ramp (validated palette, step 100 -> 700; lightest = cheapest)
 const SEQ_RAMP = ['#cde2fb','#9ec5f4','#6da7ec','#3987e5','#256abf','#184f95','#0d366b'];
 
@@ -34,10 +44,68 @@ const ZIP_STATE_RANGES = [
   [900,961,'CA'],[967,968,'HI'],[970,979,'OR'],[980,994,'WA'],[995,999,'AK'],
 ];
 
+// Apple product-page URL -> {category, name} recognizers, newest/most-specific
+// pattern first within each family so e.g. "pro-max" is tried before "pro".
+// Generation numbers are captured, not hardcoded, so this also recognizes
+// models released after this catalog was last updated (iPhone 18, etc.) —
+// the site just won't have a price for those until you supply one.
+const LINK_PATTERNS = [
+  { re: /iphone-(\d+)e\b/,        cat: 'iPhone', nameFn: m => `iPhone ${m[1]}e` },
+  { re: /iphone-(\d+)-pro-max/,   cat: 'iPhone', nameFn: m => `iPhone ${m[1]} Pro Max` },
+  { re: /iphone-(\d+)-pro/,       cat: 'iPhone', nameFn: m => `iPhone ${m[1]} Pro` },
+  { re: /iphone-air/,             cat: 'iPhone', nameFn: () => `iPhone Air` },
+  { re: /iphone-(\d+)\b/,         cat: 'iPhone', nameFn: m => `iPhone ${m[1]}` },
+  { re: /ipad-pro/,               cat: 'iPad',   nameFn: () => `iPad Pro` },
+  { re: /ipad-air/,               cat: 'iPad',   nameFn: () => `iPad Air` },
+  { re: /ipad-mini/,              cat: 'iPad',   nameFn: () => `iPad mini` },
+  { re: /\bipad\b/,               cat: 'iPad',   nameFn: () => `iPad` },
+  { re: /macbook-pro/,            cat: 'Mac',    nameFn: () => `MacBook Pro` },
+  { re: /macbook-air/,            cat: 'Mac',    nameFn: () => `MacBook Air` },
+  { re: /mac-studio/,             cat: 'Mac',    nameFn: () => `Mac Studio` },
+  { re: /mac-mini/,               cat: 'Mac',    nameFn: () => `Mac mini` },
+  { re: /\bimac\b/,               cat: 'Mac',    nameFn: () => `iMac` },
+  { re: /apple-watch-ultra/,      cat: 'Watch',  nameFn: () => `Apple Watch Ultra` },
+  { re: /apple-watch-se/,         cat: 'Watch',  nameFn: () => `Apple Watch SE` },
+  { re: /apple-watch-series-(\d+)/, cat: 'Watch', nameFn: m => `Apple Watch Series ${m[1]}` },
+  { re: /airpods-pro/,            cat: 'Audio',  nameFn: () => `AirPods Pro` },
+  { re: /airpods-max/,            cat: 'Audio',  nameFn: () => `AirPods Max` },
+  { re: /\bairpods\b/,            cat: 'Audio',  nameFn: () => `AirPods` },
+];
+
+function parseAppleLink(url){
+  let path;
+  try{ path = new URL(url).pathname.toLowerCase(); }
+  catch(e){ path = ('/' + url).toLowerCase(); }
+  for (const p of LINK_PATTERNS){
+    const m = path.match(p.re);
+    if (m) return { matched: true, cat: p.cat, name: p.nameFn(m) };
+  }
+  return { matched: false };
+}
+
+// Reference currencies for cross-country conversion (independent of the
+// editable `countries` FX rates below — these are just the picker options).
+const CURRENCIES = [
+  { code:'USD', label:'US Dollar (USD)', per_usd:1 },
+  { code:'EUR', label:'Euro (EUR)', per_usd:0.86 },
+  { code:'GBP', label:'British Pound (GBP)', per_usd:0.75 },
+  { code:'CHF', label:'Swiss Franc (CHF)', per_usd:0.80 },
+  { code:'AED', label:'UAE Dirham (AED)', per_usd:3.67 },
+  { code:'JPY', label:'Japanese Yen (JPY)', per_usd:147 },
+  { code:'SGD', label:'Singapore Dollar (SGD)', per_usd:1.29 },
+  { code:'INR', label:'Indian Rupee (INR)', per_usd:88 },
+  { code:'AUD', label:'Australian Dollar (AUD)', per_usd:1.52 },
+  { code:'HKD', label:'Hong Kong Dollar (HKD)', per_usd:7.79 },
+  { code:'CAD', label:'Canadian Dollar (CAD)', per_usd:1.38 },
+];
+
+const TAB_IDS = ['map', 'world', 'compare', 'ship', 'taxdata'];
+
 // ------------------------------------------------------------------
 // State
 // ------------------------------------------------------------------
 let DATA = null;               // parsed data.json
+let pendingParsedProduct = null; // {cat, name} awaiting a manually-entered price
 let currentProductId = null;
 let selectedVariant = {};
 let employeeOn = false;
@@ -46,7 +114,18 @@ let pinnedState = null;
 let sortKey = 'total_price';
 let sortDir = 'asc';
 let usStatesGeo = null;        // topojson -> geojson features, cached after first load
+let worldCountriesGeo = null;  // topojson -> geojson features, cached after first load
 let isLight = false;
+let activeTab = 'map';
+
+// World Prices / Compare / Ship tabs
+let countries = [];             // mutable copy of DATA.countries — editable in the Tax Data tab
+let overrides = {};             // manual "real price" edits, keyed by country+product+variant
+let currencyB = 'EUR';
+let currencyC = 'INR';
+let touristMode = false;
+let sortMode = 'effective';
+let compareState = [];          // 3 independent {countryCode, taxOverride, employeeOn, employeePct, touristOn}
 
 // ------------------------------------------------------------------
 // Helpers
@@ -72,6 +151,17 @@ function variantDelta(product){
 }
 function effectiveUsd(product){ return product.usd + variantDelta(product); }
 
+// "iPhone 17 Pro · 256GB · Deep Blue" — whatever variant dimensions this
+// product actually has (storage/size/cellular/color), in catalog order.
+function productSpecLine(product){
+  const parts = [product.name];
+  Object.keys(product.variants || {}).forEach(dim => {
+    const opt = product.variants[dim].find(o => o.id === selectedVariant[dim]);
+    if (opt) parts.push(opt.label);
+  });
+  return parts.join(' · ');
+}
+
 function computeStateRow(state, baseUsd){
   const taxRate = state.tax_rate_pct / 100;
   const discounted = baseUsd * (1 - (employeeOn ? employeePct/100 : 0));
@@ -90,6 +180,56 @@ function allStateRows(){
 function zip3ToState(zip3){
   for (const [lo, hi, state] of ZIP_STATE_RANGES){ if (zip3 >= lo && zip3 <= hi) return state; }
   return null;
+}
+
+// ------------------------------------------------------------------
+// International pricing (World Prices / Compare / Ship tabs)
+// ------------------------------------------------------------------
+function variantKeyStr(){
+  return Object.keys(selectedVariant).sort().map(k => k + '=' + selectedVariant[k]).join(';') || 'base';
+}
+function estimateLocalPrice(country, product){
+  return effectiveUsd(product) * country.fx * (1 + country.tax_rate) * country.premium;
+}
+function getLocalPrice(country, product){
+  const key = country.code + '_' + product.id + '_' + variantKeyStr();
+  if (overrides.hasOwnProperty(key)) return overrides[key];
+  return estimateLocalPrice(country, product);
+}
+function taxPortionAmt(price, taxRate){ return price - (price / (1 + taxRate)); }
+
+function computeWorldRow(country, product){
+  const listPrice = getLocalPrice(country, product);
+  const exTax = listPrice / (1 + country.tax_rate);
+  const discount = employeeOn ? employeePct / 100 : 0;
+  const payingPrice = listPrice * (1 - discount);
+  const refundApplies = touristMode && country.refund !== null;
+  const refundCash = refundApplies ? taxPortionAmt(payingPrice, country.tax_rate) * country.refund : 0;
+  const finalPrice = payingPrice - refundCash;
+  const usdEquivalent = finalPrice / country.fx;
+  return { country, listPrice, exTax, payingPrice, refundCash, finalPrice, usdEquivalent, refundApplies };
+}
+
+function computeCompareColumn(col, product){
+  const country = countries.find(c => c.code === col.countryCode);
+  const listPriceOriginal = getLocalPrice(country, product);
+  const exTaxBase = listPriceOriginal / (1 + country.tax_rate);
+  const overrideRate = (isNaN(col.taxOverride) ? country.tax_rate * 100 : col.taxOverride) / 100;
+  const listPrice = exTaxBase * (1 + overrideRate);
+  const discount = col.employeeOn ? col.employeePct / 100 : 0;
+  const payingPrice = listPrice * (1 - discount);
+  const refundApplies = col.touristOn && country.refund !== null;
+  const refundCash = refundApplies ? taxPortionAmt(payingPrice, overrideRate) * country.refund : 0;
+  const finalPrice = payingPrice - refundCash;
+  const usdEquivalent = finalPrice / country.fx;
+  return { country, listPrice, exTaxBase, overrideRate, discount, payingPrice, refundCash, finalPrice, usdEquivalent, refundApplies };
+}
+
+function currencyRate(code){ const c = CURRENCIES.find(x => x.code === code); return c ? c.per_usd : 1; }
+function convertUsd(usdValue, code){ return usdValue * currencyRate(code); }
+function fmtCur(value, currencyCode){
+  try{ return new Intl.NumberFormat('en-US', { style:'currency', currency: currencyCode, maximumFractionDigits: 0 }).format(value); }
+  catch(e){ return currencyCode + ' ' + Math.round(value).toLocaleString(); }
 }
 
 // ------------------------------------------------------------------
@@ -138,6 +278,22 @@ function renderVariantFields(){
   });
 }
 
+function populateCurrencySelects(){
+  const b = $('currencyB'), c = $('currencyC');
+  const opts = CURRENCIES.map(x => `<option value="${x.code}">${x.label}</option>`).join('');
+  b.innerHTML = opts; c.innerHTML = opts;
+  b.value = currencyB; c.value = currencyC;
+}
+
+function populateShipSelects(){
+  const from = $('shipFrom'), to = $('shipTo');
+  const prevFrom = from.value, prevTo = to.value;
+  const opts = countries.map(c => `<option value="${c.code}">${c.flag} ${c.name}</option>`).join('');
+  from.innerHTML = opts; to.innerHTML = opts;
+  from.value = countries.some(c => c.code === prevFrom) ? prevFrom : 'US';
+  to.value = countries.some(c => c.code === prevTo) ? prevTo : (countries[1] ? countries[1].code : 'DE');
+}
+
 // ------------------------------------------------------------------
 // Map drawing
 // ------------------------------------------------------------------
@@ -163,7 +319,7 @@ async function initMap(){
     svg.selectAll('path.state')
       .data(features, d => d.id)
       .join('path')
-      .attr('class', 'state')
+      .attr('class', 'state map-path')
       .attr('d', pathGen)
       .attr('tabindex', 0)
       .attr('data-fips', d => d.id)
@@ -215,12 +371,15 @@ function updateMapColors(){
 function onStateHover(e){
   const code = stateCodeFromEvent(e);
   const row = window.__currentByCode && window.__currentByCode[code];
-  if (!row) return;
+  // A no-data feature (e.g. a US territory outside the 50 states) still needs
+  // to clear whatever tooltip a previous hover left on screen.
+  if (!row){ onStateLeave(e); return; }
   e.target.classList.add('hovered');
   const tt = $('tooltip');
   tt.hidden = false;
   tt.innerHTML = `
     <div class="tt-state">${row.name}</div>
+    <div class="tt-spec">${productSpecLine(getProduct(currentProductId))}</div>
     <div class="tt-row"><span>Price before tax</span><span class="v">${fmtUsd2(row.base_price)}</span></div>
     <div class="tt-row"><span>Tax (${row.tax_rate_pct.toFixed(2)}%)</span><span class="v">${fmtUsd2(row.tax_amount)}</span></div>
     <div class="tt-row total"><span>Total price</span><span class="v">${fmtUsd2(row.total_price)}</span></div>
@@ -248,6 +407,126 @@ function onStateClick(e){
   if (!code) return;
   pinnedState = pinnedState === code ? null : code;
   updateMapColors();
+}
+
+// ------------------------------------------------------------------
+// World map drawing (World Prices tab)
+// ------------------------------------------------------------------
+let worldSvgSel = null, worldPathGen = null, worldProjection = null;
+
+async function loadWorldTopology(){
+  if (worldCountriesGeo) return worldCountriesGeo;
+  const topo = await d3.json(WORLD_TOPOJSON_URL);
+  const featureCollection = topojson.feature(topo, topo.objects.countries);
+  worldCountriesGeo = featureCollection.features;
+  return worldCountriesGeo;
+}
+
+// Topology feature ids are zero-padded ISO-3166-1 numeric strings (e.g. "036" for
+// Australia) — same zero-padding trap as the US FIPS ids, normalize the same way.
+function numericToCountry(id){ return NUMERIC_TO_COUNTRY[parseInt(id, 10)] || null; }
+
+async function initWorldMap(){
+  const svg = d3.select('#worldMap');
+  worldSvgSel = svg;
+  worldProjection = d3.geoNaturalEarth1();
+  worldPathGen = d3.geoPath().projection(worldProjection);
+
+  try{
+    const features = await loadWorldTopology();
+    worldProjection.fitSize([960, 500], { type: 'FeatureCollection', features });
+    $('worldMapLoading').hidden = true;
+    svg.selectAll('path.country')
+      .data(features, d => d.id)
+      .join('path')
+      .attr('class', 'country map-path')
+      .attr('d', worldPathGen)
+      .attr('tabindex', d => numericToCountry(d.id) ? 0 : -1)
+      .attr('data-iso', d => d.id)
+      .on('pointermove', onCountryHover)
+      .on('pointerleave', onCountryLeave)
+      .on('focus', onCountryHover)
+      .on('blur', onCountryLeave)
+      .on('click', onCountryClick)
+      .on('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); onCountryClick(e); } });
+    updateWorldMapColors();
+  }catch(err){
+    $('worldMapLoading').textContent = 'Could not load the world map outline (network blocked?). The table view below still has every number.';
+  }
+}
+
+function countryCodeFromEvent(e){
+  return numericToCountry(e.target.getAttribute('data-iso'));
+}
+
+function updateWorldMapColors(){
+  if (!worldSvgSel) return;
+  const product = getProduct(currentProductId);
+  const rows = countries.map(c => computeWorldRow(c, product));
+  const byCode = Object.fromEntries(rows.map(r => [r.country.code, r]));
+  const values = rows.map(r => r.usdEquivalent);
+  const min = Math.min(...values), max = Math.max(...values);
+  const domain = SEQ_RAMP.map((_, i) => min + (max - min) * (i / (SEQ_RAMP.length - 1)));
+  const scale = d3.scaleLinear().domain(domain).range(SEQ_RAMP).clamp(true);
+  window.__worldByCode = byCode;
+
+  worldSvgSel.selectAll('path.country')
+    .classed('no-data', d => !byCode[numericToCountry(d.id)])
+    .attr('fill', d => {
+      const row = byCode[numericToCountry(d.id)];
+      return row ? scale(row.usdEquivalent) : '#555';
+    })
+    .attr('aria-label', d => {
+      const row = byCode[numericToCountry(d.id)];
+      return row ? `${row.country.name}: ${fmtCur(row.finalPrice, row.country.currency)} total` : '';
+    });
+
+  $('worldLegendMin').textContent = fmtCur(convertUsd(min, currencyB), currencyB);
+  $('worldLegendMax').textContent = fmtCur(convertUsd(max, currencyB), currencyB);
+}
+
+function onCountryHover(e){
+  const code = countryCodeFromEvent(e);
+  const row = window.__worldByCode && window.__worldByCode[code];
+  // A no-data country (most of the map) still needs to clear whatever
+  // tooltip a previous hover on a tracked country left on screen.
+  if (!row){ onCountryLeave(e); return; }
+  e.target.classList.add('hovered');
+  const tt = $('worldTooltip');
+  tt.hidden = false;
+  tt.innerHTML = `
+    <div class="tt-state">${row.country.flag} ${row.country.name}</div>
+    <div class="tt-spec">${productSpecLine(getProduct(currentProductId))}</div>
+    <div class="tt-row"><span>Price before tax</span><span class="v">${fmtCur(row.exTax, row.country.currency)}</span></div>
+    <div class="tt-row"><span>Tax (${(row.country.tax_rate*100).toFixed(1)}%)</span><span class="v">${fmtCur(row.listPrice - row.exTax, row.country.currency)}</span></div>
+    <div class="tt-row total"><span>Total price</span><span class="v">${fmtCur(row.finalPrice, row.country.currency)}</span></div>
+    <div class="tt-row"><span>≈ in ${currencyB}</span><span class="v">${fmtCur(convertUsd(row.usdEquivalent, currencyB), currencyB)}</span></div>
+    ${row.country.code === 'US' ? '<div class="tt-hint">Click for the full 50-state map →</div>' : ''}
+  `;
+  const stage = $('worldMapStage');
+  const stageBox = stage.getBoundingClientRect();
+  let x, y;
+  if (e.clientX !== undefined && e.type === 'pointermove'){
+    x = e.clientX - stageBox.left;
+    y = e.clientY - stageBox.top;
+  } else {
+    const box = e.target.getBoundingClientRect();
+    x = box.left + box.width/2 - stageBox.left;
+    y = box.top - stageBox.top;
+  }
+  tt.style.left = x + 'px';
+  tt.style.top = y + 'px';
+}
+function onCountryLeave(e){
+  e.target.classList.remove('hovered');
+  $('worldTooltip').hidden = true;
+}
+
+// Clicking the United States on the world map jumps to the detailed,
+// state-by-state USA Map tab instead of just showing the one country row.
+function onCountryClick(e){
+  const code = countryCodeFromEvent(e);
+  if (code === 'US') switchTab('map');
 }
 
 // ------------------------------------------------------------------
@@ -302,6 +581,245 @@ function renderTable(rows){
 }
 
 // ------------------------------------------------------------------
+// World Prices tab
+// ------------------------------------------------------------------
+function renderWorldTab(){
+  const product = getProduct(currentProductId);
+  $('worldTitle').textContent = `Price by country — ${product.name}`;
+  $('colFinalHead').textContent = (employeeOn || touristMode) ? "Price you'd pay" : 'List price';
+  $('colBHead').textContent = `In ${currencyB}`;
+  $('colCHead').textContent = `In ${currencyC}`;
+
+  updateWorldMapColors();
+  $('worldTooltip').hidden = true;
+
+  let rows = countries.map(c => computeWorldRow(c, product));
+  if (sortMode === 'effective') rows.sort((a, b) => a.usdEquivalent - b.usdEquivalent);
+  else if (sortMode === 'local') rows.sort((a, b) => a.country.name.localeCompare(b.country.name));
+  else if (sortMode === 'tax') rows.sort((a, b) => a.country.tax_rate - b.country.tax_rate);
+
+  const cheapestUsd = Math.min(...rows.map(r => r.usdEquivalent));
+  const priciestUsd = Math.max(...rows.map(r => r.usdEquivalent));
+  const cheapestRow = rows.find(r => r.usdEquivalent === cheapestUsd);
+  const priciestRow = rows.find(r => r.usdEquivalent === priciestUsd);
+  const spread = priciestUsd - cheapestUsd;
+
+  $('worldStatRow').innerHTML = `
+    <div class="stat"><div class="k">Cheapest place to buy</div>
+      <div class="v good">${cheapestRow.country.flag} ${cheapestRow.country.name}</div>
+      <div class="d">${fmtCur(convertUsd(cheapestRow.usdEquivalent, currencyB), currencyB)} equivalent</div></div>
+    <div class="stat"><div class="k">Most expensive</div>
+      <div class="v bad">${priciestRow.country.flag} ${priciestRow.country.name}</div>
+      <div class="d">${fmtCur(convertUsd(priciestRow.usdEquivalent, currencyB), currencyB)} equivalent</div></div>
+    <div class="stat"><div class="k">Spread</div>
+      <div class="v">${fmtCur(convertUsd(spread, currencyB), currencyB)}</div>
+      <div class="d">${((spread / cheapestUsd) * 100).toFixed(0)}% more at the priciest spot</div></div>
+  `;
+
+  $('worldTableBody').innerHTML = rows.map(r => {
+    const key = r.country.code + '_' + product.id + '_' + variantKeyStr();
+    const isEdited = overrides.hasOwnProperty(key);
+    const isCheapest = r.usdEquivalent === cheapestUsd;
+    const isPriciest = r.usdEquivalent === priciestUsd;
+    const refundCell = r.country.refund === null
+      ? `<span class="refund-off">not available</span>`
+      : (touristMode ? `<span class="num">+${fmtCur(convertUsd(r.refundCash / r.country.fx, currencyB), currencyB)}</span>` : `<span class="refund-off">eligible, not applied</span>`);
+    return `
+      <tr>
+        <td class="country-cell"><span class="flag">${r.country.flag}</span>
+          <span><span class="country-name">${r.country.name}</span><span class="country-meta">${r.country.tax_name}</span></span></td>
+        <td class="num-col"><input class="price-input num ${isEdited ? 'edited' : ''}" data-key="${key}" type="number" value="${r.listPrice.toFixed(0)}" step="1"><span class="est-dot" title="Estimated — click to overwrite"></span></td>
+        <td class="num-col num">${(r.country.tax_rate * 100).toFixed(1)}%</td>
+        <td class="num-col num">${fmtCur(r.exTax, r.country.currency)}</td>
+        <td>${refundCell}</td>
+        <td class="num-col num ${isCheapest ? 'best' : ''} ${isPriciest ? 'worst' : ''}">${fmtCur(r.finalPrice, r.country.currency)}</td>
+        <td class="num-col num">${fmtCur(convertUsd(r.usdEquivalent, currencyB), currencyB)}</td>
+        <td class="num-col num">${fmtCur(convertUsd(r.usdEquivalent, currencyC), currencyC)}</td>
+        <td class="num-col num">${isCheapest ? '—' : '+' + fmtCur(convertUsd(r.usdEquivalent - cheapestUsd, currencyB), currencyB)}</td>
+      </tr>`;
+  }).join('');
+
+  $('worldTableBody').querySelectorAll('.price-input').forEach(inp => {
+    inp.addEventListener('change', e => {
+      const val = parseFloat(e.target.value);
+      if (!isNaN(val)) overrides[e.target.dataset.key] = val;
+      renderAll();
+    });
+  });
+
+  const maxVal = priciestUsd;
+  $('barChart').innerHTML = rows.slice().sort((a, b) => a.usdEquivalent - b.usdEquivalent).map(r => {
+    const pct = (r.usdEquivalent / maxVal) * 100;
+    return `<div class="bar-row"><div class="lbl">${r.country.flag} ${r.country.name}</div>
+      <div class="track"><div class="fill" style="width:${pct}%"></div></div>
+      <div class="val num">${fmtCur(convertUsd(r.usdEquivalent, currencyB), currencyB)}</div></div>`;
+  }).join('');
+}
+
+// ------------------------------------------------------------------
+// Compare Countries tab
+// ------------------------------------------------------------------
+function initCompareState(){
+  const codes = countries.slice(0, 3).map(c => c.code);
+  compareState = codes.map(code => {
+    const country = countries.find(c => c.code === code);
+    return { countryCode: code, taxOverride: +(country.tax_rate * 100).toFixed(2), employeeOn: false, employeePct: 15, touristOn: false };
+  });
+}
+
+function renderCompareTab(){
+  if (compareState.length === 0) initCompareState();
+  const product = getProduct(currentProductId);
+  const results = compareState.map(col => computeCompareColumn(col, product));
+  const cheapestUsd = Math.min(...results.map(r => r.usdEquivalent));
+
+  $('compareGrid').innerHTML = compareState.map((col, idx) => {
+    const r = results[idx];
+    const isCheapest = r.usdEquivalent === cheapestUsd;
+    const countryOpts = countries.map(c => `<option value="${c.code}" ${c.code === col.countryCode ? 'selected' : ''}>${c.flag} ${c.name}</option>`).join('');
+    const refundDisabled = r.country.refund === null;
+    return `
+      <div class="compare-card ${isCheapest ? 'cheapest' : ''}">
+        ${isCheapest ? '<div class="cc-badge">Cheapest</div>' : ''}
+        <div class="cc-field">
+          <label class="f-label">Country</label>
+          <select data-idx="${idx}" data-role="country">${countryOpts}</select>
+        </div>
+        <div class="cc-field cc-inline">
+          <div style="flex:1;">
+            <label class="f-label">Tax %</label>
+            <input type="number" step="0.1" data-idx="${idx}" data-role="tax" value="${col.taxOverride}">
+          </div>
+        </div>
+        <label class="cc-toggle ${col.employeeOn ? 'on' : ''}">
+          <input type="checkbox" data-idx="${idx}" data-role="employeeOn" ${col.employeeOn ? 'checked' : ''}>
+          <span class="lbl">Employee discount</span>
+          <input type="number" data-idx="${idx}" data-role="employeePct" value="${col.employeePct}" style="width:58px; margin-left:auto;" ${col.employeeOn ? '' : 'disabled'}>%
+        </label>
+        <label class="cc-toggle ${col.touristOn ? 'on' : ''} ${refundDisabled ? 'disabled' : ''}">
+          <input type="checkbox" data-idx="${idx}" data-role="touristOn" ${col.touristOn ? 'checked' : ''} ${refundDisabled ? 'disabled' : ''}>
+          <span class="lbl">${refundDisabled ? 'Tourist refund — not available here' : 'Tourist VAT/GST refund'}</span>
+        </label>
+        <hr>
+        <div class="cc-breakdown">
+          <div><span>List price</span><span>${fmtCur(r.listPrice, r.country.currency)}</span></div>
+          <div><span>Ex-tax</span><span>${fmtCur(r.exTaxBase, r.country.currency)}</span></div>
+          <div><span>Discount</span><span>${col.employeeOn ? '-' + fmtCur(r.listPrice - r.payingPrice, r.country.currency) : '—'}</span></div>
+          <div><span>Refund</span><span>${r.refundApplies ? '-' + fmtCur(r.refundCash, r.country.currency) : '—'}</span></div>
+        </div>
+        <div class="cc-final">
+          <div class="big num">${fmtCur(r.finalPrice, r.country.currency)}</div>
+          <div class="conv num">${fmtCur(convertUsd(r.usdEquivalent, currencyB), currencyB)} · ${fmtCur(convertUsd(r.usdEquivalent, currencyC), currencyC)}</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  $('compareGrid').querySelectorAll('[data-role]').forEach(el => {
+    const evt = (el.type === 'checkbox' || el.tagName === 'SELECT') ? 'change' : 'input';
+    el.addEventListener(evt, e => {
+      const idx = parseInt(e.target.dataset.idx);
+      const role = e.target.dataset.role;
+      if (role === 'country'){
+        compareState[idx].countryCode = e.target.value;
+        const c = countries.find(c => c.code === e.target.value);
+        compareState[idx].taxOverride = +(c.tax_rate * 100).toFixed(2);
+      }
+      if (role === 'tax') compareState[idx].taxOverride = parseFloat(e.target.value);
+      if (role === 'employeeOn') compareState[idx].employeeOn = e.target.checked;
+      if (role === 'employeePct') compareState[idx].employeePct = parseFloat(e.target.value) || 0;
+      if (role === 'touristOn') compareState[idx].touristOn = e.target.checked;
+      renderCompareTab();
+    });
+  });
+}
+
+// ------------------------------------------------------------------
+// Ship & Customs tab
+// ------------------------------------------------------------------
+function renderShipTab(){
+  const product = getProduct(currentProductId);
+  const fromCountry = countries.find(c => c.code === $('shipFrom').value);
+  const toCountry = countries.find(c => c.code === $('shipTo').value);
+  if (!fromCountry || !toCountry) return;
+  const shipCost = parseFloat($('shipCost').value) || 0;
+  const customsPct = parseFloat($('customsPct').value) || 0;
+
+  const buyRow = computeWorldRow(fromCountry, product);
+  const withShipping = buyRow.finalPrice + shipCost;
+  const customsFee = withShipping * (customsPct / 100);
+  const grandTotalLocal = withShipping + customsFee;
+  const grandUsd = grandTotalLocal / fromCountry.fx;
+
+  $('shipStatRow').innerHTML = `
+    <div class="stat"><div class="k">Buy in ${fromCountry.name}, pay locally</div>
+      <div class="v">${fmtCur(buyRow.finalPrice, fromCountry.currency)}</div>
+      <div class="d">${fmtCur(convertUsd(buyRow.usdEquivalent, currencyB), currencyB)}</div></div>
+    <div class="stat"><div class="k">+ Shipping &amp; customs to ${toCountry.name}</div>
+      <div class="v">${fmtCur(shipCost + customsFee, fromCountry.currency)}</div>
+      <div class="d">Shipping ${fmtCur(shipCost, fromCountry.currency)} + customs ${fmtCur(customsFee, fromCountry.currency)}</div></div>
+    <div class="stat"><div class="k">Total landed cost</div>
+      <div class="v good">${fmtCur(grandTotalLocal, fromCountry.currency)}</div>
+      <div class="d">${fmtCur(convertUsd(grandUsd, currencyB), currencyB)} / ${fmtCur(convertUsd(grandUsd, currencyC), currencyC)}</div></div>
+  `;
+}
+
+// ------------------------------------------------------------------
+// Tax Data tab
+// ------------------------------------------------------------------
+function renderAssumptions(){
+  $('assumptionsBody').innerHTML = countries.map((c, idx) => `
+    <tr>
+      <td>${c.flag} ${c.name} <span class="country-meta">${c.note}</span></td>
+      <td class="num-col"><input class="price-input num" style="width:70px" type="number" step="0.1" data-field="tax_rate" data-idx="${idx}" value="${(c.tax_rate * 100).toFixed(2)}"> %</td>
+      <td>${c.tax_name}</td>
+      <td class="num-col"><input class="price-input num" style="width:80px" type="number" step="0.01" data-field="fx" data-idx="${idx}" value="${c.fx}"></td>
+      <td><select data-field="refundOn" data-idx="${idx}" style="width:110px; padding:5px 6px; font-size:12.5px;">
+        <option value="yes" ${c.refund !== null ? 'selected' : ''}>Yes</option><option value="no" ${c.refund === null ? 'selected' : ''}>No</option></select></td>
+      <td class="num-col"><input class="price-input num" style="width:70px" type="number" step="1" data-field="refund" data-idx="${idx}" value="${c.refund !== null ? (c.refund * 100).toFixed(0) : 0}" ${c.refund === null ? 'disabled' : ''}> %</td>
+      <td><button class="ghost" data-remove="${idx}" style="padding:5px 10px; font-size:12px;">Remove</button></td>
+    </tr>`).join('');
+
+  $('assumptionsBody').querySelectorAll('input, select').forEach(el => {
+    el.addEventListener('change', e => {
+      const idx = parseInt(e.target.dataset.idx), field = e.target.dataset.field;
+      if (field === 'tax_rate') countries[idx].tax_rate = parseFloat(e.target.value) / 100;
+      if (field === 'fx') countries[idx].fx = parseFloat(e.target.value);
+      if (field === 'refund') countries[idx].refund = parseFloat(e.target.value) / 100;
+      if (field === 'refundOn') countries[idx].refund = e.target.value === 'yes' ? 0.8 : null;
+      renderAll();
+    });
+  });
+  $('assumptionsBody').querySelectorAll('[data-remove]').forEach(btn => {
+    btn.addEventListener('click', e => {
+      countries.splice(parseInt(e.target.dataset.remove), 1);
+      afterCountriesChanged();
+    });
+  });
+}
+
+// Countries list changed shape (added/removed/reset) — refresh everything that reads it.
+function afterCountriesChanged(){
+  populateShipSelects();
+  renderAssumptions();
+  renderAll();
+}
+
+// ------------------------------------------------------------------
+// Tabs
+// ------------------------------------------------------------------
+function switchTab(tab){
+  activeTab = tab;
+  TAB_IDS.forEach(t => {
+    $('tabBtn-' + t).classList.toggle('on', t === tab);
+    $('tabBtn-' + t).setAttribute('aria-selected', t === tab ? 'true' : 'false');
+    $('tab-' + t).hidden = t !== tab;
+  });
+}
+function wireTabs(){
+  TAB_IDS.forEach(t => $('tabBtn-' + t).addEventListener('click', () => switchTab(t)));
+}
+
+// ------------------------------------------------------------------
 // Main render
 // ------------------------------------------------------------------
 function renderAll(){
@@ -317,6 +835,26 @@ function renderAll(){
   // A filter change invalidates whatever a lingering tooltip is showing —
   // hide it rather than let it display stale numbers until the next hover.
   $('tooltip').hidden = true;
+
+  renderWorldTab();
+  renderCompareTab();
+  renderShipTab();
+}
+
+// Adds a product to the catalog (used by both the link-parser flow and the
+// "no link needed" manual-entry flow) and switches to it. Returns the new id.
+function addProductToCatalog(name, cat, usd){
+  const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+  let id = slug || ('product-' + Date.now());
+  let n = 2;
+  while (DATA.products.some(p => p.id === id)){ id = slug + '-' + (n++); } // avoid id collisions
+  DATA.products.push({ id, name, cat: cat || 'Other', usd, variants: {} });
+  currentProductId = id;
+  selectedVariant = {};
+  populateProductSelect();
+  renderVariantFields();
+  renderAll();
+  return id;
 }
 
 // ------------------------------------------------------------------
@@ -330,12 +868,121 @@ function wireEvents(){
     renderAll();
   });
 
+  $('parseLinkBtn').addEventListener('click', () => {
+    const url = $('linkInput').value.trim();
+    const statusEl = $('linkStatus');
+    $('newProductForm').hidden = true;
+    pendingParsedProduct = null;
+    if (!url){
+      statusEl.innerHTML = `<div class="status-msg err">Paste a link first — e.g. https://www.apple.com/iphone-17-pro/</div>`;
+      return;
+    }
+    const parsed = parseAppleLink(url);
+    if (!parsed.matched){
+      statusEl.innerHTML = `<div class="status-msg err">Couldn't recognize an Apple product in that link. Try a product page URL, or just pick one from the Product dropdown below.</div>`;
+      return;
+    }
+    // Already in the catalog? Jump straight to it.
+    const existing = DATA.products.find(p => p.name.toLowerCase() === parsed.name.toLowerCase());
+    if (existing){
+      currentProductId = existing.id;
+      selectedVariant = defaultVariantSelection(existing);
+      populateProductSelect();
+      renderVariantFields();
+      renderAll();
+      statusEl.innerHTML = `<div class="status-msg ok">Loaded ${existing.name} — showing its price across all 50 states below.</div>`;
+      return;
+    }
+    // Recognized the product family, but it's not in the catalog yet (e.g. a
+    // model newer than this data). We can't fetch its real price — apple.com
+    // blocks cross-site reads from a static page like this one (CORS) — so ask for it.
+    pendingParsedProduct = parsed;
+    statusEl.innerHTML = `<div class="status-msg info">Recognized "${parsed.name}", but it isn't in the catalog yet — apple.com doesn't let a static page like this read its price directly. Enter the US price shown on the page below and we'll map it.</div>`;
+    $('newProductLabel').textContent = parsed.name + ':';
+    $('newProductForm').hidden = false;
+    $('newProductPrice').value = '';
+    $('newProductPrice').focus();
+  });
+  $('linkInput').addEventListener('keydown', e => { if (e.key === 'Enter') $('parseLinkBtn').click(); });
+
+  $('addParsedProductBtn').addEventListener('click', () => {
+    if (!pendingParsedProduct) return;
+    const price = parseFloat($('newProductPrice').value);
+    if (!price || price <= 0){
+      $('newProductPrice').focus();
+      return;
+    }
+    const name = pendingParsedProduct.name;
+    addProductToCatalog(name, pendingParsedProduct.cat, price);
+    pendingParsedProduct = null;
+    $('newProductForm').hidden = true;
+    $('linkStatus').innerHTML = `<div class="status-msg ok">Added ${name} at ${fmtUsd(price)} — showing its price across all 50 states below.</div>`;
+  });
+  $('newProductPrice').addEventListener('keydown', e => { if (e.key === 'Enter') $('addParsedProductBtn').click(); });
+
+  // Manual entry — no Apple link needed at all, for a product this tool has never heard of.
+  $('manualAddProductBtn').addEventListener('click', () => {
+    const name = $('manualProductName').value.trim();
+    const cat = $('manualProductCat').value;
+    const price = parseFloat($('manualProductPrice').value);
+    const statusEl = $('linkStatus');
+    if (!name){
+      statusEl.innerHTML = `<div class="status-msg err">Enter a product name first.</div>`;
+      $('manualProductName').focus();
+      return;
+    }
+    if (!price || price <= 0){
+      statusEl.innerHTML = `<div class="status-msg err">Enter a US price greater than 0.</div>`;
+      $('manualProductPrice').focus();
+      return;
+    }
+    addProductToCatalog(name, cat, price);
+    $('manualProductName').value = '';
+    $('manualProductPrice').value = '';
+    statusEl.innerHTML = `<div class="status-msg ok">Added ${name} at ${fmtUsd(price)} — showing its price across all 50 states below.</div>`;
+  });
+  $('manualProductPrice').addEventListener('keydown', e => { if (e.key === 'Enter') $('manualAddProductBtn').click(); });
+
   $('employeeToggle').addEventListener('change', e => {
     employeeOn = e.target.checked;
     $('employeeToggleWrap').classList.toggle('on', employeeOn);
     renderAll();
   });
   $('employeePct').addEventListener('change', e => { employeePct = parseFloat(e.target.value) || 0; renderAll(); });
+
+  $('currencyB').addEventListener('change', e => { currencyB = e.target.value; renderAll(); });
+  $('currencyC').addEventListener('change', e => { currencyC = e.target.value; renderAll(); });
+
+  $('sortSelect').addEventListener('change', e => { sortMode = e.target.value; renderWorldTab(); });
+  $('touristToggle').addEventListener('change', e => {
+    touristMode = e.target.checked;
+    $('touristToggleWrap').classList.toggle('on', touristMode);
+    renderAll();
+  });
+
+  $('shipFrom').addEventListener('change', renderShipTab);
+  $('shipTo').addEventListener('change', renderShipTab);
+  $('shipCost').addEventListener('input', renderShipTab);
+  $('customsPct').addEventListener('input', renderShipTab);
+
+  $('addCountryBtn').addEventListener('click', () => {
+    const name = $('newCountryName').value.trim();
+    const cur = $('newCountryCode').value.trim().toUpperCase();
+    const tax = parseFloat($('newCountryTax').value) || 0;
+    const fx = parseFloat($('newCountryFx').value) || 1;
+    if (!name || !cur){ alert('Enter at least a country name and a currency code.'); return; }
+    countries.push({ code: cur, name, flag: '🏳️', currency: cur, fx, tax_rate: tax / 100, tax_name: 'Custom', premium: 1.0, refund: null, note: 'Added manually — edit assumptions below.' });
+    $('newCountryName').value = ''; $('newCountryCode').value = '';
+    $('newCountryTax').value = ''; $('newCountryFx').value = '';
+    afterCountriesChanged();
+  });
+  $('resetBtn').addEventListener('click', () => {
+    if (!confirm('Reset all edited country prices and assumptions back to the original data?')) return;
+    countries = JSON.parse(JSON.stringify(DATA.countries));
+    overrides = {};
+    compareState = [];
+    afterCountriesChanged();
+  });
 
   $('zipBtn').addEventListener('click', () => {
     const zip = $('zipInput').value.trim();
@@ -361,13 +1008,24 @@ function wireEvents(){
 
   $('viewMapBtn').addEventListener('click', () => {
     $('viewMapBtn').classList.add('on'); $('viewTableBtn').classList.remove('on');
-    $('mapStage').hidden = false; $('legend').hidden = false; document.querySelector('.legend-caption').hidden = false;
+    $('mapStage').hidden = false; $('legend').hidden = false; $('legendCaption').hidden = false;
     $('tableWrap').hidden = true;
   });
   $('viewTableBtn').addEventListener('click', () => {
     $('viewTableBtn').classList.add('on'); $('viewMapBtn').classList.remove('on');
-    $('mapStage').hidden = true; $('legend').hidden = true; document.querySelector('.legend-caption').hidden = true;
+    $('mapStage').hidden = true; $('legend').hidden = true; $('legendCaption').hidden = true;
     $('tableWrap').hidden = false;
+  });
+
+  $('viewWorldMapBtn').addEventListener('click', () => {
+    $('viewWorldMapBtn').classList.add('on'); $('viewWorldTableBtn').classList.remove('on');
+    $('worldMapStage').hidden = false; $('worldLegend').hidden = false; $('worldLegendCaption').hidden = false;
+    $('worldTableWrap').hidden = true;
+  });
+  $('viewWorldTableBtn').addEventListener('click', () => {
+    $('viewWorldTableBtn').classList.add('on'); $('viewWorldMapBtn').classList.remove('on');
+    $('worldMapStage').hidden = true; $('worldLegend').hidden = true; $('worldLegendCaption').hidden = true;
+    $('worldTableWrap').hidden = false;
   });
 
   document.querySelectorAll('#stateTable thead th[data-sort]').forEach(th => {
@@ -399,11 +1057,17 @@ async function init(){
   DATA = await res.json();
   currentProductId = DATA.products.find(p => p.id === 'ip17pro') ? 'ip17pro' : DATA.products[0].id;
   selectedVariant = defaultVariantSelection(getProduct(currentProductId));
+  countries = JSON.parse(JSON.stringify(DATA.countries));
+  initCompareState();
 
   populateProductSelect();
   renderVariantFields();
+  populateCurrencySelects();
+  populateShipSelects();
+  renderAssumptions();
   wireEvents();
-  await initMap();
+  wireTabs();
+  await Promise.all([initMap(), initWorldMap()]);
   renderAll();
 }
 init();

@@ -17,6 +17,33 @@
             "label": "512GB",
             "delta": 200
           }
+        ],
+        "color": [
+          {
+            "id": "black",
+            "label": "Black",
+            "delta": 0
+          },
+          {
+            "id": "white",
+            "label": "White",
+            "delta": 0
+          },
+          {
+            "id": "lavender",
+            "label": "Lavender",
+            "delta": 0
+          },
+          {
+            "id": "sage",
+            "label": "Sage",
+            "delta": 0
+          },
+          {
+            "id": "mist-blue",
+            "label": "Mist Blue",
+            "delta": 0
+          }
         ]
       }
     },
@@ -42,6 +69,28 @@
             "label": "1TB",
             "delta": 400
           }
+        ],
+        "color": [
+          {
+            "id": "space-black",
+            "label": "Space Black",
+            "delta": 0
+          },
+          {
+            "id": "sky-blue",
+            "label": "Sky Blue",
+            "delta": 0
+          },
+          {
+            "id": "light-gold",
+            "label": "Light Gold",
+            "delta": 0
+          },
+          {
+            "id": "cloud-white",
+            "label": "Cloud White",
+            "delta": 0
+          }
         ]
       }
     },
@@ -66,6 +115,23 @@
             "id": "1tb",
             "label": "1TB",
             "delta": 400
+          }
+        ],
+        "color": [
+          {
+            "id": "deep-blue",
+            "label": "Deep Blue",
+            "delta": 0
+          },
+          {
+            "id": "cosmic-orange",
+            "label": "Cosmic Orange",
+            "delta": 0
+          },
+          {
+            "id": "silver",
+            "label": "Silver",
+            "delta": 0
           }
         ]
       }
@@ -97,6 +163,23 @@
             "label": "2TB",
             "delta": 600
           }
+        ],
+        "color": [
+          {
+            "id": "deep-blue",
+            "label": "Deep Blue",
+            "delta": 0
+          },
+          {
+            "id": "cosmic-orange",
+            "label": "Cosmic Orange",
+            "delta": 0
+          },
+          {
+            "id": "silver",
+            "label": "Silver",
+            "delta": 0
+          }
         ]
       }
     },
@@ -116,6 +199,28 @@
             "id": "256",
             "label": "256GB",
             "delta": 150
+          }
+        ],
+        "color": [
+          {
+            "id": "blue",
+            "label": "Blue",
+            "delta": 0
+          },
+          {
+            "id": "pink",
+            "label": "Pink",
+            "delta": 0
+          },
+          {
+            "id": "yellow",
+            "label": "Yellow",
+            "delta": 0
+          },
+          {
+            "id": "silver",
+            "label": "Silver",
+            "delta": 0
           }
         ]
       }
@@ -153,6 +258,28 @@
             "id": "512",
             "label": "512GB",
             "delta": 300
+          }
+        ],
+        "color": [
+          {
+            "id": "space-gray",
+            "label": "Space Gray",
+            "delta": 0
+          },
+          {
+            "id": "blue",
+            "label": "Blue",
+            "delta": 0
+          },
+          {
+            "id": "purple",
+            "label": "Purple",
+            "delta": 0
+          },
+          {
+            "id": "starlight",
+            "label": "Starlight",
+            "delta": 0
           }
         ]
       }
@@ -196,6 +323,18 @@
             "label": "2TB",
             "delta": 800
           }
+        ],
+        "color": [
+          {
+            "id": "space-black",
+            "label": "Space Black",
+            "delta": 0
+          },
+          {
+            "id": "silver",
+            "label": "Silver",
+            "delta": 0
+          }
         ]
       }
     },
@@ -221,6 +360,28 @@
             "label": "1TB",
             "delta": 400
           }
+        ],
+        "color": [
+          {
+            "id": "midnight",
+            "label": "Midnight",
+            "delta": 0
+          },
+          {
+            "id": "starlight",
+            "label": "Starlight",
+            "delta": 0
+          },
+          {
+            "id": "space-gray",
+            "label": "Space Gray",
+            "delta": 0
+          },
+          {
+            "id": "sky-blue",
+            "label": "Sky Blue",
+            "delta": 0
+          }
         ]
       }
     },
@@ -245,6 +406,18 @@
             "id": "2tb",
             "label": "2TB",
             "delta": 600
+          }
+        ],
+        "color": [
+          {
+            "id": "space-black",
+            "label": "Space Black",
+            "delta": 0
+          },
+          {
+            "id": "silver",
+            "label": "Silver",
+            "delta": 0
           }
         ]
       }
@@ -277,6 +450,28 @@
             "id": "cell",
             "label": "GPS + Cellular",
             "delta": 100
+          }
+        ],
+        "color": [
+          {
+            "id": "midnight",
+            "label": "Midnight",
+            "delta": 0
+          },
+          {
+            "id": "starlight",
+            "label": "Starlight",
+            "delta": 0
+          },
+          {
+            "id": "rose-gold",
+            "label": "Rose Gold",
+            "delta": 0
+          },
+          {
+            "id": "jet-black",
+            "label": "Jet Black",
+            "delta": 0
           }
         ]
       }
@@ -683,6 +878,114 @@
       "premium": 1.05,
       "refund": null,
       "note": "Visitor rebate discontinued in 2007. Pick a province separately."
+    },
+    {
+      "code": "TW",
+      "name": "Taiwan",
+      "flag": "\ud83c\uddf9\ud83c\uddfc",
+      "currency": "TWD",
+      "fx": 32.0,
+      "tax_rate": 0.05,
+      "tax_name": "VAT",
+      "premium": 1.0,
+      "refund": 0.8,
+      "note": "One of the lowest VAT rates of any Apple Store market \u2014 consistently cheap."
+    },
+    {
+      "code": "MO",
+      "name": "Macau",
+      "flag": "\ud83c\uddf2\ud83c\uddf4",
+      "currency": "MOP",
+      "fx": 8.0,
+      "tax_rate": 0.0,
+      "tax_name": "None",
+      "premium": 0.97,
+      "refund": null,
+      "note": "No sales tax, like neighbouring Hong Kong \u2014 among the cheapest list prices."
+    },
+    {
+      "code": "KR",
+      "name": "South Korea",
+      "flag": "\ud83c\uddf0\ud83c\uddf7",
+      "currency": "KRW",
+      "fx": 1380,
+      "tax_rate": 0.1,
+      "tax_name": "VAT",
+      "premium": 1.0,
+      "refund": 0.75,
+      "note": "Tax refund kiosks (Global Blue) at Incheon for tourists on qualifying purchases."
+    },
+    {
+      "code": "MY",
+      "name": "Malaysia",
+      "flag": "\ud83c\uddf2\ud83c\uddfe",
+      "currency": "MYR",
+      "fx": 4.7,
+      "tax_rate": 0.0,
+      "tax_name": "SST (exempt)",
+      "premium": 1.05,
+      "refund": null,
+      "note": "Smartphones are currently exempt from Malaysia's Sales & Service Tax."
+    },
+    {
+      "code": "TH",
+      "name": "Thailand",
+      "flag": "\ud83c\uddf9\ud83c\udded",
+      "currency": "THB",
+      "fx": 36.0,
+      "tax_rate": 0.07,
+      "tax_name": "VAT",
+      "premium": 1.05,
+      "refund": 0.85,
+      "note": "VAT refund for tourists at the airport on departure, above a minimum spend."
+    },
+    {
+      "code": "QA",
+      "name": "Qatar",
+      "flag": "\ud83c\uddf6\ud83c\udde6",
+      "currency": "QAR",
+      "fx": 3.64,
+      "tax_rate": 0.0,
+      "tax_name": "None",
+      "premium": 1.1,
+      "refund": null,
+      "note": "No general VAT. Apple has no official storefront here \u2014 priced via regional resellers, so treat as a rougher estimate."
+    },
+    {
+      "code": "NZ",
+      "name": "New Zealand",
+      "flag": "\ud83c\uddf3\ud83c\uddff",
+      "currency": "NZD",
+      "fx": 1.66,
+      "tax_rate": 0.15,
+      "tax_name": "GST",
+      "premium": 1.05,
+      "refund": null,
+      "note": "No tourist GST refund scheme, unlike neighbouring Australia."
+    },
+    {
+      "code": "MX",
+      "name": "Mexico",
+      "flag": "\ud83c\uddf2\ud83c\uddfd",
+      "currency": "MXN",
+      "fx": 18.5,
+      "tax_rate": 0.16,
+      "tax_name": "IVA",
+      "premium": 1.08,
+      "refund": 0.8,
+      "note": "IVA refund available to tourists at the airport for purchases over a minimum amount."
+    },
+    {
+      "code": "SA",
+      "name": "Saudi Arabia",
+      "flag": "\ud83c\uddf8\ud83c\udde6",
+      "currency": "SAR",
+      "fx": 3.75,
+      "tax_rate": 0.15,
+      "tax_name": "VAT",
+      "premium": 1.05,
+      "refund": 0.85,
+      "note": "Tourist VAT refund available at the airport for eligible visitors since 2021."
     }
   ]
 }

@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Apple Price Map — 50 States</title>
-<meta name="description" content="Interactive map of what an Apple product actually costs, state by state, once sales tax is added.">
+<title>Apple Price Map — 50 States &amp; the World</title>
+<meta name="description" content="What an Apple product actually costs — by US state, and around the world once tax, tourist refunds, employee discount, and shipping are figured in.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
@@ -15,18 +15,58 @@
   <header class="top">
     <div class="brand">
       <div class="title">Apple Price <span>Map</span></div>
-      <div class="sub">What you'd actually pay for an Apple product, state by state — list price plus sales tax, colour-coded from cheapest to priciest.</div>
+      <div class="sub">What you'd actually pay for an Apple product — by US state, and around the world.</div>
     </div>
     <button class="theme-btn" id="themeBtn" aria-label="Toggle dark or light theme">🌙 Dark</button>
   </header>
 
-  <!-- Filter row — one row, above everything it scopes -->
+  <!-- Load from an apple.com product link -->
+  <section class="card link-card" aria-label="Load from an Apple product link">
+    <div class="f-label" style="margin-bottom:8px;">Paste an Apple product link</div>
+    <div class="link-row">
+      <input type="text" id="linkInput" placeholder="e.g. https://www.apple.com/iphone-17-pro/">
+      <button id="parseLinkBtn">Load product</button>
+    </div>
+    <div id="linkStatus"></div>
+    <!-- Shown only when the parsed product isn't in the catalog yet -->
+    <div id="newProductForm" class="new-product-form" hidden>
+      <span id="newProductLabel"></span>
+      <span class="f-label">US base price</span>
+      <input type="number" id="newProductPrice" min="0" step="1" placeholder="e.g. 1199" style="width:110px;">
+      <button id="addParsedProductBtn">Add &amp; show map</button>
+    </div>
+
+    <div class="divider-or">or, no link needed</div>
+    <div class="manual-add-row">
+      <input type="text" id="manualProductName" placeholder="Product name, e.g. iPhone 18 Pro Max">
+      <select id="manualProductCat">
+        <option value="iPhone">iPhone</option>
+        <option value="iPad">iPad</option>
+        <option value="Mac">Mac</option>
+        <option value="Watch">Watch</option>
+        <option value="Audio">Audio</option>
+        <option value="Other">Other</option>
+      </select>
+      <input type="number" id="manualProductPrice" min="0" step="1" placeholder="US price, e.g. 1199">
+      <button id="manualAddProductBtn" class="ghost">Add product</button>
+    </div>
+  </section>
+
+  <!-- Global filters — apply across every tab below -->
   <section class="filter-bar" aria-label="Filters">
     <div class="f-field">
       <label class="f-label" for="productSelect">Product</label>
       <select id="productSelect"></select>
     </div>
     <div class="f-field" id="variantFields"><!-- populated per product --></div>
+    <div class="f-field">
+      <label class="f-label" for="currencyB">Currency B</label>
+      <select id="currencyB"></select>
+    </div>
+    <div class="f-field">
+      <label class="f-label" for="currencyC">Currency C</label>
+      <select id="currencyC"></select>
+    </div>
     <div class="f-field f-toggle">
       <label class="toggle" id="employeeToggleWrap">
         <input type="checkbox" id="employeeToggle">
@@ -35,84 +75,234 @@
         <span class="lbl">%</span>
       </label>
     </div>
-    <div class="f-field f-zip">
-      <label class="f-label" for="zipInput">Find my state (ZIP)</label>
-      <div class="zip-row">
-        <input type="text" id="zipInput" placeholder="e.g. 94103" maxlength="5" inputmode="numeric">
-        <button id="zipBtn" class="ghost">Locate</button>
-      </div>
-    </div>
   </section>
-  <div id="zipStatus" class="status-msg" hidden></div>
 
-  <main class="layout">
-    <!-- Map card -->
-    <section class="card map-card" aria-label="Price by state map">
-      <div class="card-head">
-        <div>
-          <div class="card-title" id="mapTitle">Price by state</div>
-          <div class="card-sub" id="mapSub">Loading…</div>
+  <!-- Tab nav -->
+  <nav class="tabs" role="tablist" aria-label="Views">
+    <button class="tab on" id="tabBtn-map" role="tab" aria-selected="true" aria-controls="tab-map">🇺🇸 USA Map</button>
+    <button class="tab" id="tabBtn-world" role="tab" aria-selected="false" aria-controls="tab-world">🌎 World Prices</button>
+    <button class="tab" id="tabBtn-compare" role="tab" aria-selected="false" aria-controls="tab-compare">⇄ Compare Countries</button>
+    <button class="tab" id="tabBtn-ship" role="tab" aria-selected="false" aria-controls="tab-ship">📦 Ship &amp; Customs</button>
+    <button class="tab" id="tabBtn-taxdata" role="tab" aria-selected="false" aria-controls="tab-taxdata">⚙ Tax Data</button>
+  </nav>
+
+  <!-- ============================== TAB: USA MAP ============================== -->
+  <section id="tab-map" class="tab-panel" role="tabpanel" aria-labelledby="tabBtn-map">
+    <div class="mini-bar">
+      <label class="f-label" for="zipInput" style="margin:0;">Find my state (ZIP)</label>
+      <input type="text" id="zipInput" placeholder="e.g. 94103" maxlength="5" inputmode="numeric">
+      <button id="zipBtn" class="ghost">Locate</button>
+    </div>
+    <div id="zipStatus" class="status-msg" hidden></div>
+
+    <main class="layout">
+      <section class="card map-card" aria-label="Price by state map">
+        <div class="card-head">
+          <div>
+            <div class="card-title" id="mapTitle">Price by state</div>
+            <div class="card-sub" id="mapSub">Loading…</div>
+          </div>
+          <div class="map-view-toggle" role="group" aria-label="View mode">
+            <button class="seg on" id="viewMapBtn">Map</button>
+            <button class="seg" id="viewTableBtn">Table</button>
+          </div>
         </div>
-        <div class="map-view-toggle" role="group" aria-label="View mode">
-          <button class="seg on" id="viewMapBtn">Map</button>
-          <button class="seg" id="viewTableBtn">Table</button>
+
+        <div class="map-stage" id="mapStage">
+          <svg id="usMap" viewBox="0 0 975 610" role="img" aria-label="Choropleth map of the United States coloured by total price"></svg>
+          <div class="tooltip" id="tooltip" hidden></div>
+          <div class="map-loading" id="mapLoading">Drawing map…</div>
         </div>
-      </div>
 
-      <div class="map-stage" id="mapStage">
-        <svg id="usMap" viewBox="0 0 975 610" role="img" aria-label="Choropleth map of the United States coloured by total price"></svg>
-        <div class="tooltip" id="tooltip" hidden></div>
-        <div class="map-loading" id="mapLoading">Drawing map…</div>
-      </div>
+        <div class="legend" id="legend" aria-hidden="true">
+          <span class="legend-label" id="legendMin">–</span>
+          <div class="legend-bar" id="legendBar"></div>
+          <span class="legend-label" id="legendMax">–</span>
+        </div>
+        <div class="legend-caption" id="legendCaption">Cheaper <span class="arrow">→</span> more expensive (total price incl. sales tax)</div>
 
-      <div class="legend" id="legend" aria-hidden="true">
-        <span class="legend-label" id="legendMin">–</span>
-        <div class="legend-bar" id="legendBar"></div>
-        <span class="legend-label" id="legendMax">–</span>
-      </div>
-      <div class="legend-caption">Cheaper <span class="arrow">→</span> more expensive (total price incl. sales tax)</div>
+        <!-- Accessible data table — same values as the map, always reachable -->
+        <div class="table-wrap" id="tableWrap" hidden>
+          <table id="stateTable">
+            <thead>
+              <tr>
+                <th data-sort="state_name">State</th>
+                <th class="num-col" data-sort="tax_rate_pct">Tax rate</th>
+                <th class="num-col" data-sort="base_price">Price before tax</th>
+                <th class="num-col" data-sort="tax_amount">Tax</th>
+                <th class="num-col" data-sort="total_price">Total price</th>
+                <th class="num-col">vs. cheapest</th>
+              </tr>
+            </thead>
+            <tbody id="stateTableBody"></tbody>
+          </table>
+        </div>
+      </section>
 
-      <!-- Accessible data table — same values as the map, always reachable -->
-      <div class="table-wrap" id="tableWrap" hidden>
-        <table id="stateTable">
-          <thead>
-            <tr>
-              <th data-sort="state_name">State</th>
-              <th class="num-col" data-sort="tax_rate_pct">Tax rate</th>
-              <th class="num-col" data-sort="base_price">Price before tax</th>
-              <th class="num-col" data-sort="tax_amount">Tax</th>
-              <th class="num-col" data-sort="total_price">Total price</th>
-              <th class="num-col">vs. cheapest</th>
-            </tr>
-          </thead>
-          <tbody id="stateTableBody"></tbody>
-        </table>
+      <aside class="sidebar">
+        <div class="card">
+          <div class="card-title small">Summary</div>
+          <div class="stat-row" id="statRow"></div>
+        </div>
+        <div class="card">
+          <div class="card-title small">5 cheapest states</div>
+          <ol class="rank-list" id="cheapList"></ol>
+        </div>
+        <div class="card">
+          <div class="card-title small">5 most expensive states</div>
+          <ol class="rank-list" id="pricyList"></ol>
+        </div>
+      </aside>
+    </main>
+
+    <div class="status-msg info">Domestic scope: Apple's US list price is the same nationwide, so the map shades states purely by sales tax.</div>
+  </section>
+
+  <!-- ============================== TAB: WORLD PRICES ============================== -->
+  <section id="tab-world" class="tab-panel" role="tabpanel" aria-labelledby="tabBtn-world" hidden>
+    <section class="card" style="margin-bottom:14px;">
+      <div class="controls-row">
+        <div class="f-field">
+          <label class="f-label" for="sortSelect">Sort by</label>
+          <select id="sortSelect">
+            <option value="effective">Cheapest effective price first</option>
+            <option value="local">Country name (A–Z)</option>
+            <option value="tax">Tax rate</option>
+          </select>
+        </div>
+        <label class="toggle" id="touristToggleWrap">
+          <input type="checkbox" id="touristToggle">
+          <span class="lbl">I'm a tourist — apply airport VAT/GST refund where available</span>
+        </label>
       </div>
     </section>
 
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="card">
-        <div class="card-title small">Summary</div>
-        <div class="stat-row" id="statRow"></div>
-      </div>
+    <main class="layout">
+      <section class="card" aria-label="Price by country">
+        <div class="card-head">
+          <div>
+            <div class="card-title" id="worldTitle">Price by country</div>
+            <div class="card-sub">Hover a coloured country for its breakdown — or switch to the table to edit a price</div>
+          </div>
+          <div class="map-view-toggle" role="group" aria-label="View mode">
+            <button class="seg on" id="viewWorldMapBtn">Map</button>
+            <button class="seg" id="viewWorldTableBtn">Table</button>
+          </div>
+        </div>
 
-      <div class="card">
-        <div class="card-title small">5 cheapest states</div>
-        <ol class="rank-list" id="cheapList"></ol>
-      </div>
+        <div class="map-stage" id="worldMapStage">
+          <svg id="worldMap" viewBox="0 0 960 500" role="img" aria-label="World map coloured by total price in the countries this tool tracks"></svg>
+          <div class="tooltip" id="worldTooltip" hidden></div>
+          <div class="map-loading" id="worldMapLoading">Drawing map…</div>
+        </div>
+        <div class="legend" id="worldLegend">
+          <span class="legend-label" id="worldLegendMin">–</span>
+          <div class="legend-bar"></div>
+          <span class="legend-label" id="worldLegendMax">–</span>
+        </div>
+        <div class="legend-caption" id="worldLegendCaption">Cheaper <span class="arrow">→</span> more expensive · grey = not tracked here</div>
 
-      <div class="card">
-        <div class="card-title small">5 most expensive states</div>
-        <ol class="rank-list" id="pricyList"></ol>
+        <div class="table-wrap" id="worldTableWrap" hidden>
+          <table id="worldTable">
+            <thead>
+              <tr>
+                <th>Country</th>
+                <th class="num-col">Local list price</th>
+                <th class="num-col">Tax</th>
+                <th class="num-col">Ex-tax</th>
+                <th>Tourist refund</th>
+                <th class="num-col" id="colFinalHead">Price you'd pay</th>
+                <th class="num-col" id="colBHead">Currency B</th>
+                <th class="num-col" id="colCHead">Currency C</th>
+                <th class="num-col">vs. cheapest</th>
+              </tr>
+            </thead>
+            <tbody id="worldTableBody"></tbody>
+          </table>
+
+          <div class="card-title small" style="margin-top:20px;">Effective price, side by side</div>
+          <div class="bars" id="barChart"></div>
+        </div>
+      </section>
+
+      <aside class="sidebar">
+        <div class="card">
+          <div class="card-title small">Summary</div>
+          <div class="stat-row" id="worldStatRow"></div>
+        </div>
+      </aside>
+    </main>
+  </section>
+
+  <!-- ============================== TAB: COMPARE COUNTRIES ============================== -->
+  <section id="tab-compare" class="tab-panel" role="tabpanel" aria-labelledby="tabBtn-compare" hidden>
+    <section class="card">
+      <div class="card-title">Country vs. country vs. country</div>
+      <div class="card-sub" style="margin-bottom:16px;">Three independent scenarios side by side — different tax, discount and tourist settings per column, same product.</div>
+      <div class="compare-grid" id="compareGrid"></div>
+    </section>
+  </section>
+
+  <!-- ============================== TAB: SHIP & CUSTOMS ============================== -->
+  <section id="tab-ship" class="tab-panel" role="tabpanel" aria-labelledby="tabBtn-ship" hidden>
+    <section class="card">
+      <div class="card-title">Buy locally, ship elsewhere</div>
+      <div class="card-sub" style="margin-bottom:16px;">Model buying in one country and shipping or carrying it to another.</div>
+      <div class="controls-row three">
+        <div class="f-field">
+          <label class="f-label" for="shipFrom">Buy in</label>
+          <select id="shipFrom"></select>
+        </div>
+        <div class="f-field">
+          <label class="f-label" for="shipTo">Ship / bring to</label>
+          <select id="shipTo"></select>
+        </div>
+        <div class="f-field">
+          <label class="f-label" for="shipCost">Shipping cost (buy-in local currency)</label>
+          <input type="number" id="shipCost" value="0" min="0">
+        </div>
+        <div class="f-field">
+          <label class="f-label" for="customsPct">Destination customs / import duty (%)</label>
+          <input type="number" id="customsPct" value="0" min="0" step="0.5">
+        </div>
       </div>
-    </aside>
-  </main>
+      <div class="stat-row three" id="shipStatRow" style="margin-top:18px;"></div>
+      <div class="status-msg info" style="margin-top:14px;">The buy-country's tax, tourist refund and employee discount settings apply here too — set them in the World Prices tab. Customs is a flat estimate on the item's value; real duty depends on the destination's rules and how the parcel is declared.</div>
+    </section>
+  </section>
+
+  <!-- ============================== TAB: TAX DATA ============================== -->
+  <section id="tab-taxdata" class="tab-panel" role="tabpanel" aria-labelledby="tabBtn-taxdata" hidden>
+    <section class="card">
+      <div class="card-title">Country tax &amp; refund assumptions</div>
+      <div class="card-sub" style="margin-bottom:16px;">Edit tax rates, FX rates, refund eligibility — changes apply live to every other tab.</div>
+      <div class="table-wrap">
+        <table id="assumptionsTable">
+          <thead>
+            <tr>
+              <th>Country</th><th class="num-col">Tax rate</th><th>Tax name</th>
+              <th class="num-col">FX (units per US$1)</th><th>Tourist refund?</th>
+              <th class="num-col">Refund recovery</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="assumptionsBody"></tbody>
+        </table>
+      </div>
+      <div class="add-country-row">
+        <input type="text" id="newCountryName" placeholder="Country name">
+        <input type="text" id="newCountryCode" placeholder="Currency code, e.g. MXN" style="max-width:150px;">
+        <input type="number" id="newCountryTax" placeholder="Tax %" style="max-width:100px;">
+        <input type="number" id="newCountryFx" placeholder="FX per US$1" style="max-width:130px;">
+        <button id="addCountryBtn">Add country</button>
+        <button class="ghost" id="resetBtn">Reset all edits</button>
+      </div>
+    </section>
+  </section>
 
   <footer>
-    <p><strong>How the numbers work:</strong> total price = (product list price − employee discount, if applied) × (1 + the state's approximate combined sales tax rate). Apple's US list price is the same nationwide — the only thing that changes by state is sales tax, so that's what the map is shading.</p>
-    <p>Tax rates are approximate combined state + average local sales tax, sourced alongside the rest of the pricing model in <code>apple_price_data.py</code>. Actual city/county add-ons vary within a state — treat this as a planning estimate, not a receipt.</p>
-    <p>Static, single-page site — data comes from <code>data.json</code> (generated by the Python module) at load time. Nothing is sent anywhere; everything runs in your browser.</p>
+    <p><strong>How the numbers work:</strong> ex-tax price = local list price ÷ (1 + tax rate). Employee discount is a flat % off the list price. Tourist refund cash-back = (tax portion of what you actually paid) × the country's refund recovery rate. Shipping totals add a flat shipping cost and a destination customs % on top of the buy-in country's final price.</p>
+    <p>Seed prices are approximate — converted for other countries using FX × local tax × a typical regional pricing premium. Replace any cell with the real local price once you've checked the local Apple Store site. Live cross-border fetching from apple.com is blocked by browsers' cross-origin (CORS) rules for a static page like this one.</p>
+    <p>Static, single-page site — data comes from <code>data.json</code> (generated by <code>apple_price_data.py</code>) at load time. Nothing is sent anywhere; everything resets on reload.</p>
   </footer>
 
 </div>
