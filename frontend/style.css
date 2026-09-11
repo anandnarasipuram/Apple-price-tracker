@@ -210,6 +210,15 @@ button.ghost:active{ box-shadow:var(--clay-pressed); transform:translateY(0); }
   background:var(--surface-1); border-radius:var(--radius);
   padding:20px 22px; box-shadow:var(--clay-raised);
 }
+
+/* Phones: claw back padding on every side so the map itself gets much more
+   room — at the default padding the USA/World maps were rendering under
+   300px wide, too small to make out individual states/countries. */
+@media (max-width:480px){
+  .wrap{ padding:16px 10px 40px; }
+  .card, .link-card, .filter-bar{ padding:14px 14px; }
+  .compare-card{ padding:14px; }
+}
 .sidebar{ display:flex; flex-direction:column; gap:16px; }
 .card-title{ font-family:var(--font-display); font-weight:600; font-size:17px; }
 .card-title.small{ font-size:14px; margin-bottom:12px; }

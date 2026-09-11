@@ -99,7 +99,10 @@ const CURRENCIES = [
   { code:'CAD', label:'Canadian Dollar (CAD)', per_usd:1.38 },
 ];
 
-const TAB_IDS = ['map', 'world', 'compare', 'ship', 'taxdata'];
+// 'ship' (Ship & Customs) is intentionally excluded — its tab button was
+// removed from the UI, but the tab-ship section, its data, and its render
+// function are left in place in case it's wanted back later.
+const TAB_IDS = ['world', 'map', 'compare', 'taxdata'];
 
 // ------------------------------------------------------------------
 // State
@@ -230,6 +233,25 @@ function convertUsd(usdValue, code){ return usdValue * currencyRate(code); }
 function fmtCur(value, currencyCode){
   try{ return new Intl.NumberFormat('en-US', { style:'currency', currency: currencyCode, maximumFractionDigits: 0 }).format(value); }
   catch(e){ return currencyCode + ' ' + Math.round(value).toLocaleString(); }
+}
+
+// Places a tooltip at (x, y) relative to its stage, then nudges it back onscreen
+// if the default centered position would run off the left/right/top edge of the
+// viewport — the default CSS centers it on the pointer, which clips badly on
+// narrow phone screens for marks near the map's edges (e.g. California, Maine).
+function positionTooltipClamped(tt, x, y){
+  const margin = 10;
+  tt.style.transform = '';
+  tt.style.left = x + 'px';
+  tt.style.top = y + 'px';
+  const rect = tt.getBoundingClientRect();
+  let shiftX = 0, shiftY = 0;
+  if (rect.left < margin) shiftX = margin - rect.left;
+  else if (rect.right > window.innerWidth - margin) shiftX = (window.innerWidth - margin) - rect.right;
+  if (rect.top < margin) shiftY = margin - rect.top; // flips below the pointer instead of above
+  if (shiftX !== 0 || shiftY !== 0){
+    tt.style.transform = `translate(calc(-50% + ${shiftX}px), calc(-100% - 12px + ${shiftY}px))`;
+  }
 }
 
 // ------------------------------------------------------------------
@@ -395,8 +417,7 @@ function onStateHover(e){
     x = box.left + box.width/2 - stageBox.left;
     y = box.top - stageBox.top;
   }
-  tt.style.left = x + 'px';
-  tt.style.top = y + 'px';
+  positionTooltipClamped(tt, x, y);
 }
 function onStateLeave(e){
   e.target.classList.remove('hovered');
@@ -514,8 +535,7 @@ function onCountryHover(e){
     x = box.left + box.width/2 - stageBox.left;
     y = box.top - stageBox.top;
   }
-  tt.style.left = x + 'px';
-  tt.style.top = y + 'px';
+  positionTooltipClamped(tt, x, y);
 }
 function onCountryLeave(e){
   e.target.classList.remove('hovered');
@@ -861,6 +881,16 @@ function addProductToCatalog(name, cat, usd){
 // Wiring
 // ------------------------------------------------------------------
 function wireEvents(){
+  // Touch devices have no pointer to "leave" with after a tap, so a map
+  // tooltip can otherwise get stuck open, covering content — dismiss both
+  // tooltips on any tap/click that lands outside a map mark.
+  document.addEventListener('pointerdown', e => {
+    if (!e.target.closest('.map-path')){
+      $('tooltip').hidden = true;
+      $('worldTooltip').hidden = true;
+    }
+  });
+
   $('productSelect').addEventListener('change', e => {
     currentProductId = e.target.value;
     selectedVariant = defaultVariantSelection(getProduct(currentProductId));

@@ -79,84 +79,11 @@
 
   <!-- Tab nav -->
   <nav class="tabs" role="tablist" aria-label="Views">
-    <button class="tab on" id="tabBtn-map" role="tab" aria-selected="true" aria-controls="tab-map">🇺🇸 USA Map</button>
     <button class="tab" id="tabBtn-world" role="tab" aria-selected="false" aria-controls="tab-world">🌎 World Prices</button>
+    <button class="tab on" id="tabBtn-map" role="tab" aria-selected="true" aria-controls="tab-map">🇺🇸 USA Map</button>
     <button class="tab" id="tabBtn-compare" role="tab" aria-selected="false" aria-controls="tab-compare">⇄ Compare Countries</button>
-    <button class="tab" id="tabBtn-ship" role="tab" aria-selected="false" aria-controls="tab-ship">📦 Ship &amp; Customs</button>
     <button class="tab" id="tabBtn-taxdata" role="tab" aria-selected="false" aria-controls="tab-taxdata">⚙ Tax Data</button>
   </nav>
-
-  <!-- ============================== TAB: USA MAP ============================== -->
-  <section id="tab-map" class="tab-panel" role="tabpanel" aria-labelledby="tabBtn-map">
-    <div class="mini-bar">
-      <label class="f-label" for="zipInput" style="margin:0;">Find my state (ZIP)</label>
-      <input type="text" id="zipInput" placeholder="e.g. 94103" maxlength="5" inputmode="numeric">
-      <button id="zipBtn" class="ghost">Locate</button>
-    </div>
-    <div id="zipStatus" class="status-msg" hidden></div>
-
-    <main class="layout">
-      <section class="card map-card" aria-label="Price by state map">
-        <div class="card-head">
-          <div>
-            <div class="card-title" id="mapTitle">Price by state</div>
-            <div class="card-sub" id="mapSub">Loading…</div>
-          </div>
-          <div class="map-view-toggle" role="group" aria-label="View mode">
-            <button class="seg on" id="viewMapBtn">Map</button>
-            <button class="seg" id="viewTableBtn">Table</button>
-          </div>
-        </div>
-
-        <div class="map-stage" id="mapStage">
-          <svg id="usMap" viewBox="0 0 975 610" role="img" aria-label="Choropleth map of the United States coloured by total price"></svg>
-          <div class="tooltip" id="tooltip" hidden></div>
-          <div class="map-loading" id="mapLoading">Drawing map…</div>
-        </div>
-
-        <div class="legend" id="legend" aria-hidden="true">
-          <span class="legend-label" id="legendMin">–</span>
-          <div class="legend-bar" id="legendBar"></div>
-          <span class="legend-label" id="legendMax">–</span>
-        </div>
-        <div class="legend-caption" id="legendCaption">Cheaper <span class="arrow">→</span> more expensive (total price incl. sales tax)</div>
-
-        <!-- Accessible data table — same values as the map, always reachable -->
-        <div class="table-wrap" id="tableWrap" hidden>
-          <table id="stateTable">
-            <thead>
-              <tr>
-                <th data-sort="state_name">State</th>
-                <th class="num-col" data-sort="tax_rate_pct">Tax rate</th>
-                <th class="num-col" data-sort="base_price">Price before tax</th>
-                <th class="num-col" data-sort="tax_amount">Tax</th>
-                <th class="num-col" data-sort="total_price">Total price</th>
-                <th class="num-col">vs. cheapest</th>
-              </tr>
-            </thead>
-            <tbody id="stateTableBody"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <aside class="sidebar">
-        <div class="card">
-          <div class="card-title small">Summary</div>
-          <div class="stat-row" id="statRow"></div>
-        </div>
-        <div class="card">
-          <div class="card-title small">5 cheapest states</div>
-          <ol class="rank-list" id="cheapList"></ol>
-        </div>
-        <div class="card">
-          <div class="card-title small">5 most expensive states</div>
-          <ol class="rank-list" id="pricyList"></ol>
-        </div>
-      </aside>
-    </main>
-
-    <div class="status-msg info">Domestic scope: Apple's US list price is the same nationwide, so the map shades states purely by sales tax.</div>
-  </section>
 
   <!-- ============================== TAB: WORLD PRICES ============================== -->
   <section id="tab-world" class="tab-panel" role="tabpanel" aria-labelledby="tabBtn-world" hidden>
@@ -232,6 +159,78 @@
         </div>
       </aside>
     </main>
+  </section>
+
+  <!-- ============================== TAB: USA MAP ============================== -->
+  <section id="tab-map" class="tab-panel" role="tabpanel" aria-labelledby="tabBtn-map">
+    <div class="mini-bar">
+      <label class="f-label" for="zipInput" style="margin:0;">Find my state (ZIP)</label>
+      <input type="text" id="zipInput" placeholder="e.g. 94103" maxlength="5" inputmode="numeric">
+      <button id="zipBtn" class="ghost">Locate</button>
+    </div>
+    <div id="zipStatus" class="status-msg" hidden></div>
+
+    <main class="layout">
+      <section class="card map-card" aria-label="Price by state map">
+        <div class="card-head">
+          <div>
+            <div class="card-title" id="mapTitle">Price by state</div>
+            <div class="card-sub" id="mapSub">Loading…</div>
+          </div>
+          <div class="map-view-toggle" role="group" aria-label="View mode">
+            <button class="seg on" id="viewMapBtn">Map</button>
+            <button class="seg" id="viewTableBtn">Table</button>
+          </div>
+        </div>
+
+        <div class="map-stage" id="mapStage">
+          <svg id="usMap" viewBox="0 0 975 610" role="img" aria-label="Choropleth map of the United States coloured by total price"></svg>
+          <div class="tooltip" id="tooltip" hidden></div>
+          <div class="map-loading" id="mapLoading">Drawing map…</div>
+        </div>
+
+        <div class="legend" id="legend" aria-hidden="true">
+          <span class="legend-label" id="legendMin">–</span>
+          <div class="legend-bar" id="legendBar"></div>
+          <span class="legend-label" id="legendMax">–</span>
+        </div>
+        <div class="legend-caption" id="legendCaption">Cheaper <span class="arrow">→</span> more expensive (total price incl. sales tax)</div>
+
+        <!-- Accessible data table — same values as the map, always reachable -->
+        <div class="table-wrap" id="tableWrap" hidden>
+          <table id="stateTable">
+            <thead>
+              <tr>
+                <th data-sort="state_name">State</th>
+                <th class="num-col" data-sort="tax_rate_pct">Tax rate</th>
+                <th class="num-col" data-sort="base_price">Price before tax</th>
+                <th class="num-col" data-sort="tax_amount">Tax</th>
+                <th class="num-col" data-sort="total_price">Total price</th>
+                <th class="num-col">vs. cheapest</th>
+              </tr>
+            </thead>
+            <tbody id="stateTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <aside class="sidebar">
+        <div class="card">
+          <div class="card-title small">Summary</div>
+          <div class="stat-row" id="statRow"></div>
+        </div>
+        <div class="card">
+          <div class="card-title small">5 cheapest states</div>
+          <ol class="rank-list" id="cheapList"></ol>
+        </div>
+        <div class="card">
+          <div class="card-title small">5 most expensive states</div>
+          <ol class="rank-list" id="pricyList"></ol>
+        </div>
+      </aside>
+    </main>
+
+    <div class="status-msg info">Domestic scope: Apple's US list price is the same nationwide, so the map shades states purely by sales tax.</div>
   </section>
 
   <!-- ============================== TAB: COMPARE COUNTRIES ============================== -->
