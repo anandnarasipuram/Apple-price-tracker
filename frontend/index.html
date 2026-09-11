@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Apple Price Map — 50 States</title>
+<meta name="description" content="Interactive map of what an Apple product actually costs, state by state, once sales tax is added.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <div class="title">Apple Price <span>Map</span></div>
+      <div class="sub">What you'd actually pay for an Apple product, state by state — list price plus sales tax, colour-coded from cheapest to priciest.</div>
+    </div>
+    <button class="theme-btn" id="themeBtn" aria-label="Toggle dark or light theme">🌙 Dark</button>
+  </header>
+
+  <!-- Filter row — one row, above everything it scopes -->
+  <section class="filter-bar" aria-label="Filters">
+    <div class="f-field">
+      <label class="f-label" for="productSelect">Product</label>
+      <select id="productSelect"></select>
+    </div>
+    <div class="f-field" id="variantFields"><!-- populated per product --></div>
+    <div class="f-field f-toggle">
+      <label class="toggle" id="employeeToggleWrap">
+        <input type="checkbox" id="employeeToggle">
+        <span class="lbl">Employee discount</span>
+        <input type="number" class="pct" id="employeePct" value="15" min="0" max="50" step="1">
+        <span class="lbl">%</span>
+      </label>
+    </div>
+    <div class="f-field f-zip">
+      <label class="f-label" for="zipInput">Find my state (ZIP)</label>
+      <div class="zip-row">
+        <input type="text" id="zipInput" placeholder="e.g. 94103" maxlength="5" inputmode="numeric">
+        <button id="zipBtn" class="ghost">Locate</button>
+      </div>
+    </div>
+  </section>
+  <div id="zipStatus" class="status-msg" hidden></div>
+
+  <main class="layout">
+    <!-- Map card -->
+    <section class="card map-card" aria-label="Price by state map">
+      <div class="card-head">
+        <div>
+          <div class="card-title" id="mapTitle">Price by state</div>
+          <div class="card-sub" id="mapSub">Loading…</div>
+        </div>
+        <div class="map-view-toggle" role="group" aria-label="View mode">
+          <button class="seg on" id="viewMapBtn">Map</button>
+          <button class="seg" id="viewTableBtn">Table</button>
+        </div>
+      </div>
+
+      <div class="map-stage" id="mapStage">
+        <svg id="usMap" viewBox="0 0 975 610" role="img" aria-label="Choropleth map of the United States coloured by total price"></svg>
+        <div class="tooltip" id="tooltip" hidden></div>
+        <div class="map-loading" id="mapLoading">Drawing map…</div>
+      </div>
+
+      <div class="legend" id="legend" aria-hidden="true">
+        <span class="legend-label" id="legendMin">–</span>
+        <div class="legend-bar" id="legendBar"></div>
+        <span class="legend-label" id="legendMax">–</span>
+      </div>
+      <div class="legend-caption">Cheaper <span class="arrow">→</span> more expensive (total price incl. sales tax)</div>
+
+      <!-- Accessible data table — same values as the map, always reachable -->
+      <div class="table-wrap" id="tableWrap" hidden>
+        <table id="stateTable">
+          <thead>
+            <tr>
+              <th data-sort="state_name">State</th>
+              <th class="num-col" data-sort="tax_rate_pct">Tax rate</th>
+              <th class="num-col" data-sort="base_price">Price before tax</th>
+              <th class="num-col" data-sort="tax_amount">Tax</th>
+              <th class="num-col" data-sort="total_price">Total price</th>
+              <th class="num-col">vs. cheapest</th>
+            </tr>
+          </thead>
+          <tbody id="stateTableBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="card">
+        <div class="card-title small">Summary</div>
+        <div class="stat-row" id="statRow"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-title small">5 cheapest states</div>
+        <ol class="rank-list" id="cheapList"></ol>
+      </div>
+
+      <div class="card">
+        <div class="card-title small">5 most expensive states</div>
+        <ol class="rank-list" id="pricyList"></ol>
+      </div>
+    </aside>
+  </main>
+
+  <footer>
+    <p><strong>How the numbers work:</strong> total price = (product list price − employee discount, if applied) × (1 + the state's approximate combined sales tax rate). Apple's US list price is the same nationwide — the only thing that changes by state is sales tax, so that's what the map is shading.</p>
+    <p>Tax rates are approximate combined state + average local sales tax, sourced alongside the rest of the pricing model in <code>apple_price_data.py</code>. Actual city/county add-ons vary within a state — treat this as a planning estimate, not a receipt.</p>
+    <p>Static, single-page site — data comes from <code>data.json</code> (generated by the Python module) at load time. Nothing is sent anywhere; everything runs in your browser.</p>
+  </footer>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3/dist/topojson-client.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,688 @@
+{
+  "products": [
+    {
+      "id": "ip17",
+      "name": "iPhone 17",
+      "cat": "iPhone",
+      "usd": 799,
+      "variants": {
+        "storage": [
+          {
+            "id": "256",
+            "label": "256GB",
+            "delta": 0
+          },
+          {
+            "id": "512",
+            "label": "512GB",
+            "delta": 200
+          }
+        ]
+      }
+    },
+    {
+      "id": "ipair",
+      "name": "iPhone Air",
+      "cat": "iPhone",
+      "usd": 999,
+      "variants": {
+        "storage": [
+          {
+            "id": "256",
+            "label": "256GB",
+            "delta": 0
+          },
+          {
+            "id": "512",
+            "label": "512GB",
+            "delta": 200
+          },
+          {
+            "id": "1tb",
+            "label": "1TB",
+            "delta": 400
+          }
+        ]
+      }
+    },
+    {
+      "id": "ip17pro",
+      "name": "iPhone 17 Pro",
+      "cat": "iPhone",
+      "usd": 1099,
+      "variants": {
+        "storage": [
+          {
+            "id": "256",
+            "label": "256GB",
+            "delta": 0
+          },
+          {
+            "id": "512",
+            "label": "512GB",
+            "delta": 200
+          },
+          {
+            "id": "1tb",
+            "label": "1TB",
+            "delta": 400
+          }
+        ]
+      }
+    },
+    {
+      "id": "ip17pm",
+      "name": "iPhone 17 Pro Max",
+      "cat": "iPhone",
+      "usd": 1199,
+      "variants": {
+        "storage": [
+          {
+            "id": "256",
+            "label": "256GB",
+            "delta": 0
+          },
+          {
+            "id": "512",
+            "label": "512GB",
+            "delta": 200
+          },
+          {
+            "id": "1tb",
+            "label": "1TB",
+            "delta": 400
+          },
+          {
+            "id": "2tb",
+            "label": "2TB",
+            "delta": 600
+          }
+        ]
+      }
+    },
+    {
+      "id": "ipad",
+      "name": "iPad (A16)",
+      "cat": "iPad",
+      "usd": 449,
+      "variants": {
+        "storage": [
+          {
+            "id": "128",
+            "label": "128GB",
+            "delta": 0
+          },
+          {
+            "id": "256",
+            "label": "256GB",
+            "delta": 150
+          }
+        ]
+      }
+    },
+    {
+      "id": "ipadair",
+      "name": "iPad Air",
+      "cat": "iPad",
+      "usd": 749,
+      "variants": {
+        "size": [
+          {
+            "id": "11",
+            "label": "11-inch",
+            "delta": 0
+          },
+          {
+            "id": "13",
+            "label": "13-inch",
+            "delta": 200
+          }
+        ],
+        "storage": [
+          {
+            "id": "128",
+            "label": "128GB",
+            "delta": 0
+          },
+          {
+            "id": "256",
+            "label": "256GB",
+            "delta": 100
+          },
+          {
+            "id": "512",
+            "label": "512GB",
+            "delta": 300
+          }
+        ]
+      }
+    },
+    {
+      "id": "ipadpro",
+      "name": "iPad Pro",
+      "cat": "iPad",
+      "usd": 1199,
+      "variants": {
+        "size": [
+          {
+            "id": "11",
+            "label": "11-inch",
+            "delta": 0
+          },
+          {
+            "id": "13",
+            "label": "13-inch",
+            "delta": 200
+          }
+        ],
+        "storage": [
+          {
+            "id": "256",
+            "label": "256GB",
+            "delta": 0
+          },
+          {
+            "id": "512",
+            "label": "512GB",
+            "delta": 200
+          },
+          {
+            "id": "1tb",
+            "label": "1TB",
+            "delta": 400
+          },
+          {
+            "id": "2tb",
+            "label": "2TB",
+            "delta": 800
+          }
+        ]
+      }
+    },
+    {
+      "id": "mba",
+      "name": "MacBook Air (M4)",
+      "cat": "Mac",
+      "usd": 999,
+      "variants": {
+        "storage": [
+          {
+            "id": "256",
+            "label": "256GB",
+            "delta": 0
+          },
+          {
+            "id": "512",
+            "label": "512GB",
+            "delta": 200
+          },
+          {
+            "id": "1tb",
+            "label": "1TB",
+            "delta": 400
+          }
+        ]
+      }
+    },
+    {
+      "id": "mbp",
+      "name": "MacBook Pro 14\" (M5)",
+      "cat": "Mac",
+      "usd": 1599,
+      "variants": {
+        "storage": [
+          {
+            "id": "512",
+            "label": "512GB",
+            "delta": 0
+          },
+          {
+            "id": "1tb",
+            "label": "1TB",
+            "delta": 200
+          },
+          {
+            "id": "2tb",
+            "label": "2TB",
+            "delta": 600
+          }
+        ]
+      }
+    },
+    {
+      "id": "watch",
+      "name": "Apple Watch Series 11",
+      "cat": "Watch",
+      "usd": 399,
+      "variants": {
+        "size": [
+          {
+            "id": "41",
+            "label": "41mm",
+            "delta": 0
+          },
+          {
+            "id": "45",
+            "label": "45mm",
+            "delta": 30
+          }
+        ],
+        "cellular": [
+          {
+            "id": "gps",
+            "label": "GPS",
+            "delta": 0
+          },
+          {
+            "id": "cell",
+            "label": "GPS + Cellular",
+            "delta": 100
+          }
+        ]
+      }
+    },
+    {
+      "id": "airpods",
+      "name": "AirPods Pro 3",
+      "cat": "Audio",
+      "usd": 249,
+      "variants": {}
+    }
+  ],
+  "us_states": [
+    {
+      "code": "AL",
+      "name": "Alabama",
+      "tax_rate_pct": 9.29
+    },
+    {
+      "code": "AK",
+      "name": "Alaska",
+      "tax_rate_pct": 1.76
+    },
+    {
+      "code": "AZ",
+      "name": "Arizona",
+      "tax_rate_pct": 8.4
+    },
+    {
+      "code": "AR",
+      "name": "Arkansas",
+      "tax_rate_pct": 9.45
+    },
+    {
+      "code": "CA",
+      "name": "California",
+      "tax_rate_pct": 8.82
+    },
+    {
+      "code": "CO",
+      "name": "Colorado",
+      "tax_rate_pct": 7.81
+    },
+    {
+      "code": "CT",
+      "name": "Connecticut",
+      "tax_rate_pct": 6.35
+    },
+    {
+      "code": "DE",
+      "name": "Delaware",
+      "tax_rate_pct": 0
+    },
+    {
+      "code": "FL",
+      "name": "Florida",
+      "tax_rate_pct": 7.02
+    },
+    {
+      "code": "GA",
+      "name": "Georgia",
+      "tax_rate_pct": 7.4
+    },
+    {
+      "code": "HI",
+      "name": "Hawaii",
+      "tax_rate_pct": 4.5
+    },
+    {
+      "code": "ID",
+      "name": "Idaho",
+      "tax_rate_pct": 6.03
+    },
+    {
+      "code": "IL",
+      "name": "Illinois",
+      "tax_rate_pct": 8.86
+    },
+    {
+      "code": "IN",
+      "name": "Indiana",
+      "tax_rate_pct": 7.0
+    },
+    {
+      "code": "IA",
+      "name": "Iowa",
+      "tax_rate_pct": 6.94
+    },
+    {
+      "code": "KS",
+      "name": "Kansas",
+      "tax_rate_pct": 8.7
+    },
+    {
+      "code": "KY",
+      "name": "Kentucky",
+      "tax_rate_pct": 6.0
+    },
+    {
+      "code": "LA",
+      "name": "Louisiana",
+      "tax_rate_pct": 9.55
+    },
+    {
+      "code": "ME",
+      "name": "Maine",
+      "tax_rate_pct": 5.5
+    },
+    {
+      "code": "MD",
+      "name": "Maryland",
+      "tax_rate_pct": 6.0
+    },
+    {
+      "code": "MA",
+      "name": "Massachusetts",
+      "tax_rate_pct": 6.25
+    },
+    {
+      "code": "MI",
+      "name": "Michigan",
+      "tax_rate_pct": 6.0
+    },
+    {
+      "code": "MN",
+      "name": "Minnesota",
+      "tax_rate_pct": 7.49
+    },
+    {
+      "code": "MS",
+      "name": "Mississippi",
+      "tax_rate_pct": 7.07
+    },
+    {
+      "code": "MO",
+      "name": "Missouri",
+      "tax_rate_pct": 8.29
+    },
+    {
+      "code": "MT",
+      "name": "Montana",
+      "tax_rate_pct": 0
+    },
+    {
+      "code": "NE",
+      "name": "Nebraska",
+      "tax_rate_pct": 6.94
+    },
+    {
+      "code": "NV",
+      "name": "Nevada",
+      "tax_rate_pct": 8.23
+    },
+    {
+      "code": "NH",
+      "name": "New Hampshire",
+      "tax_rate_pct": 0
+    },
+    {
+      "code": "NJ",
+      "name": "New Jersey",
+      "tax_rate_pct": 6.6
+    },
+    {
+      "code": "NM",
+      "name": "New Mexico",
+      "tax_rate_pct": 7.72
+    },
+    {
+      "code": "NY",
+      "name": "New York",
+      "tax_rate_pct": 8.53
+    },
+    {
+      "code": "NC",
+      "name": "North Carolina",
+      "tax_rate_pct": 6.98
+    },
+    {
+      "code": "ND",
+      "name": "North Dakota",
+      "tax_rate_pct": 6.96
+    },
+    {
+      "code": "OH",
+      "name": "Ohio",
+      "tax_rate_pct": 7.24
+    },
+    {
+      "code": "OK",
+      "name": "Oklahoma",
+      "tax_rate_pct": 8.98
+    },
+    {
+      "code": "OR",
+      "name": "Oregon",
+      "tax_rate_pct": 0
+    },
+    {
+      "code": "PA",
+      "name": "Pennsylvania",
+      "tax_rate_pct": 6.34
+    },
+    {
+      "code": "RI",
+      "name": "Rhode Island",
+      "tax_rate_pct": 7.0
+    },
+    {
+      "code": "SC",
+      "name": "South Carolina",
+      "tax_rate_pct": 7.46
+    },
+    {
+      "code": "SD",
+      "name": "South Dakota",
+      "tax_rate_pct": 6.11
+    },
+    {
+      "code": "TN",
+      "name": "Tennessee",
+      "tax_rate_pct": 9.55
+    },
+    {
+      "code": "TX",
+      "name": "Texas",
+      "tax_rate_pct": 8.2
+    },
+    {
+      "code": "UT",
+      "name": "Utah",
+      "tax_rate_pct": 7.19
+    },
+    {
+      "code": "VT",
+      "name": "Vermont",
+      "tax_rate_pct": 6.24
+    },
+    {
+      "code": "VA",
+      "name": "Virginia",
+      "tax_rate_pct": 5.75
+    },
+    {
+      "code": "WA",
+      "name": "Washington",
+      "tax_rate_pct": 9.29
+    },
+    {
+      "code": "WV",
+      "name": "West Virginia",
+      "tax_rate_pct": 6.5
+    },
+    {
+      "code": "WI",
+      "name": "Wisconsin",
+      "tax_rate_pct": 5.43
+    },
+    {
+      "code": "WY",
+      "name": "Wyoming",
+      "tax_rate_pct": 5.44
+    },
+    {
+      "code": "DC",
+      "name": "Washington DC",
+      "tax_rate_pct": 6.0
+    },
+    {
+      "code": "PR",
+      "name": "Puerto Rico",
+      "tax_rate_pct": 11.5
+    }
+  ],
+  "countries": [
+    {
+      "code": "US",
+      "name": "United States",
+      "flag": "\ud83c\uddfa\ud83c\uddf8",
+      "currency": "USD",
+      "fx": 1,
+      "tax_rate": 0.0,
+      "tax_name": "Sales tax (varies, excluded)",
+      "premium": 1.0,
+      "refund": null,
+      "note": "No national VAT; local sales tax added at register. Look up by ZIP."
+    },
+    {
+      "code": "DE",
+      "name": "Germany",
+      "flag": "\ud83c\udde9\ud83c\uddea",
+      "currency": "EUR",
+      "fx": 0.86,
+      "tax_rate": 0.19,
+      "tax_name": "VAT",
+      "premium": 1.05,
+      "refund": 0.8,
+      "note": "Non-EU visitors can reclaim VAT (Global Blue / Planet) when leaving the EU."
+    },
+    {
+      "code": "GB",
+      "name": "United Kingdom",
+      "flag": "\ud83c\uddec\ud83c\udde7",
+      "currency": "GBP",
+      "fx": 0.75,
+      "tax_rate": 0.2,
+      "tax_name": "VAT",
+      "premium": 1.03,
+      "refund": null,
+      "note": "Tourist VAT refund scheme was abolished in 2021."
+    },
+    {
+      "code": "CH",
+      "name": "Switzerland",
+      "flag": "\ud83c\udde8\ud83c\udded",
+      "currency": "CHF",
+      "fx": 0.8,
+      "tax_rate": 0.081,
+      "tax_name": "VAT",
+      "premium": 1.08,
+      "refund": 0.85,
+      "note": "Refund available above a minimum receipt value, claimed at the border."
+    },
+    {
+      "code": "AE",
+      "name": "UAE",
+      "flag": "\ud83c\udde6\ud83c\uddea",
+      "currency": "AED",
+      "fx": 3.67,
+      "tax_rate": 0.05,
+      "tax_name": "VAT",
+      "premium": 1.0,
+      "refund": 0.85,
+      "note": "Planet Tax Free refund at airport kiosks for tourists."
+    },
+    {
+      "code": "JP",
+      "name": "Japan",
+      "flag": "\ud83c\uddef\ud83c\uddf5",
+      "currency": "JPY",
+      "fx": 147,
+      "tax_rate": 0.1,
+      "tax_name": "Consumption tax",
+      "premium": 1.0,
+      "refund": 0.9,
+      "note": "Tax-free shopping at point of sale for tourists with passport."
+    },
+    {
+      "code": "SG",
+      "name": "Singapore",
+      "flag": "\ud83c\uddf8\ud83c\uddec",
+      "currency": "SGD",
+      "fx": 1.29,
+      "tax_rate": 0.09,
+      "tax_name": "GST",
+      "premium": 1.05,
+      "refund": 0.85,
+      "note": "eTRS refund at Changi Airport for tourists."
+    },
+    {
+      "code": "IN",
+      "name": "India",
+      "flag": "\ud83c\uddee\ud83c\uddf3",
+      "currency": "INR",
+      "fx": 88,
+      "tax_rate": 0.18,
+      "tax_name": "GST",
+      "premium": 1.15,
+      "refund": null,
+      "note": "No tourist GST refund scheme; import duty pushes prices higher."
+    },
+    {
+      "code": "AU",
+      "name": "Australia",
+      "flag": "\ud83c\udde6\ud83c\uddfa",
+      "currency": "AUD",
+      "fx": 1.52,
+      "tax_rate": 0.1,
+      "tax_name": "GST",
+      "premium": 1.05,
+      "refund": 0.95,
+      "note": "Tourist Refund Scheme (TRS) refunds nearly the full GST over AUD 300."
+    },
+    {
+      "code": "HK",
+      "name": "Hong Kong",
+      "flag": "\ud83c\udded\ud83c\uddf0",
+      "currency": "HKD",
+      "fx": 7.79,
+      "tax_rate": 0.0,
+      "tax_name": "None",
+      "premium": 0.95,
+      "refund": null,
+      "note": "No VAT/GST at all \u2014 often the cheapest list price in the region."
+    },
+    {
+      "code": "CA",
+      "name": "Canada",
+      "flag": "\ud83c\udde8\ud83c\udde6",
+      "currency": "CAD",
+      "fx": 1.38,
+      "tax_rate": 0.13,
+      "tax_name": "HST (ON)",
+      "premium": 1.05,
+      "refund": null,
+      "note": "Visitor rebate discontinued in 2007. Pick a province separately."
+    }
+  ]
+}
