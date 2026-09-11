@@ -234,8 +234,16 @@ button.ghost:active{ box-shadow:var(--clay-pressed); transform:translateY(0); }
 .seg:hover{ filter:none; }
 
 /* ---------- map (shared by the USA and World choropleths) ---------- */
-.map-stage{ position:relative; width:100%; border-radius:var(--radius-sm); overflow:hidden; box-shadow:var(--clay-groove); }
-#usMap, #worldMap{ width:100%; height:auto; display:block; }
+/* The rounded/recessed clay treatment lives on the SVG itself, not on
+   .map-stage — .map-stage is the tooltip's positioning parent, and an
+   overflow:hidden there was clipping the tooltip whenever it rendered
+   near the top edge (which is most of the time, since it opens upward
+   from the hovered point), hiding the country name/price/tax lines. */
+.map-stage{ position:relative; width:100%; }
+#usMap, #worldMap{
+  width:100%; height:auto; display:block;
+  border-radius:var(--radius-sm); box-shadow:var(--clay-groove);
+}
 .map-path{
   stroke:var(--surface-1); stroke-width:1.1; cursor:pointer;
   transition:filter .1s, stroke-width .1s;

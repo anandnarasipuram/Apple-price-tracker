@@ -455,7 +455,12 @@ async function initWorldMap(){
 
   try{
     const features = await loadWorldTopology();
-    worldProjection.fitSize([960, 500], { type: 'FeatureCollection', features });
+    // Fit the zoom/scale to everything except Antarctica (id "010") — it has
+    // no Apple pricing relevance, and including it in the fit wastes a big
+    // band of vertical space and squeezes the populated world into less of
+    // the map.
+    const fitFeatures = features.filter(f => f.id !== '010');
+    worldProjection.fitSize([960, 500], { type: 'FeatureCollection', features: fitFeatures });
     $('worldMapLoading').hidden = true;
     svg.selectAll('path.country')
       .data(features, d => d.id)
