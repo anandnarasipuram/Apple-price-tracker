@@ -82,6 +82,7 @@
     <button class="tab" id="tabBtn-world" role="tab" aria-selected="false" aria-controls="tab-world">🌎 World Prices</button>
     <button class="tab on" id="tabBtn-map" role="tab" aria-selected="true" aria-controls="tab-map">🇺🇸 USA Map</button>
     <button class="tab" id="tabBtn-compare" role="tab" aria-selected="false" aria-controls="tab-compare">⇄ Compare Countries</button>
+    <button class="tab" id="tabBtn-tradein" role="tab" aria-selected="false" aria-controls="tab-tradein">🔄 Trade-In</button>
     <button class="tab" id="tabBtn-taxdata" role="tab" aria-selected="false" aria-controls="tab-taxdata">⚙ Tax Data</button>
   </nav>
 
@@ -239,6 +240,31 @@
       <div class="card-title">Country vs. country vs. country</div>
       <div class="card-sub" style="margin-bottom:16px;">Three independent scenarios side by side — different tax, discount and tourist settings per column, same product.</div>
       <div class="compare-grid" id="compareGrid"></div>
+    </section>
+  </section>
+
+  <!-- ============================== TAB: TRADE-IN ============================== -->
+  <section id="tab-tradein" class="tab-panel" role="tabpanel" aria-labelledby="tabBtn-tradein" hidden>
+    <section class="card">
+      <div class="card-title">Trade in an old device</div>
+      <div class="card-sub" style="margin-bottom:16px;">Estimate what your old iPhone is worth and net it off the price of the new one.</div>
+      <div class="controls-row three">
+        <div class="f-field">
+          <label class="f-label" for="tradeInDevice">Old device</label>
+          <select id="tradeInDevice"></select>
+        </div>
+        <div class="f-field">
+          <label class="f-label" for="tradeInCondition">Condition</label>
+          <select id="tradeInCondition"></select>
+        </div>
+        <div class="f-field">
+          <label class="f-label" for="tradeInCountry">Trading in where</label>
+          <select id="tradeInCountry"></select>
+        </div>
+      </div>
+      <div id="tradeInAvailabilityMsg"></div>
+      <div class="stat-row three" id="tradeInStatRow" style="margin-top:18px;"></div>
+      <div class="status-msg info" style="margin-top:14px;">Trade-in values are seed estimates for "excellent" condition, scaled down for condition — Apple's own trade-in program (or a local buyback service) will give you the real number for your specific device and condition. Availability by country is also a seed guess — check locally before counting on it.</div>
     </section>
   </section>
 

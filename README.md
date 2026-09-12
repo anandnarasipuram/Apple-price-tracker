@@ -6,21 +6,25 @@ Two pieces:
    `tariff-board.html` tool): the Apple product catalog, international country tax/FX
    assumptions, and US state sales-tax rates, plus the pricing formulas. Run it locally
    for a quick report, and to (re)generate `frontend/data.json`.
-2. **`frontend/`** — a static site (no build step, no server), organized as five tabs
+2. **`frontend/`** — a static site (no build step, no server), organized as tabs
    that all share the same product/variant/currency/employee-discount filters at the top:
+   - **World Prices** — a world choropleth (hover for a price/tax breakdown, click the
+     US to jump to the USA Map tab) for the 20 countries this tool tracks, plus a table
+     view with editable "real" local prices, a tourist VAT/GST refund toggle, and a
+     side-by-side bar chart.
    - **USA Map** — choropleth of all 50 states + DC, colour-coded from cheapest to
      most expensive total price (list price + that state's sales tax). Hover (or
      tab + Enter) a state for the price/tax/total breakdown; a sortable table and a
      ZIP lookup ("find my state") are included too.
-   - **World Prices** — a world choropleth (same hover/colour treatment as the USA
-     map) for the 11 countries this tool tracks, plus a table view with editable
-     "real" local prices, a tourist VAT/GST refund toggle, and a side-by-side bar chart.
    - **Compare Countries** — three independent what-if columns (different country,
      tax override, employee discount, tourist refund per column) side by side.
-   - **Ship & Customs** — model buying in one country and shipping/carrying the item
-     to another, with a flat customs-% estimate.
+   - **Trade-In** — pick an old iPhone + condition + country, get an estimated
+     trade-in credit (editable), and see the net price after trading it in against
+     whatever product/country you've currently got selected.
    - **Tax Data** — edit any country's tax rate, FX rate, and refund eligibility live;
      add or remove countries; reset all edits.
+   ("Ship & Customs" — buy-here-ship-there with a flat customs-% estimate — also
+   exists in the code but its tab button is hidden; see `TAB_IDS` in `app.js` to bring it back.)
    Paste an Apple product URL into the box above the tabs to jump straight to that
    product (or add it on the spot with just its price, if it's newer than the catalog) —
    or skip the link entirely and type a product name, category and US price directly

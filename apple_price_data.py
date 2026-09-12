@@ -229,6 +229,57 @@ CA_PROVINCE_NAMES = {"AB": "Alberta", "BC": "British Columbia", "MB": "Manitoba"
 
 
 # ---------------------------------------------------------------------------
+# Trade-in (old device) seed values
+# ---------------------------------------------------------------------------
+
+# US$ credit in "excellent" condition, before country/condition scaling.
+TRADE_IN_DEVICES = [
+    {"id": "ipx", "name": "iPhone X", "usd": 30},
+    {"id": "ipxr", "name": "iPhone XR", "usd": 40},
+    {"id": "ip11", "name": "iPhone 11", "usd": 60},
+    {"id": "ip11p", "name": "iPhone 11 Pro", "usd": 80},
+    {"id": "ip11pm", "name": "iPhone 11 Pro Max", "usd": 90},
+    {"id": "ip12m", "name": "iPhone 12 mini", "usd": 70},
+    {"id": "ip12", "name": "iPhone 12", "usd": 90},
+    {"id": "ip12p", "name": "iPhone 12 Pro", "usd": 110},
+    {"id": "ip12pm", "name": "iPhone 12 Pro Max", "usd": 130},
+    {"id": "ip13m", "name": "iPhone 13 mini", "usd": 100},
+    {"id": "ip13", "name": "iPhone 13", "usd": 130},
+    {"id": "ip13p", "name": "iPhone 13 Pro", "usd": 170},
+    {"id": "ip13pm", "name": "iPhone 13 Pro Max", "usd": 190},
+    {"id": "ip14", "name": "iPhone 14", "usd": 170},
+    {"id": "ip14pl", "name": "iPhone 14 Plus", "usd": 190},
+    {"id": "ip14p", "name": "iPhone 14 Pro", "usd": 230},
+    {"id": "ip14pm", "name": "iPhone 14 Pro Max", "usd": 260},
+    {"id": "ip15", "name": "iPhone 15", "usd": 220},
+    {"id": "ip15pl", "name": "iPhone 15 Plus", "usd": 240},
+    {"id": "ip15p", "name": "iPhone 15 Pro", "usd": 310},
+    {"id": "ip15pm", "name": "iPhone 15 Pro Max", "usd": 360},
+    {"id": "ip16", "name": "iPhone 16", "usd": 300},
+    {"id": "ip16pl", "name": "iPhone 16 Plus", "usd": 330},
+    {"id": "ip16p", "name": "iPhone 16 Pro", "usd": 430},
+    {"id": "ip16pm", "name": "iPhone 16 Pro Max", "usd": 480},
+]
+
+TRADE_IN_CONDITIONS = [
+    {"id": "excellent", "label": "Excellent — like new", "mult": 1.0},
+    {"id": "good", "label": "Good — light wear", "mult": 0.85},
+    {"id": "fair", "label": "Fair — visible wear", "mult": 0.65},
+    {"id": "poor", "label": "Poor — cracked/faulty", "mult": 0.35},
+]
+
+# Seed guess at where Apple's own trade-in program operates — verify locally,
+# this is not authoritative. Countries added later (Taiwan, Macau, etc.)
+# default to False until someone confirms otherwise.
+TRADE_IN_AVAILABILITY = {
+    "US": True, "DE": True, "GB": True, "CH": True, "JP": True, "AU": True, "CA": True,
+    "SG": False, "AE": False, "HK": False, "IN": False,
+    "TW": False, "MO": False, "KR": False, "MY": False, "TH": False,
+    "QA": False, "NZ": False, "MX": False, "SA": False,
+}
+
+
+# ---------------------------------------------------------------------------
 # Pricing logic
 # ---------------------------------------------------------------------------
 
@@ -353,6 +404,9 @@ def export_frontend_data(out_path: str) -> None:
             for code, rate in STATE_TAX.items()
         ],
         "countries": COUNTRIES,
+        "trade_in_devices": TRADE_IN_DEVICES,
+        "trade_in_conditions": TRADE_IN_CONDITIONS,
+        "trade_in_availability": TRADE_IN_AVAILABILITY,
     }
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     with open(out_path, "w") as f:

@@ -102,7 +102,7 @@ const CURRENCIES = [
 // 'ship' (Ship & Customs) is intentionally excluded — its tab button was
 // removed from the UI, but the tab-ship section, its data, and its render
 // function are left in place in case it's wanted back later.
-const TAB_IDS = ['world', 'map', 'compare', 'taxdata'];
+const TAB_IDS = ['world', 'map', 'compare', 'tradein', 'taxdata'];
 
 // ------------------------------------------------------------------
 // State
@@ -129,6 +129,13 @@ let currencyC = 'INR';
 let touristMode = false;
 let sortMode = 'effective';
 let compareState = [];          // 3 independent {countryCode, taxOverride, employeeOn, employeePct, touristOn}
+
+// Trade-In tab
+let tradeInDeviceId = null;
+let tradeInConditionId = 'good';
+let tradeInCountryCode = 'US';
+let tradeInOverride = null;     // manual override of the trade-in credit, in the trading-country's currency
+let tradeInAvailability = {};   // mutable copy of DATA.trade_in_availability
 
 // ------------------------------------------------------------------
 // Helpers
@@ -759,6 +766,67 @@ function renderCompareTab(){
 }
 
 // ------------------------------------------------------------------
+// Trade-In tab
+// ------------------------------------------------------------------
+function populateTradeInSelects(){
+  const dev = $('tradeInDevice');
+  dev.innerHTML = DATA.trade_in_devices.map(d => `<option value="${d.id}">${d.name} (US$${d.usd} excellent)</option>`).join('');
+  dev.value = tradeInDeviceId;
+
+  const cond = $('tradeInCondition');
+  cond.innerHTML = DATA.trade_in_conditions.map(c => `<option value="${c.id}">${c.label}</option>`).join('');
+  cond.value = tradeInConditionId;
+
+  const ctry = $('tradeInCountry');
+  ctry.innerHTML = countries.map(c => `<option value="${c.code}">${c.flag} ${c.name}</option>`).join('');
+  ctry.value = tradeInCountryCode;
+}
+
+function renderTradeInWidget(){
+  const device = DATA.trade_in_devices.find(d => d.id === tradeInDeviceId);
+  const condition = DATA.trade_in_conditions.find(c => c.id === tradeInConditionId);
+  const country = countries.find(c => c.code === tradeInCountryCode);
+  if (!device || !condition || !country) return;
+
+  const available = tradeInAvailability.hasOwnProperty(country.code) ? tradeInAvailability[country.code] : false;
+  const msgEl = $('tradeInAvailabilityMsg');
+  msgEl.innerHTML = available
+    ? ''
+    : `<div class="status-msg info" style="margin-top:12px;">Apple's own trade-in program is a seed "probably not offered" guess for ${country.name} — third-party buyback services may still exist locally. The estimate below still shows in case you're using one of those instead.</div>`;
+
+  const estimatedUsd = device.usd * condition.mult;
+  const tradeInValueLocal = tradeInOverride !== null ? tradeInOverride : estimatedUsd * country.fx;
+
+  const product = getProduct(currentProductId);
+  const newDeviceRow = computeWorldRow(country, product);
+  const netLocal = newDeviceRow.finalPrice - tradeInValueLocal;
+  const netUsd = netLocal / country.fx;
+
+  $('tradeInStatRow').innerHTML = `
+    <div class="stat">
+      <div class="k">Trade-in credit (${condition.label.split(' — ')[0]})</div>
+      <div class="v good"><input type="number" step="1" id="tradeInValueInput" value="${tradeInValueLocal.toFixed(0)}"></div>
+      <div class="d">${country.currency} · ${fmtCur(convertUsd(tradeInValueLocal / country.fx, currencyB), currencyB)}</div>
+    </div>
+    <div class="stat">
+      <div class="k">${product.name} in ${country.name}, before trade-in</div>
+      <div class="v">${fmtCur(newDeviceRow.finalPrice, country.currency)}</div>
+      <div class="d">Reflects current tourist/employee toggles</div>
+    </div>
+    <div class="stat">
+      <div class="k">Net price after trade-in</div>
+      <div class="v good">${fmtCur(netLocal, country.currency)}</div>
+      <div class="d">${fmtCur(convertUsd(netUsd, currencyB), currencyB)} · ${fmtCur(convertUsd(netUsd, currencyC), currencyC)}</div>
+    </div>
+  `;
+  $('tradeInValueInput').addEventListener('change', e => {
+    const val = parseFloat(e.target.value);
+    if (!isNaN(val)) tradeInOverride = val;
+    renderTradeInWidget();
+  });
+}
+
+// ------------------------------------------------------------------
 // Ship & Customs tab
 // ------------------------------------------------------------------
 function renderShipTab(){
@@ -825,6 +893,7 @@ function renderAssumptions(){
 // Countries list changed shape (added/removed/reset) — refresh everything that reads it.
 function afterCountriesChanged(){
   populateShipSelects();
+  populateTradeInSelects();
   renderAssumptions();
   renderAll();
 }
@@ -863,6 +932,7 @@ function renderAll(){
 
   renderWorldTab();
   renderCompareTab();
+  renderTradeInWidget();
   renderShipTab();
 }
 
@@ -1000,6 +1070,10 @@ function wireEvents(){
   $('shipCost').addEventListener('input', renderShipTab);
   $('customsPct').addEventListener('input', renderShipTab);
 
+  $('tradeInDevice').addEventListener('change', e => { tradeInDeviceId = e.target.value; tradeInOverride = null; renderTradeInWidget(); });
+  $('tradeInCondition').addEventListener('change', e => { tradeInConditionId = e.target.value; tradeInOverride = null; renderTradeInWidget(); });
+  $('tradeInCountry').addEventListener('change', e => { tradeInCountryCode = e.target.value; tradeInOverride = null; renderTradeInWidget(); });
+
   $('addCountryBtn').addEventListener('click', () => {
     const name = $('newCountryName').value.trim();
     const cur = $('newCountryCode').value.trim().toUpperCase();
@@ -1007,6 +1081,7 @@ function wireEvents(){
     const fx = parseFloat($('newCountryFx').value) || 1;
     if (!name || !cur){ alert('Enter at least a country name and a currency code.'); return; }
     countries.push({ code: cur, name, flag: '🏳️', currency: cur, fx, tax_rate: tax / 100, tax_name: 'Custom', premium: 1.0, refund: null, note: 'Added manually — edit assumptions below.' });
+    tradeInAvailability[cur] = false; // seed guess for a manually-added country — unconfirmed until edited
     $('newCountryName').value = ''; $('newCountryCode').value = '';
     $('newCountryTax').value = ''; $('newCountryFx').value = '';
     afterCountriesChanged();
@@ -1016,6 +1091,8 @@ function wireEvents(){
     countries = JSON.parse(JSON.stringify(DATA.countries));
     overrides = {};
     compareState = [];
+    tradeInOverride = null;
+    tradeInAvailability = JSON.parse(JSON.stringify(DATA.trade_in_availability));
     afterCountriesChanged();
   });
 
@@ -1094,11 +1171,14 @@ async function init(){
   selectedVariant = defaultVariantSelection(getProduct(currentProductId));
   countries = JSON.parse(JSON.stringify(DATA.countries));
   initCompareState();
+  tradeInAvailability = JSON.parse(JSON.stringify(DATA.trade_in_availability));
+  tradeInDeviceId = DATA.trade_in_devices[DATA.trade_in_devices.length - 5].id; // a recent-ish model by default
 
   populateProductSelect();
   renderVariantFields();
   populateCurrencySelects();
   populateShipSelects();
+  populateTradeInSelects();
   renderAssumptions();
   wireEvents();
   wireTabs();
