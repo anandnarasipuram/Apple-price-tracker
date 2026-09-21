@@ -44,43 +44,130 @@ const ZIP_STATE_RANGES = [
   [900,961,'CA'],[967,968,'HI'],[970,979,'OR'],[980,994,'WA'],[995,999,'AK'],
 ];
 
-// Apple product-page URL -> {category, name} recognizers, newest/most-specific
-// pattern first within each family so e.g. "pro-max" is tried before "pro".
-// Generation numbers are captured, not hardcoded, so this also recognizes
-// models released after this catalog was last updated (iPhone 18, etc.) —
-// the site just won't have a price for those until you supply one.
-const LINK_PATTERNS = [
-  { re: /iphone-(\d+)e\b/,        cat: 'iPhone', nameFn: m => `iPhone ${m[1]}e` },
-  { re: /iphone-(\d+)-pro-max/,   cat: 'iPhone', nameFn: m => `iPhone ${m[1]} Pro Max` },
-  { re: /iphone-(\d+)-pro/,       cat: 'iPhone', nameFn: m => `iPhone ${m[1]} Pro` },
-  { re: /iphone-air/,             cat: 'iPhone', nameFn: () => `iPhone Air` },
-  { re: /iphone-(\d+)\b/,         cat: 'iPhone', nameFn: m => `iPhone ${m[1]}` },
-  { re: /ipad-pro/,               cat: 'iPad',   nameFn: () => `iPad Pro` },
-  { re: /ipad-air/,               cat: 'iPad',   nameFn: () => `iPad Air` },
-  { re: /ipad-mini/,              cat: 'iPad',   nameFn: () => `iPad mini` },
-  { re: /\bipad\b/,               cat: 'iPad',   nameFn: () => `iPad` },
-  { re: /macbook-pro/,            cat: 'Mac',    nameFn: () => `MacBook Pro` },
-  { re: /macbook-air/,            cat: 'Mac',    nameFn: () => `MacBook Air` },
-  { re: /mac-studio/,             cat: 'Mac',    nameFn: () => `Mac Studio` },
-  { re: /mac-mini/,               cat: 'Mac',    nameFn: () => `Mac mini` },
-  { re: /\bimac\b/,               cat: 'Mac',    nameFn: () => `iMac` },
-  { re: /apple-watch-ultra/,      cat: 'Watch',  nameFn: () => `Apple Watch Ultra` },
-  { re: /apple-watch-se/,         cat: 'Watch',  nameFn: () => `Apple Watch SE` },
-  { re: /apple-watch-series-(\d+)/, cat: 'Watch', nameFn: m => `Apple Watch Series ${m[1]}` },
-  { re: /airpods-pro/,            cat: 'Audio',  nameFn: () => `AirPods Pro` },
-  { re: /airpods-max/,            cat: 'Audio',  nameFn: () => `AirPods Max` },
-  { re: /\bairpods\b/,            cat: 'Audio',  nameFn: () => `AirPods` },
+// ------------------------------------------------------------------
+// Apple link -> catalog product
+// ------------------------------------------------------------------
+// The catalog (data.json, built by scrape_apple_catalog.py) holds every model,
+// storage/colour/size option and accessory Apple sells in the US. A pasted
+// apple.com link is matched against it in this order:
+//   1. product-page links (/shop/product/<part>/a/...) -> exact part number
+//   2. buy-page links (/shop/buy-iphone/iphone-18-pro/...) -> Apple's family slug
+//   3. anything else (marketing pages like /ipad-mini/) -> token match on product names
+// and the storage / colour / size in the URL, if any, is pre-selected.
+// A link that matches nothing is never a dead end: it still gets a name
+// derived from the URL and a prompt for its price.
+const BRAND_CASE = {
+  iphone:'iPhone', ipad:'iPad', imac:'iMac', macbook:'MacBook', airpods:'AirPods', airtag:'AirTag',
+  homepod:'HomePod', magsafe:'MagSafe', apple:'Apple', tv:'TV', se:'SE', usb:'USB', ssd:'SSD',
+  mini:'mini', magic:'Magic', watch:'Watch', vision:'Vision', pro:'Pro', max:'Max',
+};
+const CATEGORY_HINTS = [
+  [/^iphone/, 'iPhone'], [/^ipad/, 'iPad'], [/(^|-)(mac|macbook|imac)/, 'Mac'], [/watch/, 'Watch'],
+  [/airpods|homepod/, 'Audio'], [/vision/, 'Vision'], [/(^|-)tv(-|$)/, 'Home'], [/airtag/, 'Accessories'],
 ];
+const GENERIC_SEGMENTS = new Set(['shop', 'product', 'products', 'a', 'accessories', 'all', 'store']);
 
-function parseAppleLink(url){
-  let path;
-  try{ path = new URL(url).pathname.toLowerCase(); }
-  catch(e){ path = ('/' + url).toLowerCase(); }
-  for (const p of LINK_PATTERNS){
-    const m = path.match(p.re);
-    if (m) return { matched: true, cat: p.cat, name: p.nameFn(m) };
+const slugTokens = s => String(s).toLowerCase().replace(/[ ‐‑]/g, ' ').split(/[^a-z0-9]+/).filter(Boolean);
+const isAccessory = p => p.cat.startsWith('Accessories —');
+const titleFromSlug = slug => slug.split('-').filter(Boolean)
+  .map(w => BRAND_CASE[w] || (w.charAt(0).toUpperCase() + w.slice(1))).join(' ');
+
+// Which of a product's options (storage / colour / size...) does the URL spell out?
+function variantsFromTokens(product, tokens){
+  const hay = '-' + tokens.join('-') + '-';
+  const sel = {}, applied = [];
+  Object.keys(product.variants || {}).forEach(dim => {
+    let best = null;
+    product.variants[dim].forEach(o => {
+      const needle = '-' + slugTokens(o.label).join('-') + '-';
+      if (needle.length > 2 && hay.includes(needle) && (!best || needle.length > best.len)) best = { id: o.id, label: o.label, len: needle.length };
+    });
+    if (best){ sel[dim] = best.id; applied.push(best.label); }
+  });
+  return { sel, applied };
+}
+
+function scoreProducts(pool, tokenSet, famSegs, tokens){
+  // Version numbers in the URL's family slug ("iphone-19-pro") must not contradict the product's
+  // own ("iPhone 18 Pro") — otherwise a future model would silently match last year's.
+  const isNum = t => /^\d+[a-z]?$/.test(t);
+  const famNums = slugTokens(famSegs[0] || '').filter(isNum);
+  return pool.map(p => {
+    const nt = slugTokens(p.name);
+    const hit = nt.filter(t => tokenSet.has(t)).length;
+    const missing = nt.filter(t => !tokenSet.has(t));
+    const prodNums = nt.filter(isNum);
+    return {
+      p, hit, total: nt.length,
+      conflict: prodNums.length > 0 && famNums.length > 0 && !famNums.some(n => prodNums.includes(n)),
+      score: nt.length ? hit / nt.length : 0,
+      onlyNumbersMissing: missing.every(t => /^\d+[a-z]?$/.test(t)),
+      family: !!(p.family && famSegs.includes(p.family)),
+      alias: (p.aliases || []).some(a => ('-' + tokens.join('-') + '-').includes('-' + a + '-')),
+    };
+  });
+}
+const rank = c => c.score + (c.family ? 1 : 0) + (c.alias ? 2 : 0);   // alias = display size in the URL ("6.9-inch" -> Pro Max)
+const byBestMatch = (a, b) => rank(b) - rank(a) || b.total - a.total;
+function acceptable(c){
+  if (c.hit < 1) return false;
+  if (c.total === 1) return c.score === 1;
+  return c.hit >= 2 && (c.score >= 0.75 || (c.score >= 0.6 && c.onlyNumbersMissing));
+}
+
+// -> {kind:'error'|'match'|'suggest'|'unknown', ...}
+function resolveAppleLink(rawUrl){
+  let u;
+  try{ u = new URL(/^https?:\/\//i.test(rawUrl) ? rawUrl : 'https://' + rawUrl); }
+  catch(e){ return { kind:'error', message:"That doesn't look like a web link." }; }
+  if (!/(^|\.)apple\.com$/i.test(u.hostname)) return { kind:'error', message:"That isn't an apple.com link — paste a product page from apple.com." };
+
+  let segs = u.pathname.toLowerCase().split('/').filter(Boolean).map(s => { try{ return decodeURIComponent(s); }catch(e){ return s; } });
+  const notes = [];
+  if (segs.length && /^[a-z]{2}(-[a-z]{2})?$/.test(segs[0]) && segs[0] !== 'tv'){
+    if (segs[0] !== 'us') notes.push(`This is Apple's "${segs[0].toUpperCase()}" store — the catalog holds US prices, so those are what's shown.`);
+    segs = segs.slice(1);
   }
-  return { matched: false };
+  if (!segs.length) return { kind:'error', message:"That link is Apple's home page — paste the page of a specific product." };
+
+  const pdpAt = segs.indexOf('product');
+  const isPdp = pdpAt >= 0 && segs.length > pdpAt + 1;
+  const part = isPdp ? segs[pdpAt + 1] : null;
+  const famSegs = segs.filter(s => !s.startsWith('buy-') && !GENERIC_SEGMENTS.has(s));
+  const tokens = segs.flatMap((s, i) => (s.startsWith('buy-') || GENERIC_SEGMENTS.has(s) || (isPdp && i === pdpAt + 1)) ? [] : slugTokens(s));
+  const tokenSet = new Set(tokens);
+
+  const result = (product) => {
+    const { sel, applied } = variantsFromTokens(product, tokens);
+    return { kind:'match', product, sel, applied, notes };
+  };
+
+  // 1. exact product-page part number
+  if (part){
+    const exact = DATA.products.find(p => (p.parts || []).includes(part));
+    if (exact) return result(exact);
+  }
+
+  // 2 + 3. Apple's family slug, else token match on names
+  let pool = isPdp ? DATA.products.filter(p => p.cat.startsWith('Accessories')) : DATA.products.filter(p => !isAccessory(p));
+  let scored = scoreProducts(pool, tokenSet, famSegs, tokens).sort(byBestMatch);
+  let best = scored.find(c => c.family && !c.conflict) || scored.find(c => !c.conflict && acceptable(c));
+  if (!best && !isPdp){
+    scored = scoreProducts(DATA.products.filter(isAccessory), tokenSet, famSegs, tokens).sort(byBestMatch);
+    best = scored.find(c => !c.conflict && acceptable(c));
+  }
+  if (best) return result(best.p);
+
+  // Not in the catalog. If it's near several products (e.g. the whole /iphone/ range), offer them.
+  const nameSlug = isPdp ? segs[segs.length - 1] : (famSegs[0] || segs[0]);
+  const hint = CATEGORY_HINTS.find(([re]) => re.test(nameSlug));
+  const unknown = { name: titleFromSlug(nameSlug), cat: hint ? hint[1] : (isPdp ? 'Accessories' : 'Other') };
+  // A whole range ("/iphone/") -> offer its models. A specific version we don't have ("/iphone-19-pro/") -> don't.
+  const namesAVersion = slugTokens(famSegs[0] || '').some(t => /^\d+[a-z]?$/.test(t));
+  const near = namesAVersion ? [] : scoreProducts(DATA.products, tokenSet, famSegs, tokens)
+    .filter(c => slugTokens(c.p.name).slice(0, 2).some(t => t !== 'apple' && [...tokenSet].some(u => u.length >= 3 && t.startsWith(u)))).sort(byBestMatch).slice(0, 6);
+  if (near.length >= 2 && !isPdp) return { kind:'suggest', candidates: near.map(c => c.p), unknown, notes };
+  return { kind:'unknown', ...unknown, notes };
 }
 
 // Reference currencies for cross-country conversion (independent of the
@@ -109,6 +196,7 @@ const TAB_IDS = ['world', 'map', 'compare', 'tradein', 'taxdata'];
 // ------------------------------------------------------------------
 let DATA = null;               // parsed data.json
 let pendingParsedProduct = null; // {cat, name} awaiting a manually-entered price
+let pendingSuggestion = null;    // {name, cat} offered as "none of these" next to the suggestion chips
 let currentProductId = null;
 let selectedVariant = {};
 let employeeOn = false;
@@ -920,7 +1008,7 @@ function renderAll(){
   const product = getProduct(currentProductId);
   const base = effectiveUsd(product);
   $('mapTitle').textContent = `Price by state — ${product.name}`;
-  $('mapSub').textContent = `Base list price ${fmtUsd(base)}${employeeOn ? ` · ${employeePct}% employee discount applied` : ''} · then each state's sales tax`;
+  $('mapSub').textContent = `Base list price ${fmtUsd(base)}${employeeOn ? ` · ${employeePct}% employee discount applied` : ''} · then each state's sales tax${product.note ? ' · ' + product.note : ''}`;
 
   const rows = allStateRows();
   updateMapColors();
@@ -934,6 +1022,30 @@ function renderAll(){
   renderCompareTab();
   renderTradeInWidget();
   renderShipTab();
+}
+
+// A link for something that isn't in the catalog (e.g. released after the last scrape). A static
+// page can't read apple.com (CORS), so ask for the price; the scraper script can also pull it in.
+function askForPrice(name, cat, notesHtml){
+  pendingParsedProduct = { name, cat };
+  $('linkStatus').innerHTML = `<div class="status-msg info">This looks like “${escapeHtml(name)}”, which isn't in the catalog yet. A web page can't read apple.com's prices directly, so enter the US price shown on Apple's page below and we'll map it.<div class="link-note">Tip: <code>python3 scrape_apple_catalog.py --url &lt;this link&gt; --add</code> pulls it in with all its options.</div>${notesHtml || ''}</div>`;
+  $('newProductLabel').textContent = name + ':';
+  $('newProductForm').hidden = false;
+  $('newProductPrice').value = '';
+  $('newProductPrice').focus();
+}
+
+// Switch the whole app to a catalog product, optionally with some options pre-selected.
+function selectProduct(product, variantSel){
+  currentProductId = product.id;
+  selectedVariant = Object.assign(defaultVariantSelection(product), variantSel || {});
+  populateProductSelect();
+  renderVariantFields();
+  renderAll();
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 }
 
 // Adds a product to the catalog (used by both the link-parser flow and the
@@ -979,34 +1091,44 @@ function wireEvents(){
     $('newProductForm').hidden = true;
     pendingParsedProduct = null;
     if (!url){
-      statusEl.innerHTML = `<div class="status-msg err">Paste a link first — e.g. https://www.apple.com/iphone-17-pro/</div>`;
+      statusEl.innerHTML = `<div class="status-msg err">Paste a link first — e.g. https://www.apple.com/iphone-18-pro/</div>`;
       return;
     }
-    const parsed = parseAppleLink(url);
-    if (!parsed.matched){
-      statusEl.innerHTML = `<div class="status-msg err">Couldn't recognize an Apple product in that link. Try a product page URL, or just pick one from the Product dropdown below.</div>`;
+    const res = resolveAppleLink(url);
+    const notesHtml = (res.notes || []).map(n => `<div class="link-note">${escapeHtml(n)}</div>`).join('');
+
+    if (res.kind === 'error'){
+      statusEl.innerHTML = `<div class="status-msg err">${escapeHtml(res.message)}</div>`;
       return;
     }
-    // Already in the catalog? Jump straight to it.
-    const existing = DATA.products.find(p => p.name.toLowerCase() === parsed.name.toLowerCase());
-    if (existing){
-      currentProductId = existing.id;
-      selectedVariant = defaultVariantSelection(existing);
-      populateProductSelect();
-      renderVariantFields();
-      renderAll();
-      statusEl.innerHTML = `<div class="status-msg ok">Loaded ${existing.name} — showing its price across all 50 states below.</div>`;
+    if (res.kind === 'match'){
+      selectProduct(res.product, res.sel);
+      const specs = res.applied.length ? ` (${res.applied.join(' · ')} selected)` : '';
+      const note = res.product.note ? `<div class="link-note">${escapeHtml(res.product.note)}</div>` : '';
+      statusEl.innerHTML = `<div class="status-msg ok">Loaded ${escapeHtml(res.product.name)}${escapeHtml(specs)} — ${fmtUsd(effectiveUsd(res.product))} US list price, shown across all 50 states below.${note}${notesHtml}</div>`;
       return;
     }
-    // Recognized the product family, but it's not in the catalog yet (e.g. a
-    // model newer than this data). We can't fetch its real price — apple.com
-    // blocks cross-site reads from a static page like this one (CORS) — so ask for it.
-    pendingParsedProduct = parsed;
-    statusEl.innerHTML = `<div class="status-msg info">Recognized "${parsed.name}", but it isn't in the catalog yet — apple.com doesn't let a static page like this read its price directly. Enter the US price shown on the page below and we'll map it.</div>`;
-    $('newProductLabel').textContent = parsed.name + ':';
-    $('newProductForm').hidden = false;
-    $('newProductPrice').value = '';
-    $('newProductPrice').focus();
+    if (res.kind === 'suggest'){
+      pendingSuggestion = res.unknown;
+      statusEl.innerHTML = `<div class="status-msg info">That link isn't one specific product in the catalog — did you mean one of these?
+        <div class="chip-row">${res.candidates.map(c => `<button class="ghost chip" data-pid="${escapeHtml(c.id)}">${escapeHtml(c.name)} · ${fmtUsd(c.usd)}</button>`).join('')}
+        <button class="ghost chip" data-new="1">None of these — enter a price for “${escapeHtml(res.unknown.name)}”</button></div>${notesHtml}</div>`;
+      return;
+    }
+    askForPrice(res.name, res.cat, notesHtml);
+  });
+  // "Which one did you mean?" chips
+  $('linkStatus').addEventListener('click', e => {
+    if (e.target.closest('[data-new]') && pendingSuggestion){
+      askForPrice(pendingSuggestion.name, pendingSuggestion.cat, '');
+      return;
+    }
+    const btn = e.target.closest('[data-pid]');
+    if (!btn) return;
+    const product = getProduct(btn.dataset.pid);
+    if (!product) return;
+    selectProduct(product, {});
+    $('linkStatus').innerHTML = `<div class="status-msg ok">Loaded ${escapeHtml(product.name)} — ${fmtUsd(effectiveUsd(product))} US list price, shown across all 50 states below.</div>`;
   });
   $('linkInput').addEventListener('keydown', e => { if (e.key === 'Enter') $('parseLinkBtn').click(); });
 
@@ -1167,10 +1289,14 @@ async function init(){
 
   const res = await fetch('data.json');
   DATA = await res.json();
-  currentProductId = DATA.products.find(p => p.id === 'ip17pro') ? 'ip17pro' : DATA.products[0].id;
+  currentProductId = DATA.products.some(p => p.id === DATA.default_product) ? DATA.default_product : DATA.products[0].id;
   selectedVariant = defaultVariantSelection(getProduct(currentProductId));
   countries = JSON.parse(JSON.stringify(DATA.countries));
   initCompareState();
+  const meta = DATA.catalog_meta;
+  $('catalogNote').innerHTML = meta
+    ? `<strong>Catalog:</strong> ${meta.count} products (every model, storage/colour/size option and ${DATA.products.filter(isAccessory).length} accessories) read from apple.com's US store on ${escapeHtml(meta.generated || 'an earlier date')}. Prices are US list prices; other countries are estimates.`
+    : `<strong>Catalog:</strong> built-in sample data — run <code>python3 scrape_apple_catalog.py</code> to load the real Apple Store catalog.`;
   tradeInAvailability = JSON.parse(JSON.stringify(DATA.trade_in_availability));
   tradeInDeviceId = DATA.trade_in_devices[DATA.trade_in_devices.length - 5].id; // a recent-ish model by default
 

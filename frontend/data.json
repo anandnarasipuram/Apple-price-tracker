@@ -1,81 +1,187 @@
 {
   "products": [
     {
-      "id": "ip17",
-      "name": "iPhone 17",
+      "id": "iphone-duo",
+      "name": "iPhone Duo",
       "cat": "iPhone",
-      "usd": 799,
+      "usd": 1999,
       "variants": {
         "storage": [
           {
-            "id": "256",
+            "id": "256gb",
             "label": "256GB",
             "delta": 0
           },
           {
-            "id": "512",
-            "label": "512GB",
-            "delta": 200
-          }
-        ],
-        "color": [
-          {
-            "id": "black",
-            "label": "Black",
-            "delta": 0
-          },
-          {
-            "id": "white",
-            "label": "White",
-            "delta": 0
-          },
-          {
-            "id": "lavender",
-            "label": "Lavender",
-            "delta": 0
-          },
-          {
-            "id": "sage",
-            "label": "Sage",
-            "delta": 0
-          },
-          {
-            "id": "mist-blue",
-            "label": "Mist Blue",
-            "delta": 0
-          }
-        ]
-      }
-    },
-    {
-      "id": "ipair",
-      "name": "iPhone Air",
-      "cat": "iPhone",
-      "usd": 999,
-      "variants": {
-        "storage": [
-          {
-            "id": "256",
-            "label": "256GB",
-            "delta": 0
-          },
-          {
-            "id": "512",
+            "id": "512gb",
             "label": "512GB",
             "delta": 200
           },
           {
             "id": "1tb",
             "label": "1TB",
-            "delta": 400
+            "delta": 600
+          },
+          {
+            "id": "2tb",
+            "label": "2TB",
+            "delta": 1200
           }
         ],
         "color": [
           {
-            "id": "space-black",
-            "label": "Space Black",
+            "id": "night-sky",
+            "label": "Night Sky",
             "delta": 0
           },
+          {
+            "id": "star-white",
+            "label": "Star White",
+            "delta": 0
+          }
+        ]
+      },
+      "url": "https://www.apple.com/shop/buy-iphone/iphone-duo",
+      "family": "iphone-duo"
+    },
+    {
+      "id": "iphone-18-pro-max",
+      "name": "iPhone 18 Pro Max",
+      "cat": "iPhone",
+      "usd": 1299,
+      "variants": {
+        "storage": [
+          {
+            "id": "256gb",
+            "label": "256GB",
+            "delta": 0
+          },
+          {
+            "id": "512gb",
+            "label": "512GB",
+            "delta": 200
+          },
+          {
+            "id": "1tb",
+            "label": "1TB",
+            "delta": 600
+          },
+          {
+            "id": "2tb",
+            "label": "2TB",
+            "delta": 1200
+          }
+        ],
+        "color": [
+          {
+            "id": "silver",
+            "label": "Silver",
+            "delta": 0
+          },
+          {
+            "id": "black",
+            "label": "Black",
+            "delta": 0
+          },
+          {
+            "id": "glacier",
+            "label": "Glacier",
+            "delta": 0
+          },
+          {
+            "id": "burgundy",
+            "label": "Burgundy",
+            "delta": 0
+          }
+        ]
+      },
+      "url": "https://www.apple.com/shop/buy-iphone/iphone-18-pro",
+      "aliases": [
+        "6-9-inch"
+      ],
+      "family": "iphone-18-pro"
+    },
+    {
+      "id": "iphone-18-pro",
+      "name": "iPhone 18 Pro",
+      "cat": "iPhone",
+      "usd": 1199,
+      "variants": {
+        "storage": [
+          {
+            "id": "256gb",
+            "label": "256GB",
+            "delta": 0
+          },
+          {
+            "id": "512gb",
+            "label": "512GB",
+            "delta": 200
+          },
+          {
+            "id": "1tb",
+            "label": "1TB",
+            "delta": 600
+          },
+          {
+            "id": "2tb",
+            "label": "2TB",
+            "delta": 1200
+          }
+        ],
+        "color": [
+          {
+            "id": "silver",
+            "label": "Silver",
+            "delta": 0
+          },
+          {
+            "id": "burgundy",
+            "label": "Burgundy",
+            "delta": 0
+          },
+          {
+            "id": "glacier",
+            "label": "Glacier",
+            "delta": 0
+          },
+          {
+            "id": "black",
+            "label": "Black",
+            "delta": 0
+          }
+        ]
+      },
+      "url": "https://www.apple.com/shop/buy-iphone/iphone-18-pro",
+      "aliases": [
+        "6-3-inch"
+      ],
+      "family": "iphone-18-pro"
+    },
+    {
+      "id": "iphone-air",
+      "name": "iPhone Air",
+      "cat": "iPhone",
+      "usd": 1099,
+      "variants": {
+        "storage": [
+          {
+            "id": "256gb",
+            "label": "256GB",
+            "delta": 0
+          },
+          {
+            "id": "512gb",
+            "label": "512GB",
+            "delta": 200
+          },
+          {
+            "id": "1tb",
+            "label": "1TB",
+            "delta": 600
+          }
+        ],
+        "color": [
           {
             "id": "sky-blue",
             "label": "Sky Blue",
@@ -90,42 +196,213 @@
             "id": "cloud-white",
             "label": "Cloud White",
             "delta": 0
+          },
+          {
+            "id": "space-black",
+            "label": "Space Black",
+            "delta": 0
           }
         ]
-      }
+      },
+      "url": "https://www.apple.com/shop/buy-iphone/iphone-air",
+      "family": "iphone-air"
     },
     {
-      "id": "ip17pro",
-      "name": "iPhone 17 Pro",
+      "id": "iphone-17",
+      "name": "iPhone 17",
       "cat": "iPhone",
-      "usd": 1099,
+      "usd": 929,
       "variants": {
         "storage": [
           {
-            "id": "256",
+            "id": "256gb",
             "label": "256GB",
             "delta": 0
           },
           {
-            "id": "512",
+            "id": "512gb",
+            "label": "512GB",
+            "delta": 200
+          }
+        ],
+        "color": [
+          {
+            "id": "mist-blue",
+            "label": "Mist Blue",
+            "delta": 0
+          },
+          {
+            "id": "lavender",
+            "label": "Lavender",
+            "delta": 0
+          },
+          {
+            "id": "black",
+            "label": "Black",
+            "delta": 0
+          },
+          {
+            "id": "white",
+            "label": "White",
+            "delta": 0
+          },
+          {
+            "id": "sage",
+            "label": "Sage",
+            "delta": 0
+          }
+        ]
+      },
+      "url": "https://www.apple.com/shop/buy-iphone/iphone-17",
+      "family": "iphone-17"
+    },
+    {
+      "id": "iphone-17e",
+      "name": "iPhone 17e",
+      "cat": "iPhone",
+      "usd": 699,
+      "variants": {
+        "storage": [
+          {
+            "id": "256gb",
+            "label": "256GB",
+            "delta": 0
+          },
+          {
+            "id": "512gb",
+            "label": "512GB",
+            "delta": 200
+          }
+        ],
+        "color": [
+          {
+            "id": "soft-pink",
+            "label": "Soft Pink",
+            "delta": 0
+          },
+          {
+            "id": "black",
+            "label": "Black",
+            "delta": 0
+          },
+          {
+            "id": "white",
+            "label": "White",
+            "delta": 0
+          }
+        ]
+      },
+      "url": "https://www.apple.com/shop/buy-iphone/iphone-17e",
+      "family": "iphone-17e"
+    },
+    {
+      "id": "iphone-16",
+      "name": "iPhone 16",
+      "cat": "iPhone",
+      "usd": 829,
+      "variants": {
+        "color": [
+          {
+            "id": "pink",
+            "label": "Pink",
+            "delta": 0
+          },
+          {
+            "id": "white",
+            "label": "White",
+            "delta": 0
+          },
+          {
+            "id": "black",
+            "label": "Black",
+            "delta": 0
+          },
+          {
+            "id": "ultramarine",
+            "label": "Ultramarine",
+            "delta": 0
+          },
+          {
+            "id": "teal",
+            "label": "Teal",
+            "delta": 0
+          }
+        ]
+      },
+      "url": "https://www.apple.com/shop/buy-iphone/iphone-16",
+      "aliases": [
+        "6-1-inch"
+      ],
+      "family": "iphone-16"
+    },
+    {
+      "id": "ipad-pro",
+      "name": "iPad Pro",
+      "cat": "iPad",
+      "usd": 1199,
+      "variants": {
+        "size": [
+          {
+            "id": "11-inch",
+            "label": "11-inch",
+            "delta": 0
+          },
+          {
+            "id": "13-inch",
+            "label": "13-inch",
+            "delta": 300
+          }
+        ],
+        "connectivity": [
+          {
+            "id": "wi-fi",
+            "label": "Wi-Fi",
+            "delta": 0
+          },
+          {
+            "id": "wi-fi-cellular",
+            "label": "Wi-Fi + Cellular",
+            "delta": 200
+          }
+        ],
+        "glass": [
+          {
+            "id": "standard-glass",
+            "label": "Standard glass",
+            "delta": 0
+          },
+          {
+            "id": "nano-texture-glass",
+            "label": "Nano-texture glass",
+            "delta": 100
+          }
+        ],
+        "storage": [
+          {
+            "id": "256gb",
+            "label": "256GB",
+            "delta": 0
+          },
+          {
+            "id": "512gb",
             "label": "512GB",
             "delta": 200
           },
           {
             "id": "1tb",
             "label": "1TB",
-            "delta": 400
+            "delta": 600
+          },
+          {
+            "id": "2tb",
+            "label": "2TB",
+            "delta": 1100
           }
         ],
         "color": [
           {
-            "id": "deep-blue",
-            "label": "Deep Blue",
-            "delta": 0
-          },
-          {
-            "id": "cosmic-orange",
-            "label": "Cosmic Orange",
+            "id": "space-black",
+            "label": "Space Black",
             "delta": 0
           },
           {
@@ -134,77 +411,132 @@
             "delta": 0
           }
         ]
-      }
+      },
+      "url": "https://www.apple.com/shop/buy-ipad/ipad-pro",
+      "family": "ipad-pro"
     },
     {
-      "id": "ip17pm",
-      "name": "iPhone 17 Pro Max",
-      "cat": "iPhone",
-      "usd": 1199,
+      "id": "ipad-air",
+      "name": "iPad Air",
+      "cat": "iPad",
+      "usd": 749,
       "variants": {
-        "storage": [
+        "size": [
           {
-            "id": "256",
-            "label": "256GB",
+            "id": "11-inch",
+            "label": "11-inch",
             "delta": 0
           },
           {
-            "id": "512",
-            "label": "512GB",
+            "id": "13-inch",
+            "label": "13-inch",
             "delta": 200
+          }
+        ],
+        "connectivity": [
+          {
+            "id": "wi-fi",
+            "label": "Wi-Fi",
+            "delta": 0
+          },
+          {
+            "id": "wi-fi-cellular",
+            "label": "Wi-Fi + Cellular",
+            "delta": 150
+          }
+        ],
+        "storage": [
+          {
+            "id": "128gb",
+            "label": "128GB",
+            "delta": 0
+          },
+          {
+            "id": "256gb",
+            "label": "256GB",
+            "delta": 100
+          },
+          {
+            "id": "512gb",
+            "label": "512GB",
+            "delta": 300
           },
           {
             "id": "1tb",
             "label": "1TB",
-            "delta": 400
-          },
-          {
-            "id": "2tb",
-            "label": "2TB",
             "delta": 600
           }
         ],
         "color": [
           {
-            "id": "deep-blue",
-            "label": "Deep Blue",
+            "id": "space-gray",
+            "label": "Space Gray",
             "delta": 0
           },
           {
-            "id": "cosmic-orange",
-            "label": "Cosmic Orange",
+            "id": "starlight",
+            "label": "Starlight",
             "delta": 0
           },
           {
-            "id": "silver",
-            "label": "Silver",
+            "id": "purple",
+            "label": "Purple",
+            "delta": 0
+          },
+          {
+            "id": "blue",
+            "label": "Blue",
             "delta": 0
           }
         ]
-      }
+      },
+      "url": "https://www.apple.com/shop/buy-ipad/ipad-air",
+      "family": "ipad-air"
     },
     {
       "id": "ipad",
-      "name": "iPad (A16)",
+      "name": "iPad",
       "cat": "iPad",
       "usd": 449,
       "variants": {
+        "connectivity": [
+          {
+            "id": "wi-fi",
+            "label": "Wi-Fi",
+            "delta": 0
+          },
+          {
+            "id": "wi-fi-cellular",
+            "label": "Wi-Fi + Cellular",
+            "delta": 150
+          }
+        ],
         "storage": [
           {
-            "id": "128",
+            "id": "128gb",
             "label": "128GB",
             "delta": 0
           },
           {
-            "id": "256",
+            "id": "256gb",
             "label": "256GB",
-            "delta": 150
+            "delta": 100
+          },
+          {
+            "id": "512gb",
+            "label": "512GB",
+            "delta": 300
           }
         ],
         "color": [
           {
             "id": "blue",
             "label": "Blue",
+            "delta": 0
+          },
+          {
+            "id": "silver",
+            "label": "Silver",
             "delta": 0
           },
           {
@@ -216,61 +548,48 @@
             "id": "yellow",
             "label": "Yellow",
             "delta": 0
-          },
-          {
-            "id": "silver",
-            "label": "Silver",
-            "delta": 0
           }
         ]
-      }
+      },
+      "url": "https://www.apple.com/shop/buy-ipad/ipad",
+      "family": "ipad"
     },
     {
-      "id": "ipadair",
-      "name": "iPad Air",
+      "id": "ipad-mini",
+      "name": "iPad mini",
       "cat": "iPad",
-      "usd": 749,
+      "usd": 599,
       "variants": {
-        "size": [
+        "connectivity": [
           {
-            "id": "11",
-            "label": "11-inch",
+            "id": "wi-fi",
+            "label": "Wi-Fi",
             "delta": 0
           },
           {
-            "id": "13",
-            "label": "13-inch",
-            "delta": 200
+            "id": "wi-fi-cellular",
+            "label": "Wi-Fi + Cellular",
+            "delta": 150
           }
         ],
         "storage": [
           {
-            "id": "128",
+            "id": "128gb",
             "label": "128GB",
             "delta": 0
           },
           {
-            "id": "256",
+            "id": "256gb",
             "label": "256GB",
             "delta": 100
           },
           {
-            "id": "512",
+            "id": "512gb",
             "label": "512GB",
             "delta": 300
           }
         ],
         "color": [
-          {
-            "id": "space-gray",
-            "label": "Space Gray",
-            "delta": 0
-          },
-          {
-            "id": "blue",
-            "label": "Blue",
-            "delta": 0
-          },
           {
             "id": "purple",
             "label": "Purple",
@@ -280,97 +599,6 @@
             "id": "starlight",
             "label": "Starlight",
             "delta": 0
-          }
-        ]
-      }
-    },
-    {
-      "id": "ipadpro",
-      "name": "iPad Pro",
-      "cat": "iPad",
-      "usd": 1199,
-      "variants": {
-        "size": [
-          {
-            "id": "11",
-            "label": "11-inch",
-            "delta": 0
-          },
-          {
-            "id": "13",
-            "label": "13-inch",
-            "delta": 200
-          }
-        ],
-        "storage": [
-          {
-            "id": "256",
-            "label": "256GB",
-            "delta": 0
-          },
-          {
-            "id": "512",
-            "label": "512GB",
-            "delta": 200
-          },
-          {
-            "id": "1tb",
-            "label": "1TB",
-            "delta": 400
-          },
-          {
-            "id": "2tb",
-            "label": "2TB",
-            "delta": 800
-          }
-        ],
-        "color": [
-          {
-            "id": "space-black",
-            "label": "Space Black",
-            "delta": 0
-          },
-          {
-            "id": "silver",
-            "label": "Silver",
-            "delta": 0
-          }
-        ]
-      }
-    },
-    {
-      "id": "mba",
-      "name": "MacBook Air (M4)",
-      "cat": "Mac",
-      "usd": 999,
-      "variants": {
-        "storage": [
-          {
-            "id": "256",
-            "label": "256GB",
-            "delta": 0
-          },
-          {
-            "id": "512",
-            "label": "512GB",
-            "delta": 200
-          },
-          {
-            "id": "1tb",
-            "label": "1TB",
-            "delta": 400
-          }
-        ],
-        "color": [
-          {
-            "id": "midnight",
-            "label": "Midnight",
-            "delta": 0
-          },
-          {
-            "id": "starlight",
-            "label": "Starlight",
-            "delta": 0
           },
           {
             "id": "space-gray",
@@ -378,34 +606,170 @@
             "delta": 0
           },
           {
-            "id": "sky-blue",
-            "label": "Sky Blue",
+            "id": "blue",
+            "label": "Blue",
             "delta": 0
           }
         ]
-      }
+      },
+      "url": "https://www.apple.com/shop/buy-ipad/ipad-mini",
+      "family": "ipad-mini"
     },
     {
-      "id": "mbp",
-      "name": "MacBook Pro 14\" (M5)",
+      "id": "macbook-neo",
+      "name": "MacBook Neo",
       "cat": "Mac",
-      "usd": 1599,
+      "usd": 699,
       "variants": {
         "storage": [
           {
-            "id": "512",
-            "label": "512GB",
+            "id": "256gb",
+            "label": "256GB",
             "delta": 0
           },
           {
-            "id": "1tb",
-            "label": "1TB",
-            "delta": 200
+            "id": "512gb",
+            "label": "512GB",
+            "delta": 100
+          }
+        ],
+        "color": [
+          {
+            "id": "indigo",
+            "label": "Indigo",
+            "delta": 0
           },
           {
-            "id": "2tb",
-            "label": "2TB",
-            "delta": 600
+            "id": "silver",
+            "label": "Silver",
+            "delta": 0
+          },
+          {
+            "id": "citrus",
+            "label": "Citrus",
+            "delta": 0
+          },
+          {
+            "id": "blush",
+            "label": "Blush",
+            "delta": 0
+          }
+        ]
+      },
+      "url": "https://www.apple.com/shop/buy-mac/macbook-neo",
+      "family": "macbook-neo"
+    },
+    {
+      "id": "macbook-air",
+      "name": "MacBook Air",
+      "cat": "Mac",
+      "usd": 1299,
+      "variants": {
+        "size": [
+          {
+            "id": "13-inch",
+            "label": "13-inch",
+            "delta": 0
+          },
+          {
+            "id": "15-inch",
+            "label": "15-inch",
+            "delta": 100
+          }
+        ],
+        "chip": [
+          {
+            "id": "10-core-cpu-8-core-gpu",
+            "label": "10-core CPU / 8-core GPU",
+            "delta": 0
+          },
+          {
+            "id": "10-core-cpu-10-core-gpu",
+            "label": "10-core CPU / 10-core GPU",
+            "delta": 100
+          }
+        ],
+        "color": [
+          {
+            "id": "silver",
+            "label": "Silver",
+            "delta": 0
+          },
+          {
+            "id": "midnight",
+            "label": "Midnight",
+            "delta": 0
+          },
+          {
+            "id": "sky-blue",
+            "label": "Sky Blue",
+            "delta": 0
+          },
+          {
+            "id": "starlight",
+            "label": "Starlight",
+            "delta": 0
+          }
+        ]
+      },
+      "url": "https://www.apple.com/shop/buy-mac/macbook-air",
+      "family": "macbook-air"
+    },
+    {
+      "id": "macbook-pro",
+      "name": "MacBook Pro",
+      "cat": "Mac",
+      "usd": 1999,
+      "variants": {
+        "size": [
+          {
+            "id": "14-inch",
+            "label": "14-inch",
+            "delta": 0
+          },
+          {
+            "id": "16-inch",
+            "label": "16-inch",
+            "delta": 300
+          }
+        ],
+        "chip": [
+          {
+            "id": "m5-10-core-cpu-10-core-gpu",
+            "label": "M5 \u00b7 10-core CPU / 10-core GPU",
+            "delta": 0
+          },
+          {
+            "id": "m5-pro-15-core-cpu-16-core-gpu",
+            "label": "M5 Pro \u00b7 15-core CPU / 16-core GPU",
+            "delta": 500
+          },
+          {
+            "id": "m5-pro-18-core-cpu-20-core-gpu",
+            "label": "M5 Pro \u00b7 18-core CPU / 20-core GPU",
+            "delta": 700
+          },
+          {
+            "id": "m5-max-18-core-cpu-32-core-gpu",
+            "label": "M5 Max \u00b7 18-core CPU / 32-core GPU",
+            "delta": 2100
+          },
+          {
+            "id": "m5-max-18-core-cpu-40-core-gpu",
+            "label": "M5 Max \u00b7 18-core CPU / 40-core GPU",
+            "delta": 2700
+          }
+        ],
+        "finish": [
+          {
+            "id": "standard",
+            "label": "Standard",
+            "delta": 0
+          },
+          {
+            "id": "nano-texture",
+            "label": "Nano-texture",
+            "delta": 150
           }
         ],
         "color": [
@@ -420,36 +784,305 @@
             "delta": 0
           }
         ]
-      }
+      },
+      "url": "https://www.apple.com/shop/buy-mac/macbook-pro",
+      "family": "macbook-pro"
     },
     {
-      "id": "watch",
-      "name": "Apple Watch Series 11",
+      "id": "imac",
+      "name": "iMac",
+      "cat": "Mac",
+      "usd": 1499,
+      "variants": {
+        "chip": [
+          {
+            "id": "8-core-cpu-8-core-gpu",
+            "label": "8-core CPU / 8-core GPU",
+            "delta": 0
+          },
+          {
+            "id": "10-core-cpu-10-core-gpu",
+            "label": "10-core CPU / 10-core GPU",
+            "delta": 200
+          }
+        ],
+        "color": [
+          {
+            "id": "yellow",
+            "label": "Yellow",
+            "delta": 0
+          },
+          {
+            "id": "silver",
+            "label": "Silver",
+            "delta": 0
+          },
+          {
+            "id": "blue",
+            "label": "Blue",
+            "delta": 0
+          },
+          {
+            "id": "orange",
+            "label": "Orange",
+            "delta": 0
+          },
+          {
+            "id": "purple",
+            "label": "Purple",
+            "delta": 0
+          },
+          {
+            "id": "pink",
+            "label": "Pink",
+            "delta": 0
+          },
+          {
+            "id": "green",
+            "label": "Green",
+            "delta": 0
+          }
+        ]
+      },
+      "url": "https://www.apple.com/shop/buy-mac/imac",
+      "family": "imac"
+    },
+    {
+      "id": "mac-mini",
+      "name": "Mac mini",
+      "cat": "Mac",
+      "usd": 899,
+      "variants": {
+        "chip": [
+          {
+            "id": "m6-12-core-cpu-12-core-gpu",
+            "label": "M6 \u00b7 12-core CPU / 12-core GPU",
+            "delta": 0
+          },
+          {
+            "id": "m5-pro-15-core-cpu-16-core-gpu",
+            "label": "M5 Pro \u00b7 15-core CPU / 16-core GPU",
+            "delta": 800
+          },
+          {
+            "id": "m5-pro-18-core-cpu-20-core-gpu",
+            "label": "M5 Pro \u00b7 18-core CPU / 20-core GPU",
+            "delta": 1000
+          }
+        ]
+      },
+      "url": "https://www.apple.com/shop/buy-mac/mac-mini",
+      "family": "mac-mini"
+    },
+    {
+      "id": "mac-studio",
+      "name": "Mac Studio",
+      "cat": "Mac",
+      "usd": 2499,
+      "variants": {
+        "chip": [
+          {
+            "id": "m5-max-18-core-cpu-32-core-gpu",
+            "label": "M5 Max \u00b7 18-core CPU / 32-core GPU",
+            "delta": 0
+          },
+          {
+            "id": "m5-max-18-core-cpu-40-core-gpu",
+            "label": "M5 Max \u00b7 18-core CPU / 40-core GPU",
+            "delta": 600
+          },
+          {
+            "id": "m5-ultra-30-core-cpu-64-core-gpu",
+            "label": "M5 Ultra \u00b7 30-core CPU / 64-core GPU",
+            "delta": 3000
+          },
+          {
+            "id": "m5-ultra-36-core-cpu-80-core-gpu",
+            "label": "M5 Ultra \u00b7 36-core CPU / 80-core GPU",
+            "delta": 4300
+          }
+        ]
+      },
+      "url": "https://www.apple.com/shop/buy-mac/mac-studio",
+      "family": "mac-studio"
+    },
+    {
+      "id": "studio-display",
+      "name": "Studio Display",
+      "cat": "Mac",
+      "usd": 1599,
+      "variants": {
+        "glass": [
+          {
+            "id": "standard-glass",
+            "label": "Standard glass",
+            "delta": 0
+          },
+          {
+            "id": "nano-texture-glass",
+            "label": "Nano-texture glass",
+            "delta": 300
+          }
+        ],
+        "stand": [
+          {
+            "id": "vesa-mount-adapter",
+            "label": "VESA mount adapter",
+            "delta": 0
+          },
+          {
+            "id": "tilt-adjustable-stand",
+            "label": "Tilt-adjustable stand",
+            "delta": 0
+          },
+          {
+            "id": "tilt-and-height-adjustable-stand",
+            "label": "Tilt- and height-adjustable stand",
+            "delta": 400
+          }
+        ]
+      },
+      "url": "https://www.apple.com/shop/buy-mac/studio-display",
+      "family": "studio-display"
+    },
+    {
+      "id": "studio-display-xdr",
+      "name": "Studio Display XDR",
+      "cat": "Mac",
+      "usd": 2899,
+      "variants": {
+        "glass": [
+          {
+            "id": "standard-glass",
+            "label": "Standard glass",
+            "delta": 0
+          },
+          {
+            "id": "nano-texture-glass",
+            "label": "Nano-texture glass",
+            "delta": 300
+          }
+        ],
+        "stand": [
+          {
+            "id": "vesa-mount-adapter-stand-not-included",
+            "label": "VESA mount adapter (stand not included)",
+            "delta": 0
+          },
+          {
+            "id": "tilt-and-height-adjustable-stand",
+            "label": "Tilt- and height-adjustable stand",
+            "delta": 400
+          }
+        ]
+      },
+      "url": "https://www.apple.com/shop/buy-mac/studio-display-xdr",
+      "family": "studio-display-xdr"
+    },
+    {
+      "id": "apple-watch-series-12",
+      "name": "Apple Watch Series 12",
       "cat": "Watch",
       "usd": 399,
       "variants": {
         "size": [
           {
-            "id": "41",
-            "label": "41mm",
+            "id": "42mm",
+            "label": "42mm",
             "delta": 0
           },
           {
-            "id": "45",
-            "label": "45mm",
-            "delta": 30
+            "id": "46mm",
+            "label": "46mm",
+            "delta": 50
           }
         ],
-        "cellular": [
+        "material": [
+          {
+            "id": "aluminum-space-gray",
+            "label": "Aluminum \u00b7 Space Gray",
+            "delta": 0
+          },
+          {
+            "id": "aluminum-black",
+            "label": "Aluminum \u00b7 Black",
+            "delta": 0
+          },
+          {
+            "id": "aluminum-dark-bronze",
+            "label": "Aluminum \u00b7 Dark Bronze",
+            "delta": 0
+          },
+          {
+            "id": "aluminum-light-gold",
+            "label": "Aluminum \u00b7 Light Gold",
+            "delta": 0
+          },
+          {
+            "id": "titanium-natural",
+            "label": "Titanium \u00b7 Natural",
+            "delta": 200
+          },
+          {
+            "id": "titanium-radiant-gold",
+            "label": "Titanium \u00b7 Radiant Gold",
+            "delta": 200
+          },
+          {
+            "id": "ceramic-night-blue",
+            "label": "Ceramic \u00b7 Night Blue",
+            "delta": 400
+          },
+          {
+            "id": "ceramic-pearl-white",
+            "label": "Ceramic \u00b7 Pearl White",
+            "delta": 400
+          }
+        ],
+        "connectivity": [
           {
             "id": "gps",
             "label": "GPS",
             "delta": 0
           },
           {
-            "id": "cell",
+            "id": "gps-cellular",
             "label": "GPS + Cellular",
             "delta": 100
+          }
+        ]
+      },
+      "url": "https://www.apple.com/shop/buy-watch/apple-watch",
+      "family": "apple-watch"
+    },
+    {
+      "id": "apple-watch-se-3",
+      "name": "Apple Watch SE 3",
+      "cat": "Watch",
+      "usd": 249,
+      "variants": {
+        "size": [
+          {
+            "id": "40mm",
+            "label": "40mm",
+            "delta": 0
+          },
+          {
+            "id": "44mm",
+            "label": "44mm",
+            "delta": 30
+          }
+        ],
+        "connectivity": [
+          {
+            "id": "gps",
+            "label": "GPS",
+            "delta": 0
+          },
+          {
+            "id": "gps-cellular",
+            "label": "GPS + Cellular",
+            "delta": 50
           }
         ],
         "color": [
@@ -462,26 +1095,3633 @@
             "id": "starlight",
             "label": "Starlight",
             "delta": 0
-          },
+          }
+        ]
+      },
+      "url": "https://www.apple.com/shop/buy-watch/apple-watch-se",
+      "family": "apple-watch-se"
+    },
+    {
+      "id": "apple-watch-ultra-4",
+      "name": "Apple Watch Ultra 4",
+      "cat": "Watch",
+      "usd": 799,
+      "variants": {
+        "color": [
           {
-            "id": "rose-gold",
-            "label": "Rose Gold",
+            "id": "natural",
+            "label": "Natural",
             "delta": 0
           },
           {
-            "id": "jet-black",
-            "label": "Jet Black",
+            "id": "black",
+            "label": "Black",
             "delta": 0
           }
         ]
-      }
+      },
+      "url": "https://www.apple.com/shop/buy-watch/apple-watch-ultra",
+      "family": "apple-watch-ultra"
     },
     {
-      "id": "airpods",
+      "id": "apple-watch-herm-s",
+      "name": "Apple Watch Herm\u00e8s",
+      "cat": "Watch",
+      "usd": 1399,
+      "variants": {
+        "size": [
+          {
+            "id": "42mm",
+            "label": "42mm",
+            "delta": 0
+          },
+          {
+            "id": "46mm",
+            "label": "46mm",
+            "delta": 50
+          }
+        ],
+        "color": [
+          {
+            "id": "radiant-gold",
+            "label": "Radiant Gold",
+            "delta": 0
+          },
+          {
+            "id": "silver",
+            "label": "Silver",
+            "delta": 0
+          }
+        ]
+      },
+      "url": "https://www.apple.com/shop/buy-watch/apple-watch-hermes",
+      "family": "apple-watch-hermes"
+    },
+    {
+      "id": "apple-watch-herm-s-ultra-4",
+      "name": "Apple Watch Herm\u00e8s Ultra 4",
+      "cat": "Watch",
+      "usd": 1499,
+      "variants": {},
+      "url": "https://www.apple.com/shop/buy-watch/apple-watch-hermes-ultra",
+      "family": "apple-watch-hermes-ultra"
+    },
+    {
+      "id": "apple-vision-pro",
+      "name": "Apple Vision Pro",
+      "cat": "Vision",
+      "usd": 3699,
+      "variants": {},
+      "url": "https://www.apple.com/shop/buy-vision/apple-vision-pro",
+      "note": "Starting price \u2014 other configurations aren't modelled; edit the price if yours differs.",
+      "family": "apple-vision-pro"
+    },
+    {
+      "id": "airpods-pro-3",
       "name": "AirPods Pro 3",
       "cat": "Audio",
       "usd": 249,
-      "variants": {}
+      "variants": {},
+      "url": "https://www.apple.com/shop/buy-airpods/airpods-pro-3",
+      "note": "Starting price \u2014 other configurations aren't modelled; edit the price if yours differs.",
+      "family": "airpods-pro-3"
+    },
+    {
+      "id": "airpods-5",
+      "name": "AirPods 5",
+      "cat": "Audio",
+      "usd": 129,
+      "variants": {},
+      "url": "https://www.apple.com/shop/buy-airpods/airpods-4",
+      "family": "airpods-4"
+    },
+    {
+      "id": "airpods-5-with-wireless-charging-case",
+      "name": "AirPods 5 with Wireless Charging Case",
+      "cat": "Audio",
+      "usd": 149,
+      "variants": {},
+      "url": "https://www.apple.com/shop/buy-airpods/airpods-4",
+      "family": "airpods-4"
+    },
+    {
+      "id": "airpods-max-2",
+      "name": "AirPods Max 2",
+      "cat": "Audio",
+      "usd": 549,
+      "variants": {
+        "color": [
+          {
+            "id": "midnight",
+            "label": "Midnight",
+            "delta": 0
+          },
+          {
+            "id": "purple",
+            "label": "Purple",
+            "delta": 0
+          },
+          {
+            "id": "orange",
+            "label": "Orange",
+            "delta": 0
+          },
+          {
+            "id": "starlight",
+            "label": "Starlight",
+            "delta": 0
+          },
+          {
+            "id": "blue",
+            "label": "Blue",
+            "delta": 0
+          }
+        ]
+      },
+      "url": "https://www.apple.com/shop/buy-airpods/airpods-max",
+      "family": "airpods-max"
+    },
+    {
+      "id": "homepod",
+      "name": "HomePod",
+      "cat": "Audio",
+      "usd": 349,
+      "variants": {
+        "color": [
+          {
+            "id": "midnight",
+            "label": "Midnight",
+            "delta": 0
+          },
+          {
+            "id": "white",
+            "label": "White",
+            "delta": 0
+          }
+        ]
+      },
+      "url": "https://www.apple.com/shop/buy-homepod/homepod",
+      "family": "homepod"
+    },
+    {
+      "id": "homepod-mini",
+      "name": "HomePod mini",
+      "cat": "Audio",
+      "usd": 129,
+      "variants": {
+        "color": [
+          {
+            "id": "blue",
+            "label": "Blue",
+            "delta": 0
+          },
+          {
+            "id": "orange",
+            "label": "Orange",
+            "delta": 0
+          },
+          {
+            "id": "midnight",
+            "label": "Midnight",
+            "delta": 0
+          },
+          {
+            "id": "white",
+            "label": "White",
+            "delta": 0
+          },
+          {
+            "id": "yellow",
+            "label": "Yellow",
+            "delta": 0
+          }
+        ]
+      },
+      "url": "https://www.apple.com/shop/buy-homepod/homepod-mini",
+      "family": "homepod-mini"
+    },
+    {
+      "id": "apple-tv-4k",
+      "name": "Apple TV 4K",
+      "cat": "Home",
+      "usd": 199,
+      "variants": {
+        "connectivity": [
+          {
+            "id": "wi-fi",
+            "label": "Wi-Fi",
+            "delta": 0
+          },
+          {
+            "id": "wi-fi-ethernet",
+            "label": "Wi-Fi + Ethernet",
+            "delta": 25
+          }
+        ],
+        "storage": [
+          {
+            "id": "64gb",
+            "label": "64GB",
+            "delta": 0
+          },
+          {
+            "id": "128gb",
+            "label": "128GB",
+            "delta": 25
+          }
+        ]
+      },
+      "url": "https://www.apple.com/shop/buy-tv/apple-tv-4k",
+      "family": "apple-tv-4k"
+    },
+    {
+      "id": "airtag",
+      "name": "AirTag",
+      "cat": "Accessories",
+      "usd": 29,
+      "variants": {},
+      "url": "https://www.apple.com/shop/buy-airtag/airtag",
+      "family": "airtag"
+    },
+    {
+      "id": "airtag-4-pack",
+      "name": "AirTag 4 pack",
+      "cat": "Accessories",
+      "usd": 99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/buy-airtag/airtag",
+      "family": "airtag"
+    },
+    {
+      "id": "hikawa-grip-stand-for-iphone-magsafe-compatible-orange-swirl",
+      "name": "Hikawa Grip & Stand for iPhone (MagSafe Compatible) - Orange Swirl",
+      "cat": "Accessories \u2014 Accessibility",
+      "usd": 54.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsjf2zm/a/hikawa-grip-stand-for-iphone-magsafe-compatible-orange-swirl",
+      "parts": [
+        "hsjf2zm"
+      ]
+    },
+    {
+      "id": "iphone-duo-folio-with-kickstand",
+      "name": "iPhone Duo Folio with Kickstand",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 129,
+      "variants": {
+        "color": [
+          {
+            "id": "taupe",
+            "label": "Taupe",
+            "delta": 0
+          },
+          {
+            "id": "navy-blue",
+            "label": "Navy Blue",
+            "delta": 0
+          }
+        ]
+      },
+      "url": "https://www.apple.com/shop/product/mkr64zm/a/iphone-duo-folio-with-kickstand-taupe",
+      "parts": [
+        "mkr64zm",
+        "mkr74zm"
+      ]
+    },
+    {
+      "id": "iphone-18-pro-techwoven-case-with-magsafe-chambray-blue",
+      "name": "iPhone 18 Pro TechWoven Case with MagSafe \u2013 Chambray Blue",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 59,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mkd54zm/a/iphone-18-pro-techwoven-case-with-magsafe-chambray-blue",
+      "parts": [
+        "mkd54zm"
+      ]
+    },
+    {
+      "id": "iphone-18-pro-max-techwoven-case-with-magsafe-burgundy",
+      "name": "iPhone 18 Pro Max TechWoven Case with MagSafe \u2013 Burgundy",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 59,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mkdm4zm/a/iphone-18-pro-max-techwoven-case-with-magsafe-burgundy",
+      "parts": [
+        "mkdm4zm"
+      ]
+    },
+    {
+      "id": "iphone-18-pro-max-silicone-case-with-magsafe-magenta",
+      "name": "iPhone 18 Pro Max Silicone Case with MagSafe \u2013 Magenta",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 49,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mk904zm/a/iphone-18-pro-max-silicone-case-with-magsafe-magenta",
+      "parts": [
+        "mk904zm"
+      ]
+    },
+    {
+      "id": "iphone-duo-case",
+      "name": "iPhone Duo Case",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 79,
+      "variants": {
+        "color": [
+          {
+            "id": "navy-blue",
+            "label": "Navy Blue",
+            "delta": 0
+          },
+          {
+            "id": "sand",
+            "label": "Sand",
+            "delta": 0
+          }
+        ]
+      },
+      "url": "https://www.apple.com/shop/product/mkr84zm/a/iphone-duo-case-navy-blue",
+      "parts": [
+        "mkr84zm",
+        "mkr94zm"
+      ]
+    },
+    {
+      "id": "iphone-18-pro-silicone-case-with-magsafe-crisp-blue",
+      "name": "iPhone 18 Pro Silicone Case with MagSafe \u2013 Crisp Blue",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 49,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mk8w4zm/a/iphone-18-pro-silicone-case-with-magsafe-crisp-blue",
+      "parts": [
+        "mk8w4zm"
+      ]
+    },
+    {
+      "id": "iphone-18-pro-max-clear-case-with-magsafe",
+      "name": "iPhone 18 Pro Max Clear Case with MagSafe",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 49,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mkdv4zm/a/iphone-18-pro-max-clear-case-with-magsafe",
+      "parts": [
+        "mkdv4zm"
+      ]
+    },
+    {
+      "id": "iphone-17-pro-max-techwoven-case-with-magsafe",
+      "name": "iPhone 17 Pro Max TechWoven Case with MagSafe",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 59,
+      "variants": {
+        "color": [
+          {
+            "id": "green",
+            "label": "Green",
+            "delta": 0
+          },
+          {
+            "id": "sienna",
+            "label": "Sienna",
+            "delta": 0
+          }
+        ]
+      },
+      "url": "https://www.apple.com/shop/product/mgfd4ll/a/iphone-17-pro-max-techwoven-case-with-magsafe-green",
+      "parts": [
+        "mgfd4ll",
+        "mgfc4ll"
+      ]
+    },
+    {
+      "id": "crossbody-strap",
+      "name": "Crossbody Strap",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 59,
+      "variants": {
+        "color": [
+          {
+            "id": "crisp-blue",
+            "label": "Crisp Blue",
+            "delta": 0
+          },
+          {
+            "id": "burgundy",
+            "label": "Burgundy",
+            "delta": 0
+          }
+        ]
+      },
+      "url": "https://www.apple.com/shop/product/mk984ll/a/crossbody-strap-crisp-blue",
+      "parts": [
+        "mk984ll",
+        "mk974ll"
+      ]
+    },
+    {
+      "id": "iphone-17-pro-techwoven-case-with-magsafe-sienna",
+      "name": "iPhone 17 Pro TechWoven Case with MagSafe \u2013 Sienna",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 59,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mgf64ll/a/iphone-17-pro-techwoven-case-with-magsafe-sienna",
+      "parts": [
+        "mgf64ll"
+      ]
+    },
+    {
+      "id": "wrist-strap",
+      "name": "Wrist Strap",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 29,
+      "variants": {
+        "color": [
+          {
+            "id": "burgundy",
+            "label": "Burgundy",
+            "delta": 0
+          },
+          {
+            "id": "crisp-blue",
+            "label": "Crisp Blue",
+            "delta": 0
+          },
+          {
+            "id": "olive",
+            "label": "Olive",
+            "delta": 0
+          }
+        ]
+      },
+      "url": "https://www.apple.com/shop/product/mkf74ll/a/wrist-strap-burgundy",
+      "parts": [
+        "mkf74ll",
+        "mkf84ll",
+        "mkf94ll"
+      ]
+    },
+    {
+      "id": "iphone-finewoven-wallet-with-magsafe",
+      "name": "iPhone FineWoven Wallet with MagSafe",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 59,
+      "variants": {
+        "color": [
+          {
+            "id": "magenta",
+            "label": "Magenta",
+            "delta": 0
+          },
+          {
+            "id": "burgundy",
+            "label": "Burgundy",
+            "delta": 0
+          }
+        ]
+      },
+      "url": "https://www.apple.com/shop/product/mk9g4zm/a/iphone-finewoven-wallet-with-magsafe-magenta",
+      "parts": [
+        "mk9g4zm",
+        "mk9h4zm"
+      ]
+    },
+    {
+      "id": "iphone-17-pro-max-clear-case-with-magsafe",
+      "name": "iPhone 17 Pro Max Clear Case with MagSafe",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 49,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mgfw4ll/a/iphone-17-pro-max-clear-case-with-magsafe",
+      "parts": [
+        "mgfw4ll"
+      ]
+    },
+    {
+      "id": "beats-iphone-17-pro-max-rugged-case-with-magsafe-and-camera-control-sierra-orange",
+      "name": "Beats iPhone 17 Pro Max Rugged Case with MagSafe and Camera Control \u2013 Sierra Orange",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 79,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mgjc4ll/a/beats-iphone-17-pro-max-rugged-case-with-magsafe-and-camera-control-sierra-orange",
+      "parts": [
+        "mgjc4ll"
+      ]
+    },
+    {
+      "id": "iphone-17-pro-max-silicone-case-with-magsafe-orange",
+      "name": "iPhone 17 Pro Max Silicone Case with MagSafe \u2013 Orange",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 49,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mgfl4zm/a/iphone-17-pro-max-silicone-case-with-magsafe-orange",
+      "parts": [
+        "mgfl4zm"
+      ]
+    },
+    {
+      "id": "iphone-17-pro-silicone-case-with-magsafe-midnight",
+      "name": "iPhone 17 Pro Silicone Case with MagSafe \u2013 Midnight",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 49,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mgfh4zm/a/iphone-17-pro-silicone-case-with-magsafe-midnight",
+      "parts": [
+        "mgfh4zm"
+      ]
+    },
+    {
+      "id": "beats-iphone-17-pro-kickstand-case-with-magsafe-and-camera-control-lime-stone",
+      "name": "Beats iPhone 17 Pro Kickstand Case with MagSafe and Camera Control \u2013 Lime Stone",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 59,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mgtn4ll/a/beats-iphone-17-pro-kickstand-case-with-magsafe-and-camera-control-lime-stone",
+      "parts": [
+        "mgtn4ll"
+      ]
+    },
+    {
+      "id": "beats-iphone-17-pro-max-case-with-magsafe-and-camera-control-granite-gray",
+      "name": "Beats iPhone 17 Pro Max Case with MagSafe and Camera Control \u2013 Granite Gray",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 45,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mgjd4ll/a/beats-iphone-17-pro-max-case-with-magsafe-and-camera-control-granite-gray",
+      "parts": [
+        "mgjd4ll"
+      ]
+    },
+    {
+      "id": "beats-iphone-17-pro-rugged-case-with-magsafe-and-camera-control-rocky-blue",
+      "name": "Beats iPhone 17 Pro Rugged Case with MagSafe and Camera Control \u2013 Rocky Blue",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 79,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mgjn4ll/a/beats-iphone-17-pro-rugged-case-with-magsafe-and-camera-control-rocky-blue",
+      "parts": [
+        "mgjn4ll"
+      ]
+    },
+    {
+      "id": "beats-iphone-17-pro-case-with-magsafe-and-camera-control-bedrock-blue",
+      "name": "Beats iPhone 17 Pro Case with MagSafe and Camera Control \u2013 Bedrock Blue",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 45,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mgkg4ll/a/beats-iphone-17-pro-case-with-magsafe-and-camera-control-bedrock-blue",
+      "parts": [
+        "mgkg4ll"
+      ]
+    },
+    {
+      "id": "beats-iphone-17-pro-max-kickstand-case-with-magsafe-and-camera-control-pebble-pink",
+      "name": "Beats iPhone 17 Pro Max Kickstand Case with MagSafe and Camera Control \u2013 Pebble Pink",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 59,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mgya4ll/a/beats-iphone-17-pro-max-kickstand-case-with-magsafe-and-camera-control-pebble-pink",
+      "parts": [
+        "mgya4ll"
+      ]
+    },
+    {
+      "id": "tech21-flexquartz-case-for-iphone-17-pro-max-magsafe-compatible",
+      "name": "Tech21 FlexQuartz Case for iPhone 17 Pro Max (MagSafe compatible)",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 54.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsga2zm/a/tech21-flexquartz-case-for-iphone-17-pro-max-magsafe-compatible",
+      "parts": [
+        "hsga2zm"
+      ]
+    },
+    {
+      "id": "mophie-optical-check-case-for-iphone-17-pro-max",
+      "name": "mophie Optical Check Case for iPhone 17 Pro Max",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 59.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsfv2zm/a/mophie-optical-check-case-for-iphone-17-pro-max",
+      "parts": [
+        "hsfv2zm"
+      ]
+    },
+    {
+      "id": "tech21-flexquartz-case-for-iphone-17-pro-magsafe-compatible",
+      "name": "Tech21 FlexQuartz Case for iPhone 17 Pro (MagSafe compatible)",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 54.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsg72zm/a/tech21-flexquartz-case-for-iphone-17-pro-magsafe-compatible",
+      "parts": [
+        "hsg72zm"
+      ]
+    },
+    {
+      "id": "mophie-check-case-for-iphone-17-pro",
+      "name": "mophie Check Case for iPhone 17 Pro",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 59.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsfs2zm/a/mophie-check-case-for-iphone-17-pro",
+      "parts": [
+        "hsfs2zm"
+      ]
+    },
+    {
+      "id": "iphone-17-silicone-case-with-magsafe-electric-lavender",
+      "name": "iPhone 17 Silicone Case with MagSafe \u2013 Electric Lavender",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 49,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mhvt4zm/a/iphone-17-silicone-case-with-magsafe-electric-lavender",
+      "parts": [
+        "mhvt4zm"
+      ]
+    },
+    {
+      "id": "beats-iphone-17-case-with-magsafe-and-camera-control-pebble-pink",
+      "name": "Beats iPhone 17 Case with MagSafe and Camera Control \u2013 Pebble Pink",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 45,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mgk44ll/a/beats-iphone-17-case-with-magsafe-and-camera-control-pebble-pink",
+      "parts": [
+        "mgk44ll"
+      ]
+    },
+    {
+      "id": "beats-iphone-17-rugged-case-with-magsafe-and-camera-control-rocky-blue",
+      "name": "Beats iPhone 17 Rugged Case with MagSafe and Camera Control \u2013 Rocky Blue",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 79,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mgjy4ll/a/beats-iphone-17-rugged-case-with-magsafe-and-camera-control-rocky-blue",
+      "parts": [
+        "mgjy4ll"
+      ]
+    },
+    {
+      "id": "beats-iphone-17-kickstand-case-with-magsafe-and-camera-control-lime-stone",
+      "name": "Beats iPhone 17 Kickstand Case with MagSafe and Camera Control \u2013 Lime Stone",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 59,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mgtl4ll/a/beats-iphone-17-kickstand-case-with-magsafe-and-camera-control-lime-stone",
+      "parts": [
+        "mgtl4ll"
+      ]
+    },
+    {
+      "id": "tech21-flexquartz-case-for-iphone-17-magsafe-compatible",
+      "name": "Tech21 FlexQuartz Case for iPhone 17 (MagSafe compatible)",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 54.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsgd2zm/a/tech21-flexquartz-case-for-iphone-17-magsafe-compatible",
+      "parts": [
+        "hsgd2zm"
+      ]
+    },
+    {
+      "id": "siri-remote",
+      "name": "Siri Remote",
+      "cat": "Accessories \u2014 Cases & Protection",
+      "usd": 59,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mw5g3am/a/siri-remote",
+      "parts": [
+        "mw5g3am"
+      ]
+    },
+    {
+      "id": "240w-usb-c-charge-cable-2-m",
+      "name": "240W USB-C Charge Cable (2 m)",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 29,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/myqt3am/a/240w-usb-c-charge-cable-2-m",
+      "parts": [
+        "myqt3am"
+      ]
+    },
+    {
+      "id": "magsafe-charger-1-m",
+      "name": "MagSafe Charger (1 m)",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 39,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mgd74ll/a/magsafe-charger-1-m",
+      "parts": [
+        "mgd74ll"
+      ]
+    },
+    {
+      "id": "magsafe-charger-2-m",
+      "name": "MagSafe Charger (2 m)",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 49,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mgdm4ll/a/magsafe-charger-2-m",
+      "parts": [
+        "mgdm4ll"
+      ]
+    },
+    {
+      "id": "60w-usb-c-charge-cable-1-m",
+      "name": "60W USB-C Charge Cable (1 m)",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 19,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mw493am/a/60w-usb-c-charge-cable-1-m",
+      "parts": [
+        "mw493am"
+      ]
+    },
+    {
+      "id": "apple-watch-magnetic-fast-charger-to-usb-c-cable-1-m",
+      "name": "Apple Watch Magnetic Fast Charger to USB-C Cable (1 m)",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 29,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/ml434am/a/apple-watch-magnetic-fast-charger-to-usb-c-cable-1-m",
+      "parts": [
+        "ml434am"
+      ]
+    },
+    {
+      "id": "20w-usb-c-power-adapter",
+      "name": "20W USB-C Power Adapter",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 19,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mwvv3am/a/20w-usb-c-power-adapter",
+      "parts": [
+        "mwvv3am"
+      ]
+    },
+    {
+      "id": "usb-c-to-magsafe-3-cable-2-m-silver",
+      "name": "USB-C to MagSafe 3 Cable (2 m) - Silver",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 49,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mw613am/a/usb-c-to-magsafe-3-cable-2-m-silver",
+      "parts": [
+        "mw613am"
+      ]
+    },
+    {
+      "id": "thunderbolt-5-usb-c-pro-cable-1-m",
+      "name": "Thunderbolt 5 (USB-C) Pro Cable (1 m)",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 69,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mdw94am/a/thunderbolt-5-usb",
+      "parts": [
+        "mdw94am"
+      ]
+    },
+    {
+      "id": "40w-dynamic-power-adapter-with-60w-max",
+      "name": "40W Dynamic Power Adapter with 60W Max",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 39,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mgkn4am/a/40w-dynamic-power-adapter-with-60w-max",
+      "parts": [
+        "mgkn4am"
+      ]
+    },
+    {
+      "id": "35w-dual-usb-c-port-compact-power-adapter",
+      "name": "35W Dual USB-C Port Compact Power Adapter",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 59,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mw2h3am/a/35w-dual-usb-c-port-compact-power-adapter",
+      "parts": [
+        "mw2h3am"
+      ]
+    },
+    {
+      "id": "thunderbolt-4-usb-c-pro-cable-1-8-m",
+      "name": "Thunderbolt 4 (USB-C) Pro Cable (1.8 m)",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 129,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mw5j3am/a/thunderbolt-4-usb",
+      "parts": [
+        "mw5j3am"
+      ]
+    },
+    {
+      "id": "thunderbolt-4-usb-c-pro-cable-3-m",
+      "name": "Thunderbolt 4 (USB-C) Pro Cable (3 m)",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 159,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mw5h3am/a/thunderbolt-4-usb",
+      "parts": [
+        "mw5h3am"
+      ]
+    },
+    {
+      "id": "beats-usb-a-to-usb-c-woven-cable-1-5-m-5-ft-power-pink",
+      "name": "Beats USB-A to USB-C Woven Cable (1.5 m / 5 ft.) \u2013 Power Pink",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 18.99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mk8r4ll/a/beats-usb-a-to-usb-c-woven-cable-15-m-5-ft-power-pink",
+      "parts": [
+        "mk8r4ll"
+      ]
+    },
+    {
+      "id": "beats-usb-c-to-usb-c-woven-cable-1-5-m-5-ft-power-pink",
+      "name": "Beats USB-C to USB-C Woven Cable (1.5 m / 5 ft.) \u2013 Power Pink",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 18.99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mk8p4ll/a/beats-usb",
+      "parts": [
+        "mk8p4ll"
+      ]
+    },
+    {
+      "id": "beats-usb-c-to-usb-c-woven-cable-3-m-10-ft-rapid-red",
+      "name": "Beats USB-C to USB-C Woven Cable (3 m / 10 ft) \u2013 Rapid Red",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 29.99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mhx94ll/a/beats-usb",
+      "parts": [
+        "mhx94ll"
+      ]
+    },
+    {
+      "id": "beats-usb-a-to-usb-c-woven-short-cable-20-cm-8-in-bolt-black",
+      "name": "Beats USB-A to USB-C Woven Short Cable (20 cm / 8 in.) \u2013 Bolt Black",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 18.99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/meql4ll/a/beats-usb-a-to-usb-c-woven-short-cable-20-cm-8-in-bolt-black",
+      "parts": [
+        "meql4ll"
+      ]
+    },
+    {
+      "id": "two-pack-beats-usb-c-to-usb-c-woven-cables-bolt-black",
+      "name": "Two-Pack Beats USB-C to USB-C Woven Cables \u2013 Bolt Black",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 34.99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mdgc4ll/a/two-pack-beats-usb-c-to-usb-c-woven-cables-bolt-black",
+      "parts": [
+        "mdgc4ll"
+      ]
+    },
+    {
+      "id": "belkin-ultra-hd-high-speed-8k-4k-hdmi-cable-2-m",
+      "name": "Belkin Ultra HD High Speed 8K/4K HDMI Cable (2 m)",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 34.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hll52zm/a/belkin-ultra-hd-high-speed-8k-4k-hdmi-cable-2-m",
+      "parts": [
+        "hll52zm"
+      ]
+    },
+    {
+      "id": "beats-usb-c-to-usb-c-woven-short-cable-20-cm-8-in-bolt-black",
+      "name": "Beats USB-C to USB-C Woven Short Cable (20 cm / 8 in.) \u2013 Bolt Black",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 18.99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/meq94ll/a/beats-usb",
+      "parts": [
+        "meq94ll"
+      ]
+    },
+    {
+      "id": "two-pack-beats-usb-a-to-usb-c-woven-cables-bolt-black",
+      "name": "Two-Pack Beats USB-A to USB-C Woven Cables \u2013 Bolt Black",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 34.99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mdgh4ll/a/two-pack-beats-usb-a-to-usb-c-woven-cables-bolt-black",
+      "parts": [
+        "mdgh4ll"
+      ]
+    },
+    {
+      "id": "nimble-powerknit-flex-1m-2m-3m-usb-c-to-usb-c-cables",
+      "name": "Nimble PowerKnit FLEX 1m / 2m / 3m USB-C to USB-C Cables",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 59.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hrhr2zm/a/nimble-powerknit-flex-1m-2m-3m-usb-c-to-usb-c-cables",
+      "parts": [
+        "hrhr2zm"
+      ]
+    },
+    {
+      "id": "scosche-strikeline-usb-c-to-usb-c-cable-1-m",
+      "name": "Scosche StrikeLine USB-C to USB-C Cable (1 m)",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 19.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsjx2zm/a/scosche-strikeline-usb-c-to-usb-c-cable",
+      "parts": [
+        "hsjx2zm"
+      ]
+    },
+    {
+      "id": "caldigit-thunderbolt-5-usb-c-pro-cable-0-5m",
+      "name": "CalDigit Thunderbolt 5 (USB-C) Pro Cable (0.5m)",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 29.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs9d2zm/a/caldigit-thunderbolt-5-usb",
+      "parts": [
+        "hs9d2zm"
+      ]
+    },
+    {
+      "id": "scosche-strikeline-usb-c-to-usb-c-cable-2-m",
+      "name": "Scosche StrikeLine USB-C to USB-C Cable (2 m)",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 24.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsjy2zm/a/scosche-strikeline-usb-c-to-usb-c-cable-2-m",
+      "parts": [
+        "hsjy2zm"
+      ]
+    },
+    {
+      "id": "nimble-powerknit-3-cable-travel-kit",
+      "name": "Nimble PowerKnit 3 Cable Travel Kit",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 39.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hrhp2zm/a/nimble-powerknit-3-cable-travel-kit",
+      "parts": [
+        "hrhp2zm"
+      ]
+    },
+    {
+      "id": "belkin-aux-power-cable-kit-for-mac-pro",
+      "name": "Belkin AUX Power Cable Kit for Mac Pro",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 74.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hqy92zm/a/belkin-aux-power-cable-kit-for-mac-pro",
+      "parts": [
+        "hqy92zm"
+      ]
+    },
+    {
+      "id": "70w-usb-c-power-adapter",
+      "name": "70W USB-C Power Adapter",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 59,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mxn53am/a/70w-usb-c-power-adapter",
+      "parts": [
+        "mxn53am"
+      ]
+    },
+    {
+      "id": "140w-usb-c-power-adapter",
+      "name": "140W USB-C Power Adapter",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mw2m3am/a/140w-usb-c-power-adapter",
+      "parts": [
+        "mw2m3am"
+      ]
+    },
+    {
+      "id": "96w-usb-c-power-adapter",
+      "name": "96W USB-C Power Adapter",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 79,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mw2l3am/a/96w-usb-c-power-adapter",
+      "parts": [
+        "mw2l3am"
+      ]
+    },
+    {
+      "id": "power-adapter-extension-cable",
+      "name": "Power Adapter Extension Cable",
+      "cat": "Accessories \u2014 Chargers & Adapters",
+      "usd": 19,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mw2n3ll/a/power-adapter-extension-cable",
+      "parts": [
+        "mw2n3ll"
+      ]
+    },
+    {
+      "id": "herschel-cloud-sling-for-iphone-2",
+      "name": "Herschel Cloud Sling for iPhone",
+      "cat": "Accessories \u2014 College",
+      "usd": 59.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hskq2zm/a/herschel-cloud-sling-for-iphone",
+      "parts": [
+        "hskq2zm"
+      ]
+    },
+    {
+      "id": "mophie-slim-hardshell-case-for-14-macbook-pro-2",
+      "name": "mophie Slim Hardshell Case for 14\" MacBook Pro",
+      "cat": "Accessories \u2014 College",
+      "usd": 54.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hset2zm/a/mophie-slim-hardshell-case-for-14-macbook-pro",
+      "parts": [
+        "hset2zm"
+      ]
+    },
+    {
+      "id": "moft-carry-sleeve-for-14-macbook-pro-2",
+      "name": "MOFT Carry Sleeve for 14\u201d MacBook Pro",
+      "cat": "Accessories \u2014 College",
+      "usd": 64.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs7f2zm/a/moft-carry-sleeve-for-14-macbook-pro",
+      "parts": [
+        "hs7f2zm"
+      ]
+    },
+    {
+      "id": "incase-edge-hardshell-case-for-13-macbook-air",
+      "name": "Incase Edge Hardshell Case for 13\u2033 MacBook Air",
+      "cat": "Accessories \u2014 College",
+      "usd": 49.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hry82zm/a/incase-edge-hardshell-case-for-13",
+      "parts": [
+        "hry82zm"
+      ]
+    },
+    {
+      "id": "popsockets-kick-out-grip-stand-magsafe-compatible",
+      "name": "PopSockets Kick-Out Grip & Stand (MagSafe compatible)",
+      "cat": "Accessories \u2014 College",
+      "usd": 39.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs9w2zm/a/popsockets-kick-out-grip-stand-magsafe-compatible",
+      "parts": [
+        "hs9w2zm"
+      ]
+    },
+    {
+      "id": "moft-find-my-magsafe-wallet-stand",
+      "name": "MOFT Find My MagSafe Wallet Stand",
+      "cat": "Accessories \u2014 College",
+      "usd": 49.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs9x2zm/a/moft-find-my-magsafe-wallet-stand",
+      "parts": [
+        "hs9x2zm"
+      ]
+    },
+    {
+      "id": "incase-edge-hardshell-case-for-15-macbook-air",
+      "name": "Incase Edge Hardshell Case for 15\u2033 MacBook Air",
+      "cat": "Accessories \u2014 College",
+      "usd": 49.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hry32zm/a/incase-edge-hardshell-case-for-15",
+      "parts": [
+        "hry32zm"
+      ]
+    },
+    {
+      "id": "mophie-slim-hardshell-case-for-13-macbook-air",
+      "name": "mophie Slim Hardshell Case for 13\" MacBook Air",
+      "cat": "Accessories \u2014 College",
+      "usd": 54.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsez2zm/a/mophie-slim-hardshell-case-for-13-macbook-air",
+      "parts": [
+        "hsez2zm"
+      ]
+    },
+    {
+      "id": "incase-edge-hardshell-case-for-14-macbook-pro",
+      "name": "Incase Edge Hardshell Case for 14\u2033 MacBook Pro",
+      "cat": "Accessories \u2014 College",
+      "usd": 49.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hry62zm/a/incase-edge-hardshell-case-for-14",
+      "parts": [
+        "hry62zm"
+      ]
+    },
+    {
+      "id": "incase-edge-hardshell-case-for-16-macbook-pro",
+      "name": "Incase Edge Hardshell Case for 16\u2033 MacBook Pro",
+      "cat": "Accessories \u2014 College",
+      "usd": 49.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hry12zm/a/incase-edge-hardshell-case-for-16",
+      "parts": [
+        "hry12zm"
+      ]
+    },
+    {
+      "id": "tech21-evoshell-case-for-13-macbook-air",
+      "name": "Tech21 EvoShell Case for 13\u201d MacBook Air",
+      "cat": "Accessories \u2014 College",
+      "usd": 59.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs7a2zm/a/tech21-evoshell-case-for-13-macbook-air",
+      "parts": [
+        "hs7a2zm"
+      ]
+    },
+    {
+      "id": "moft-carry-sleeve-for-16-macbook-pro",
+      "name": "MOFT Carry Sleeve for 16\u201d MacBook Pro",
+      "cat": "Accessories \u2014 College",
+      "usd": 64.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs7e2zm/a/moft-carry-sleeve-for-16-macbook-pro",
+      "parts": [
+        "hs7e2zm"
+      ]
+    },
+    {
+      "id": "tech21-evoshell-case-for-16-macbook-pro",
+      "name": "Tech21 EvoShell Case for 16\u201d MacBook Pro",
+      "cat": "Accessories \u2014 College",
+      "usd": 59.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs732zm/a/tech21-evoshell-case-for-16-macbook-pro",
+      "parts": [
+        "hs732zm"
+      ]
+    },
+    {
+      "id": "tech21-evoshell-case-for-14-macbook-pro",
+      "name": "Tech21 EvoShell Case for 14\u201d MacBook Pro",
+      "cat": "Accessories \u2014 College",
+      "usd": 59.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs782zm/a/tech21-evoshell-case-for-14-macbook-pro",
+      "parts": [
+        "hs782zm"
+      ]
+    },
+    {
+      "id": "tech21-evoshell-case-for-15-macbook-air",
+      "name": "Tech21 EvoShell Case for 15\u201d MacBook Air",
+      "cat": "Accessories \u2014 College",
+      "usd": 59.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs752zm/a/tech21-evoshell-case-for-15-macbook-air",
+      "parts": [
+        "hs752zm"
+      ]
+    },
+    {
+      "id": "totalmount-pro-apple-tv-installation-system-for-wall-mounted-televisions",
+      "name": "TotalMount Pro Apple TV Installation System for Wall-Mounted Televisions",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 39.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hqgk2zm/a/totalmount-pro-apple-tv-installation-system-for-wall-mounted-televisions",
+      "parts": [
+        "hqgk2zm"
+      ]
+    },
+    {
+      "id": "usb-c-to-sd-card-reader",
+      "name": "USB-C to SD Card Reader",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 39,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mw653am/a/usb-c-to-sd-card-reader",
+      "parts": [
+        "mw653am"
+      ]
+    },
+    {
+      "id": "apple-pencil-2nd-generation",
+      "name": "Apple Pencil (2nd generation)",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 129,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mxn43am/a/apple-pencil-2nd-generation",
+      "parts": [
+        "mxn43am"
+      ]
+    },
+    {
+      "id": "apple-pencil-pro",
+      "name": "Apple Pencil Pro",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 129,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mx2d3am/a/apple-pencil-pro",
+      "parts": [
+        "mx2d3am"
+      ]
+    },
+    {
+      "id": "apple-pencil-usb-c",
+      "name": "Apple Pencil (USB-C)",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 79,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/muwa3am/a/apple-pencil-usb-c",
+      "parts": [
+        "muwa3am"
+      ]
+    },
+    {
+      "id": "insta360-go-ultra-standard-bundle",
+      "name": "Insta360 GO Ultra Standard Bundle",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 449.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs702zm/a/insta360-go-ultra-standard-bundle",
+      "parts": [
+        "hs702zm"
+      ]
+    },
+    {
+      "id": "apple-pencil-1st-generation",
+      "name": "Apple Pencil (1st generation)",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/myqw3am/a/apple-pencil-1st-generation",
+      "parts": [
+        "myqw3am"
+      ]
+    },
+    {
+      "id": "insta360-ace-pro-2-creator-bundle",
+      "name": "Insta360 Ace Pro 2 Creator Bundle",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 489.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs2f2zm/a/insta360-ace-pro-2-creator-bundle",
+      "parts": [
+        "hs2f2zm"
+      ]
+    },
+    {
+      "id": "insta360-x5-standard-bundle",
+      "name": "Insta360 X5 Standard Bundle",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 549.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs6z2zm/a/insta360-x5-standard-bundle",
+      "parts": [
+        "hs6z2zm"
+      ]
+    },
+    {
+      "id": "logitech-crayon-for-ipad",
+      "name": "Logitech Crayon for iPad",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 69.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hq6q2vc/a/logitech-crayon-for-ipad",
+      "parts": [
+        "hq6q2vc"
+      ]
+    },
+    {
+      "id": "shiftcam-snapcreator-kit-pro-ultimate-3-in-1-portable-studio",
+      "name": "ShiftCam SnapCreator Kit Pro Ultimate 3-in-1 Portable Studio",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 219.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs492zm/a/shiftcam-snapcreator-kit-pro-ultimate-3-in-1-portable-studio",
+      "parts": [
+        "hs492zm"
+      ]
+    },
+    {
+      "id": "shiftcam-snapstand-max-full-height-mobile-tripod",
+      "name": "ShiftCam SnapStand Max Full Height Mobile Tripod",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 79.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs472zm/a/shiftcam-snapstand-max-full-height-mobile-tripod",
+      "parts": [
+        "hs472zm"
+      ]
+    },
+    {
+      "id": "shiftcam-snapgrip-pro-with-next-generation-powerbank",
+      "name": "ShiftCam SnapGrip Pro with Next Generation Powerbank",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 89.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs482zm/a/shiftcam-snapgrip-pro-with-next-generation-powerbank",
+      "parts": [
+        "hs482zm"
+      ]
+    },
+    {
+      "id": "shiftcam-snapstand-selfie-magnetic-selfie-stick-and-tripod",
+      "name": "ShiftCam SnapStand Selfie Magnetic Selfie Stick and Tripod",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 59.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hseh2zm/a/shiftcam-snapstand-selfie-magnetic-selfie-stick-and-tripod",
+      "parts": [
+        "hseh2zm"
+      ]
+    },
+    {
+      "id": "hp-envy-photo-7230-all-in-one-printer",
+      "name": "HP Envy Photo 7230 All-in-One Printer",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 179.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsg02ll/a/hp-envy-photo-7230-all-in-one-printer",
+      "parts": [
+        "hsg02ll"
+      ]
+    },
+    {
+      "id": "kensington-security-mount-for-mac-mini",
+      "name": "Kensington Security Mount for Mac mini",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 69.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hrzu2zm/a/kensington-security-mount-for-mac-mini",
+      "parts": [
+        "hrzu2zm"
+      ]
+    },
+    {
+      "id": "belkin-iphone-mount-with-magsafe-for-apple-tv-4k",
+      "name": "Belkin iPhone Mount with MagSafe for Apple TV 4K",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 49.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hr1v2zm/a/belkin-iphone-mount-with-magsafe-for-apple-tv-4k",
+      "parts": [
+        "hr1v2zm"
+      ]
+    },
+    {
+      "id": "innovelis-totalmount-pro-mounting-system-for-mac-mini-m2-2023",
+      "name": "Innovelis TotalMount Pro Mounting System for Mac mini (M2, 2023)",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 34.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hlxk2ll/a/innovelis-totalmount-pro-mounting-system-for-mac-mini-m2-2023",
+      "parts": [
+        "hlxk2ll"
+      ]
+    },
+    {
+      "id": "lightning-to-usb-3-camera-adapter",
+      "name": "Lightning to USB 3 Camera Adapter",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 39,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mx5j3am/a/lightning-to-usb-3-camera-adapter",
+      "parts": [
+        "mx5j3am"
+      ]
+    },
+    {
+      "id": "belkin-iphone-mount-with-magsafe-for-mac-desktops-and-displays",
+      "name": "Belkin iPhone Mount with MagSafe for Mac Desktops and Displays",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 39.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hq652zm/a/belkin-iphone-mount-with-magsafe-for-mac-desktops-and-displays",
+      "parts": [
+        "hq652zm"
+      ]
+    },
+    {
+      "id": "belkin-iphone-mount-with-magsafe-for-mac-notebooks",
+      "name": "Belkin iPhone Mount with MagSafe for Mac Notebooks",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 29.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hq642zm/a/belkin-iphone-mount-with-magsafe-for-mac-notebooks",
+      "parts": [
+        "hq642zm"
+      ]
+    },
+    {
+      "id": "apple-pencil-tips-4-pack",
+      "name": "Apple Pencil Tips - 4 pack",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 19,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mx763am/a/apple-pencil-tips-4-pack",
+      "parts": [
+        "mx763am"
+      ]
+    },
+    {
+      "id": "ik-multimedia-irig-hd-x",
+      "name": "IK Multimedia iRig HD X",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 129.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hr2z2zm/a/ik-multimedia-irig-hd-x",
+      "parts": [
+        "hr2z2zm"
+      ]
+    },
+    {
+      "id": "joby-telepod-mobile-all-in-one-tripod-for-iphone",
+      "name": "JOBY TelePod Mobile All-in-One Tripod for iPhone",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 64.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hnkk2zm/a/joby-telepod-mobile-all-in-one-tripod-for-iphone",
+      "parts": [
+        "hnkk2zm"
+      ]
+    },
+    {
+      "id": "apogee-hypemic-microphone",
+      "name": "Apogee HypeMiC Microphone",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 349.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hmy12zm/a/apogee-hypemic-microphone",
+      "parts": [
+        "hmy12zm"
+      ]
+    },
+    {
+      "id": "scosche-magicmount-charge-elite-3-in-1",
+      "name": "Scosche MagicMount\u2122 Charge Elite 3-in-1",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 69.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hrwf2zm/a/scosche-magicmount",
+      "parts": [
+        "hrwf2zm"
+      ]
+    },
+    {
+      "id": "joby-griptight-pro-telepod-tripod",
+      "name": "JOBY GripTight PRO TelePod Tripod",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 109.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hlxf2zm/a/joby-griptight-pro-telepod-tripod",
+      "parts": [
+        "hlxf2zm"
+      ]
+    },
+    {
+      "id": "shiftcam-progrip-starter-kit",
+      "name": "ShiftCam ProGrip Starter Kit",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 149.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hq4a2ll/a/shiftcam-progrip-starter-kit",
+      "parts": [
+        "hq4a2ll"
+      ]
+    },
+    {
+      "id": "fujifilm-instax-mini-film-value-pack-80-count",
+      "name": "FUJIFILM INSTAX Mini Film Value Pack - 80 count",
+      "cat": "Accessories \u2014 Content Creation",
+      "usd": 74.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hq8s2vc/a/fujifilm-instax-mini-film-value-pack-80-count",
+      "parts": [
+        "hq8s2vc"
+      ]
+    },
+    {
+      "id": "promise-pegasus32-r4-16tb-raid-system",
+      "name": "PROMISE Pegasus32 R4 16TB RAID System",
+      "cat": "Accessories \u2014 Drives & Storage",
+      "usd": 1499,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hnrl2ll/a/promise-pegasus32-r4-16tb-raid-system",
+      "parts": [
+        "hnrl2ll"
+      ]
+    },
+    {
+      "id": "western-digital-g-drive-armoratd-portable-hard-drive-1tb",
+      "name": "Western Digital G-DRIVE\u00ae ArmorATD\u2122 Portable Hard Drive \u2013 1TB",
+      "cat": "Accessories \u2014 Drives & Storage",
+      "usd": 184.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsg12zm/a/western-digital-g",
+      "parts": [
+        "hsg12zm"
+      ]
+    },
+    {
+      "id": "sandisk-phone-drive-256gb",
+      "name": "SanDisk Phone Drive - 256GB",
+      "cat": "Accessories \u2014 Drives & Storage",
+      "usd": 125.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hru92zm/a/sandisk-phone-drive",
+      "parts": [
+        "hru92zm"
+      ]
+    },
+    {
+      "id": "lacie-2tb-rugged-usb-c-portable-hard-drive",
+      "name": "LaCie 2TB Rugged USB-C Portable Hard Drive",
+      "cat": "Accessories \u2014 Drives & Storage",
+      "usd": 164.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hkve2vc/a/lacie-2tb-rugged-usb-c-portable-drive",
+      "parts": [
+        "hkve2vc"
+      ]
+    },
+    {
+      "id": "lacie-1tb-mobile-ssd-secure-usb-c-drive",
+      "name": "LaCie 1TB Mobile SSD Secure USB-C Drive",
+      "cat": "Accessories \u2014 Drives & Storage",
+      "usd": 149.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hpq42zm/a/lacie-1tb-mobile-ssd-secure-usb-c-drive",
+      "parts": [
+        "hpq42zm"
+      ]
+    },
+    {
+      "id": "lacie-mobile-drive-secure-usb-c-4tb-with-rescue",
+      "name": "LaCie Mobile Drive Secure USB-C 4TB with Rescue",
+      "cat": "Accessories \u2014 Drives & Storage",
+      "usd": 209.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hq4c2zm/a/lacie-mobile-drive-secure-usb-c-4tb-with-rescue",
+      "parts": [
+        "hq4c2zm"
+      ]
+    },
+    {
+      "id": "sandisk-extreme-portable-ssd-2tb",
+      "name": "SanDisk Extreme\u00ae Portable SSD - 2TB",
+      "cat": "Accessories \u2014 Drives & Storage",
+      "usd": 595.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hrq12zm/a/sandisk-extreme-portable-ssd-2tb",
+      "parts": [
+        "hrq12zm"
+      ]
+    },
+    {
+      "id": "lacie-mobile-drive-secure-usb-c-2tb-with-rescue",
+      "name": "LaCie Mobile Drive Secure USB-C 2TB with Rescue",
+      "cat": "Accessories \u2014 Drives & Storage",
+      "usd": 154.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hq4d2zm/a/lacie-mobile-drive-secure-usb-c-2tb-with-rescue",
+      "parts": [
+        "hq4d2zm"
+      ]
+    },
+    {
+      "id": "promise-pegasus-j2i-8tb-internal-storage-enclosure-for-mac-pro",
+      "name": "Promise Pegasus J2i 8TB Internal Storage Enclosure for Mac Pro",
+      "cat": "Accessories \u2014 Drives & Storage",
+      "usd": 399.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hmuf2zm/a/promise-pegasus-j2i-8tb-internal-storage-enclosure-for-mac-pro",
+      "parts": [
+        "hmuf2zm"
+      ]
+    },
+    {
+      "id": "lacie-10tb-1big-dock-external-hard-drive-docking-station",
+      "name": "LaCie 10TB 1big Dock External Hard Drive Docking Station",
+      "cat": "Accessories \u2014 Drives & Storage",
+      "usd": 739.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hpl12zm/a/lacie-10tb-1big-dock-external-hard-drive-docking-station",
+      "parts": [
+        "hpl12zm"
+      ]
+    },
+    {
+      "id": "promise-pegasus32-r8-32tb-raid-system",
+      "name": "PROMISE Pegasus32 R8 32TB RAID System",
+      "cat": "Accessories \u2014 Drives & Storage",
+      "usd": 2999,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hnrn2ll/a/promise-pegasus32-r8-32tb-raid-system",
+      "parts": [
+        "hnrn2ll"
+      ]
+    },
+    {
+      "id": "lacie-2tb-mobile-ssd-secure-usb-c-drive",
+      "name": "LaCie 2TB Mobile SSD Secure USB-C Drive",
+      "cat": "Accessories \u2014 Drives & Storage",
+      "usd": 249.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hpq52zm/a/lacie-2tb-mobile-ssd-secure-usb-c-drive",
+      "parts": [
+        "hpq52zm"
+      ]
+    },
+    {
+      "id": "lacie-rugged-mini-ssd-1tb",
+      "name": "LaCie Rugged Mini SSD 1TB",
+      "cat": "Accessories \u2014 Drives & Storage",
+      "usd": 179.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hrq82zm/a/lacie-rugged-mini-ssd-1tb",
+      "parts": [
+        "hrq82zm"
+      ]
+    },
+    {
+      "id": "lacie-8tb-d2-professional-desktop-hard-drive",
+      "name": "LaCie 8TB d2 Professional Desktop Hard Drive",
+      "cat": "Accessories \u2014 Drives & Storage",
+      "usd": 384.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hpl32zm/a/lacie-8tb-d2-professional-desktop-hard-drive",
+      "parts": [
+        "hpl32zm"
+      ]
+    },
+    {
+      "id": "lacie-mobile-drive-secure-usb-c-5tb-with-rescue",
+      "name": "LaCie Mobile Drive Secure USB-C 5TB with Rescue",
+      "cat": "Accessories \u2014 Drives & Storage",
+      "usd": 244.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hq4b2zm/a/lacie-mobile-drive-secure-usb-c-5tb-with-rescue",
+      "parts": [
+        "hq4b2zm"
+      ]
+    },
+    {
+      "id": "sandisk-professional-pro-g40-ssd-2tb",
+      "name": "SanDisk\u00ae Professional PRO-G40\u2122 SSD - 2TB",
+      "cat": "Accessories \u2014 Drives & Storage",
+      "usd": 749.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hru62zm/a/sandisk-professional-pro-g40",
+      "parts": [
+        "hru62zm"
+      ]
+    },
+    {
+      "id": "lacie-1tb-rugged-usb-c-portable-hard-drive",
+      "name": "LaCie 1TB Rugged USB-C Portable Hard Drive",
+      "cat": "Accessories \u2014 Drives & Storage",
+      "usd": 134.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hkvd2zm/a/lacie-1tb-rugged-usb-c-portable-hard-drive",
+      "parts": [
+        "hkvd2zm"
+      ]
+    },
+    {
+      "id": "lacie-2big-dock-raid-external-hdd-16tb",
+      "name": "LaCie 2big Dock RAID External HDD - 16TB",
+      "cat": "Accessories \u2014 Drives & Storage",
+      "usd": 1309.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hrq42zm/a/lacie-2big-dock-raid-external-hdd-16tb",
+      "parts": [
+        "hrq42zm"
+      ]
+    },
+    {
+      "id": "dualsense-wireless-controller",
+      "name": "DualSense\u2122 Wireless Controller",
+      "cat": "Accessories \u2014 Gaming",
+      "usd": 74.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsg32zm/a/dualsense",
+      "parts": [
+        "hsg32zm"
+      ]
+    },
+    {
+      "id": "steelseries-nimbus-dual-mode-cloud-controller",
+      "name": "SteelSeries Nimbus Dual-Mode Cloud Controller",
+      "cat": "Accessories \u2014 Gaming",
+      "usd": 149.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs462zm/a/steelseries-nimbus-dual-mode-cloud-controller",
+      "parts": [
+        "hs462zm"
+      ]
+    },
+    {
+      "id": "backbone-pro-mobile-gaming-controller",
+      "name": "Backbone Pro Mobile Gaming Controller",
+      "cat": "Accessories \u2014 Gaming",
+      "usd": 169.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs4g2zm/a/backbone-pro-mobile-gaming-controller",
+      "parts": [
+        "hs4g2zm"
+      ]
+    },
+    {
+      "id": "playstation-vr2-sense-controller-charging-station",
+      "name": "PlayStation VR2 Sense Controller & Charging Station",
+      "cat": "Accessories \u2014 Gaming",
+      "usd": 249.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs8h2zm/a/playstation-vr2-sense-controller-charging-station",
+      "parts": [
+        "hs8h2zm"
+      ]
+    },
+    {
+      "id": "backbone-one-mobile-gaming-controller-usb-c-2nd-generation",
+      "name": "Backbone One Mobile Gaming Controller (USB-C) - 2nd Generation",
+      "cat": "Accessories \u2014 Gaming",
+      "usd": 99.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hrdg2zm/a/backbone-one-mobile-gaming-controller-usb-c-2nd-generation",
+      "parts": [
+        "hrdg2zm"
+      ]
+    },
+    {
+      "id": "airpods-max-2-midnight",
+      "name": "AirPods Max 2 - Midnight",
+      "cat": "Accessories \u2014 Headphones & Speakers",
+      "usd": 549,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mhwk4am/a/midnight",
+      "parts": [
+        "mhwk4am"
+      ]
+    },
+    {
+      "id": "homepod-mini-blue",
+      "name": "HomePod mini - Blue",
+      "cat": "Accessories \u2014 Headphones & Speakers",
+      "usd": 129,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mj2c3ll/a/blue",
+      "parts": [
+        "mj2c3ll"
+      ]
+    },
+    {
+      "id": "earpods-usb-c",
+      "name": "EarPods (USB-C)",
+      "cat": "Accessories \u2014 Headphones & Speakers",
+      "usd": 19,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/myqy3am/a/earpods-usb-c",
+      "parts": [
+        "myqy3am"
+      ]
+    },
+    {
+      "id": "beats-solo-4-on-ear-wireless-headphones-slate-blue",
+      "name": "Beats Solo 4 \u2014 On-Ear Wireless Headphones \u2014 Slate Blue",
+      "cat": "Accessories \u2014 Headphones & Speakers",
+      "usd": 199.99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/muw43ll/a/beats-solo-4-on-ear-wireless-headphones-slate-blue",
+      "parts": [
+        "muw43ll"
+      ]
+    },
+    {
+      "id": "beats-studio-pro-wireless-headphones-deep-brown",
+      "name": "Beats Studio Pro Wireless Headphones \u2014 Deep Brown",
+      "cat": "Accessories \u2014 Headphones & Speakers",
+      "usd": 349.99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mqtt3ll/a/beats-studio-pro-wireless-headphones-deep-brown",
+      "parts": [
+        "mqtt3ll"
+      ]
+    },
+    {
+      "id": "homepod-midnight",
+      "name": "HomePod - Midnight",
+      "cat": "Accessories \u2014 Headphones & Speakers",
+      "usd": 349,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mdew4ll/a/midnight",
+      "parts": [
+        "mdew4ll"
+      ]
+    },
+    {
+      "id": "powerbeats-fit-wireless-fitness-earbuds-with-secure-fit-power-pink",
+      "name": "Powerbeats Fit \u2014 Wireless Fitness Earbuds with Secure Fit \u2014 Power Pink",
+      "cat": "Accessories \u2014 Headphones & Speakers",
+      "usd": 199.99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/me2l4ll/a/powerbeats-fit-wireless-fitness-earbuds-with-secure-fit-power-pink",
+      "parts": [
+        "me2l4ll"
+      ]
+    },
+    {
+      "id": "powerbeats-pro-2-high-performance-earbuds-electric-orange",
+      "name": "Powerbeats Pro 2 \u2014 High-Performance Earbuds \u2014 Electric Orange",
+      "cat": "Accessories \u2014 Headphones & Speakers",
+      "usd": 249.99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mx743ll/a/powerbeats-pro-2-high-performance-earbuds-electric-orange",
+      "parts": [
+        "mx743ll"
+      ]
+    },
+    {
+      "id": "beats-flex-all-day-wireless-earphones-flame-blue",
+      "name": "Beats Flex \u2014 All-Day Wireless Earphones \u2014 Flame Blue",
+      "cat": "Accessories \u2014 Headphones & Speakers",
+      "usd": 69.99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mymg2ll/a/beats-flex-all-day-wireless-earphones-flame-blue",
+      "parts": [
+        "mymg2ll"
+      ]
+    },
+    {
+      "id": "beats-studio-buds-true-wireless-noise-cancelling-earbuds-ivory",
+      "name": "Beats Studio Buds + True Wireless Noise Cancelling Earbuds \u2014 Ivory",
+      "cat": "Accessories \u2014 Headphones & Speakers",
+      "usd": 169.99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mqlj3ll/a/beats-studio-buds-true-wireless-noise-cancelling-earbuds-ivory",
+      "parts": [
+        "mqlj3ll"
+      ]
+    },
+    {
+      "id": "beats-solo-buds-true-wireless-earbuds-transparent-red",
+      "name": "Beats Solo Buds \u2014 True Wireless Earbuds \u2014 Transparent Red",
+      "cat": "Accessories \u2014 Headphones & Speakers",
+      "usd": 79.99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/muw03ll/a/beats-solo-buds-true-wireless-earbuds-transparent-red",
+      "parts": [
+        "muw03ll"
+      ]
+    },
+    {
+      "id": "tech21-evoclear-case-for-airpods-5-clear",
+      "name": "Tech21 EvoClear Case for AirPods 5 - Clear",
+      "cat": "Accessories \u2014 Headphones & Speakers",
+      "usd": 34.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs2b2zm/a/tech21-evoclear-case-for-airpods-5-clear",
+      "parts": [
+        "hs2b2zm"
+      ]
+    },
+    {
+      "id": "airpods-pro-3-ear-tips-5-pairs",
+      "name": "AirPods Pro 3 Ear Tips - 5 pairs",
+      "cat": "Accessories \u2014 Headphones & Speakers",
+      "usd": 14.99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mgyv4zm/a/airpods-pro-3-ear-tips-5-pairs",
+      "parts": [
+        "mgyv4zm"
+      ]
+    },
+    {
+      "id": "tech21-evoclear-for-airpods-max",
+      "name": "Tech21 EvoClear for AirPods Max",
+      "cat": "Accessories \u2014 Headphones & Speakers",
+      "usd": 44.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hrj22zm/a/tech21-evoclear-for-airpods-max",
+      "parts": [
+        "hrj22zm"
+      ]
+    },
+    {
+      "id": "belkin-airpods-cleaning-kit",
+      "name": "Belkin AirPods Cleaning Kit",
+      "cat": "Accessories \u2014 Headphones & Speakers",
+      "usd": 12.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hrvm2zm/a/belkin-airpods-cleaning-kit",
+      "parts": [
+        "hrvm2zm"
+      ]
+    },
+    {
+      "id": "beats-pill-wireless-bluetooth-speaker-champagne-gold",
+      "name": "Beats Pill \u2014 Wireless Bluetooth\u00ae Speaker \u2014 Champagne Gold",
+      "cat": "Accessories \u2014 Headphones & Speakers",
+      "usd": 149.99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mw463ll/a/beats-pill-wireless-bluetooth-speaker-champagne-gold",
+      "parts": [
+        "mw463ll"
+      ]
+    },
+    {
+      "id": "airpods-max-ear-cushions-midnight",
+      "name": "AirPods Max Ear Cushions - Midnight",
+      "cat": "Accessories \u2014 Headphones & Speakers",
+      "usd": 69,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/ma6c4zm/a/airpods-max-ear-cushions-midnight",
+      "parts": [
+        "ma6c4zm"
+      ]
+    },
+    {
+      "id": "airpods-pro-3-ear-tips-2-sets-xxs",
+      "name": "AirPods Pro 3 Ear Tips - 2 sets (XXS)",
+      "cat": "Accessories \u2014 Headphones & Speakers",
+      "usd": 9.99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mgyn4zm/a/airpods-pro-3-ear-tips-2-sets-xxs",
+      "parts": [
+        "mgyn4zm"
+      ]
+    },
+    {
+      "id": "usb-c-to-3-5-mm-headphone-jack-adapter",
+      "name": "USB-C to 3.5 mm Headphone Jack Adapter",
+      "cat": "Accessories \u2014 Headphones & Speakers",
+      "usd": 9,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mw2q3am/a/usb-c-to-35-mm-headphone-jack-adapter",
+      "parts": [
+        "mw2q3am"
+      ]
+    },
+    {
+      "id": "twelve-south-airfly-pro-2-deluxe-bluetooth-transmitter",
+      "name": "Twelve South Airfly Pro 2 Deluxe Bluetooth Transmitter",
+      "cat": "Accessories \u2014 Headphones & Speakers",
+      "usd": 69.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs4k2zm/a/twelve-south-airfly-pro-2-deluxe-bluetooth-transmitter",
+      "parts": [
+        "hs4k2zm"
+      ]
+    },
+    {
+      "id": "earpods-lightning-connector",
+      "name": "EarPods (Lightning Connector)",
+      "cat": "Accessories \u2014 Headphones & Speakers",
+      "usd": 19,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mwty3am/a/earpods-lightning-connector",
+      "parts": [
+        "mwty3am"
+      ]
+    },
+    {
+      "id": "earpods-3-5mm-headphone-plug",
+      "name": "EarPods (3.5mm Headphone Plug)",
+      "cat": "Accessories \u2014 Headphones & Speakers",
+      "usd": 19,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mwu53am/a/earpods-35mm-headphone-plug",
+      "parts": [
+        "mwu53am"
+      ]
+    },
+    {
+      "id": "airpods-max-lightning-connector-ear-cushions-silver",
+      "name": "AirPods Max (Lightning Connector) Ear Cushions - Silver",
+      "cat": "Accessories \u2014 Headphones & Speakers",
+      "usd": 69,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mwu73zm/a/airpods-max-lightning-connector-ear-cushions-silver",
+      "parts": [
+        "mwu73zm"
+      ]
+    },
+    {
+      "id": "airpods-pro-2-ear-tips-2-sets-extra-small",
+      "name": "AirPods Pro 2 Ear Tips - 2 sets (Extra Small)",
+      "cat": "Accessories \u2014 Headphones & Speakers",
+      "usd": 9.99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mwu03zm/a/airpods-pro-2-ear-tips-2-sets-extra-small",
+      "parts": [
+        "mwu03zm"
+      ]
+    },
+    {
+      "id": "airpods-pro-2-ear-tips-2-sets-large",
+      "name": "AirPods Pro 2 Ear Tips - 2 sets (Large)",
+      "cat": "Accessories \u2014 Headphones & Speakers",
+      "usd": 9.99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mwu43zm/a/airpods-pro-2-ear-tips-2-sets-large",
+      "parts": [
+        "mwu43zm"
+      ]
+    },
+    {
+      "id": "airpods-pro-2-ear-tips-2-sets-small",
+      "name": "AirPods Pro 2 Ear Tips - 2 sets (Small)",
+      "cat": "Accessories \u2014 Headphones & Speakers",
+      "usd": 9.99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mwu13zm/a/airpods-pro-2-ear-tips-2-sets-small",
+      "parts": [
+        "mwu13zm"
+      ]
+    },
+    {
+      "id": "elevation-lab-gostand-adjustable-stand-for-iphone",
+      "name": "Elevation Lab GoStand Adjustable Stand for iPhone",
+      "cat": "Accessories \u2014 Health & Fitness",
+      "usd": 19.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hpe72zm/a/elevation-lab-gostand-adjustable-stand-for-iphone",
+      "parts": [
+        "hpe72zm"
+      ]
+    },
+    {
+      "id": "satechi-foldable-aluminum-stand",
+      "name": "Satechi Foldable Aluminum Stand",
+      "cat": "Accessories \u2014 Health & Fitness",
+      "usd": 39.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hpe82zm/a/satechi-foldable-aluminum-stand",
+      "parts": [
+        "hpe82zm"
+      ]
+    },
+    {
+      "id": "hidratespark-pro-2-smart-tumbler-30-oz",
+      "name": "HidrateSpark PRO 2 Smart Tumbler (30 oz.)",
+      "cat": "Accessories \u2014 Health & Fitness",
+      "usd": 79.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs452zm/a/hidratespark-pro-2-smart-tumbler-30-oz",
+      "parts": [
+        "hs452zm"
+      ]
+    },
+    {
+      "id": "larq-bottle-purevis-2-34-oz-smart-water-bottle",
+      "name": "LARQ Bottle PureVis\u2122 2\u201334 oz. Smart Water Bottle",
+      "cat": "Accessories \u2014 Health & Fitness",
+      "usd": 129.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs4b2zm/a/larq-bottle-purevis",
+      "parts": [
+        "hs4b2zm"
+      ]
+    },
+    {
+      "id": "hidratespark-pro-2-smart-bottle-21-oz",
+      "name": "HidrateSpark PRO 2 Smart Bottle (21 oz.)",
+      "cat": "Accessories \u2014 Health & Fitness",
+      "usd": 69.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs422zm/a/hidratespark-pro-2-smart-bottle-21-oz",
+      "parts": [
+        "hs422zm"
+      ]
+    },
+    {
+      "id": "withings-bpm-vision-blood-pressure-monitor",
+      "name": "Withings BPM Vision Blood Pressure Monitor",
+      "cat": "Accessories \u2014 Health & Fitness",
+      "usd": 179.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs4f2zm/a/withings-bpm-vision-blood-pressure-monitor",
+      "parts": [
+        "hs4f2zm"
+      ]
+    },
+    {
+      "id": "withings-body-scan-connected-health-station-smart-scale",
+      "name": "Withings Body Scan - Connected Health Station Smart Scale",
+      "cat": "Accessories \u2014 Health & Fitness",
+      "usd": 499.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hqyp2zm/a/withings-body-scan-connected-health-station-smart-scale",
+      "parts": [
+        "hqyp2zm"
+      ]
+    },
+    {
+      "id": "withings-bpm-connect-wi-fi-smart-blood-pressure-monitor",
+      "name": "Withings BPM Connect Wi-Fi Smart Blood Pressure Monitor",
+      "cat": "Accessories \u2014 Health & Fitness",
+      "usd": 129.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hnej2zm/a/withings-bpm-connect-wi-fi-smart-blood-pressure-monitor",
+      "parts": [
+        "hnej2zm"
+      ]
+    },
+    {
+      "id": "withings-body-comp-complete-body-analysis-wi-fi-smart-scale",
+      "name": "Withings Body Comp - Complete Body Analysis Wi-Fi Smart Scale",
+      "cat": "Accessories \u2014 Health & Fitness",
+      "usd": 229.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hqyb2zm/a/withings-body-comp-complete-body-analysis-wi-fi-smart-scale",
+      "parts": [
+        "hqyb2zm"
+      ]
+    },
+    {
+      "id": "withings-body-smart-advanced-body-composition-wi-fi-scale",
+      "name": "Withings Body Smart - Advanced Body Composition Wi-Fi Scale",
+      "cat": "Accessories \u2014 Health & Fitness",
+      "usd": 129.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hqyd2zm/a/withings-body-smart-advanced-body-composition-wi-fi-scale",
+      "parts": [
+        "hqyd2zm"
+      ]
+    },
+    {
+      "id": "powerbeats-pro-2-nike-special-edition",
+      "name": "Powerbeats Pro 2 \u2013 Nike Special Edition",
+      "cat": "Accessories \u2014 Health & Fitness",
+      "usd": 249.99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mj2d4ll/a/powerbeats-pro-2-nike-special-edition",
+      "parts": [
+        "mj2d4ll"
+      ]
+    },
+    {
+      "id": "withings-beamo-health-scanner",
+      "name": "Withings BeamO Health Scanner",
+      "cat": "Accessories \u2014 Health & Fitness",
+      "usd": 299.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hry92z/a/withings-beamo-health-scanner",
+      "parts": [
+        "hry92z"
+      ]
+    },
+    {
+      "id": "magic-keyboard-with-touch-id-for-mac-models-with-apple-silicon-usb-c-us-english",
+      "name": "Magic Keyboard with Touch ID for Mac models with Apple silicon (USB\u2013C) - US English",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 149,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mjly4ll/a/magic-keyboard-with-touch-id-for-mac-models-with-apple-silicon-usb-c-us-english",
+      "parts": [
+        "mjly4ll"
+      ]
+    },
+    {
+      "id": "magic-keyboard-usb-c-us-english",
+      "name": "Magic Keyboard (USB\u2013C) - US English",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mjlx4ll/a/magic-keyboard-usb-c-us-english",
+      "parts": [
+        "mjlx4ll"
+      ]
+    },
+    {
+      "id": "magic-trackpad-usb-c-white-multi-touch-surface",
+      "name": "Magic Trackpad (USB-C) - White Multi-Touch Surface",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 129,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mxk93am/a/magic-trackpad-usb",
+      "parts": [
+        "mxk93am"
+      ]
+    },
+    {
+      "id": "magic-mouse-usb-c-white-multi-touch-surface",
+      "name": "Magic Mouse (USB-C) - White Multi-Touch Surface",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 79,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mxk53am/a/magic-mouse-usb",
+      "parts": [
+        "mxk53am"
+      ]
+    },
+    {
+      "id": "magic-keyboard-with-touch-id-and-numeric-keypad-for-mac-models-with-apple-silicon-usb-c-us-english-white-keys",
+      "name": "Magic Keyboard with Touch ID and Numeric Keypad for Mac models with Apple silicon (USB\u2013C) - US English - White Keys",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 179,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mjm64ll/a/magic-keyboard-with-touch-id-and-numeric-keypad-for-mac-models-with-apple-silicon-usb-c-us-english-white-keys",
+      "parts": [
+        "mjm64ll"
+      ]
+    },
+    {
+      "id": "logitech-wave-keys-wireless-ergonomic-keyboard",
+      "name": "Logitech Wave Keys Wireless Ergonomic Keyboard",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 69.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs9b2zm/a/logitech-wave-keys-wireless-ergonomic-keyboard",
+      "parts": [
+        "hs9b2zm"
+      ]
+    },
+    {
+      "id": "logitech-mx-keys-mini-wireless-keyboard-us-english",
+      "name": "Logitech MX Keys Mini Wireless Keyboard - US English",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 99.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hslu2zm/a/logitech-mx-keys-mini-wireless-keyboard-us-english",
+      "parts": [
+        "hslu2zm"
+      ]
+    },
+    {
+      "id": "magic-keyboard-with-numeric-keypad-us-english",
+      "name": "Magic Keyboard with Numeric Keypad - US English",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 129,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mxcj3ll/a/magic-keyboard-with-numeric-keypad-us-english",
+      "parts": [
+        "mxcj3ll"
+      ]
+    },
+    {
+      "id": "logitech-mx-master-4-mouse",
+      "name": "Logitech MX Master 4 Mouse",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 119.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hslw2zm/a/logitech-mx-master-4-mouse",
+      "parts": [
+        "hslw2zm"
+      ]
+    },
+    {
+      "id": "logitech-lift-for-mac-wireless-vertical-ergonomic-mouse",
+      "name": "Logitech Lift for Mac Wireless Vertical Ergonomic Mouse",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 79.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs9c2zm/a/logitech-lift-for-mac-wireless-vertical-ergonomic-mouse",
+      "parts": [
+        "hs9c2zm"
+      ]
+    },
+    {
+      "id": "corsair-m75-wireless-lightweight-rgb-gaming-mouse",
+      "name": "Corsair M75 Wireless Lightweight RGB Gaming Mouse",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 129.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hryt2zm/a/corsair-m75-wireless-lightweight-rgb-gaming-mouse",
+      "parts": [
+        "hryt2zm"
+      ]
+    },
+    {
+      "id": "magic-keyboard-for-ipad-pro-13-inch-m5-us-english-black",
+      "name": "Magic Keyboard for iPad Pro 13-inch (M5) - US English - Black",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 349,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mwr53ll/a/magic-keyboard-for-ipad-pro-13",
+      "parts": [
+        "mwr53ll"
+      ]
+    },
+    {
+      "id": "corsair-k65-plus-wireless-mechanical-gaming-keyboard-for-mac",
+      "name": "Corsair K65 Plus Wireless Mechanical Gaming Keyboard for Mac",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 179.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hryz2zm/a/corsair-k65-plus-wireless-mechanical-gaming-keyboard-for-mac",
+      "parts": [
+        "hryz2zm"
+      ]
+    },
+    {
+      "id": "magic-keyboard-for-ipad-air-11-inch-m4-us-english-white",
+      "name": "Magic Keyboard for iPad Air 11-inch (M4) - US English - White",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 269,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mdfv4ll/a/magic-keyboard-for-ipad-air-11",
+      "parts": [
+        "mdfv4ll"
+      ]
+    },
+    {
+      "id": "magic-keyboard-for-ipad-pro-11-inch-m5-us-english-white",
+      "name": "Magic Keyboard for iPad Pro 11-inch (M5) - US English - White",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 299,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mwr03ll/a/magic-keyboard-for-ipad-pro-11",
+      "parts": [
+        "mwr03ll"
+      ]
+    },
+    {
+      "id": "magic-keyboard-folio-for-ipad-a16-us-english",
+      "name": "Magic Keyboard Folio for iPad (A16) - US English",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 249,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mqdp3ll/a/magic-keyboard-folio-for-ipad-a16-us-english",
+      "parts": [
+        "mqdp3ll"
+      ]
+    },
+    {
+      "id": "magic-keyboard-for-ipad-air-13-inch-m4-us-english-black",
+      "name": "Magic Keyboard for iPad Air 13-inch (M4) - US English - Black",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 319,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mgyy4ll/a/magic-keyboard-for-ipad-air-13",
+      "parts": [
+        "mgyy4ll"
+      ]
+    },
+    {
+      "id": "logitech-combo-touch-keyboard-case-for-ipad-air-11-inch-m4",
+      "name": "Logitech Combo Touch Keyboard Case for iPad Air 11-inch (M4)",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 199.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hrh12zm/a/logitech-combo-touch-keyboard-case-for-ipad-air-11-inch-m4",
+      "parts": [
+        "hrh12zm"
+      ]
+    },
+    {
+      "id": "logitech-combo-touch-keyboard-case-for-ipad-pro-11-inch-m5",
+      "name": "Logitech Combo Touch Keyboard Case for iPad Pro 11-inch (M5)",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 229.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hrh42zm/a/logitech-combo-touch-keyboard-case-for-ipad-pro-11-inch-m5",
+      "parts": [
+        "hrh42zm"
+      ]
+    },
+    {
+      "id": "logitech-flip-folio-keyboard-case-for-11-inch-ipad-air-and-ipad-pro-us-english",
+      "name": "Logitech Flip Folio Keyboard Case for 11-inch iPad Air and iPad Pro - US English",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 159.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs822zm/a/logitech-flip-folio-keyboard-case-for-11",
+      "parts": [
+        "hs822zm"
+      ]
+    },
+    {
+      "id": "logitech-flip-folio-keyboard-case-for-13-inch-ipad-air-and-ipad-pro-us-english",
+      "name": "Logitech Flip Folio Keyboard Case for 13-inch iPad Air and iPad Pro - US English",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 179.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs812zm/a/logitech-flip-folio-keyboard-case-for-13",
+      "parts": [
+        "hs812zm"
+      ]
+    },
+    {
+      "id": "elgato-stream-deck-pedal",
+      "name": "Elgato Stream Deck Pedal",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 89.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsbl2zm/a/elgato-stream-deck-pedal",
+      "parts": [
+        "hsbl2zm"
+      ]
+    },
+    {
+      "id": "logitech-muse",
+      "name": "Logitech Muse",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 129.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs9u2zm/a/logitech-muse",
+      "parts": [
+        "hs9u2zm"
+      ]
+    },
+    {
+      "id": "logitech-combo-touch-keyboard-case-for-ipad-a16",
+      "name": "Logitech Combo Touch Keyboard Case for iPad (A16)",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 159.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hqey2zm/a/logitech-combo-touch-keyboard-case-for-ipad-a16",
+      "parts": [
+        "hqey2zm"
+      ]
+    },
+    {
+      "id": "blackmagic-camera-prodock",
+      "name": "Blackmagic Camera ProDock",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 299.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs8b2zm/a/blackmagic-camera-prodock",
+      "parts": [
+        "hs8b2zm"
+      ]
+    },
+    {
+      "id": "elgato-stream-deck",
+      "name": "Elgato Stream Deck",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 149.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsbm2zm/a/elgato-stream-deck",
+      "parts": [
+        "hsbm2zm"
+      ]
+    },
+    {
+      "id": "logitech-keys-to-go-2-for-ipad",
+      "name": "Logitech Keys-To-Go 2 for iPad",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 79.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hryy2zm/a/logitech-keys-to-go-2-for-ipad",
+      "parts": [
+        "hryy2zm"
+      ]
+    },
+    {
+      "id": "logitech-rugged-folio-keyboard-for-ipad-a16",
+      "name": "Logitech Rugged Folio Keyboard for iPad (A16)",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 139.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hqez2zm/a/logitech-rugged-folio-keyboard-for-ipad-a16",
+      "parts": [
+        "hqez2zm"
+      ]
+    },
+    {
+      "id": "logitech-slim-folio-keyboard-for-ipad-a16",
+      "name": "Logitech Slim Folio Keyboard for iPad (A16)",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 99.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hqex2zm/a/logitech-slim-folio-keyboard-for-ipad-a16",
+      "parts": [
+        "hqex2zm"
+      ]
+    },
+    {
+      "id": "magic-keyboard-with-touch-id-and-numeric-keypad-for-mac-models-with-apple-silicon-usb-c-us-english-black-keys",
+      "name": "Magic Keyboard with Touch ID and Numeric Keypad for Mac models with Apple silicon (USB\u2013C) - US English - Black Keys",
+      "cat": "Accessories \u2014 Mice & Keyboards",
+      "usd": 199,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mjm74ll/a/magic-keyboard-with-touch-id-and-numeric-keypad-for-mac-models-with-apple-silicon-usb-c-us-english-black-keys",
+      "parts": [
+        "mjm74ll"
+      ]
+    },
+    {
+      "id": "40mm-magenta-sport-band-m-l",
+      "name": "40mm Magenta Sport Band - M/L",
+      "cat": "Accessories \u2014 New Arrivals",
+      "usd": 49,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mjug4am/a/40mm-magenta-sport-band-m-l",
+      "parts": [
+        "mjug4am"
+      ]
+    },
+    {
+      "id": "46mm-green-spark-nike-sport-loop",
+      "name": "46mm Green Spark Nike Sport Loop",
+      "cat": "Accessories \u2014 New Arrivals",
+      "usd": 49,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mkv34am/a/46mm-green-spark-nike-sport-loop",
+      "parts": [
+        "mkv34am"
+      ]
+    },
+    {
+      "id": "42mm-light-umber-plaid-sport-loop",
+      "name": "42mm Light Umber Plaid Sport Loop",
+      "cat": "Accessories \u2014 New Arrivals",
+      "usd": 49,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mk814am/a/42mm-light-umber-plaid-sport-loop",
+      "parts": [
+        "mk814am"
+      ]
+    },
+    {
+      "id": "46mm-magenta-braided-solo-loop-size-6",
+      "name": "46mm Magenta Braided Solo Loop - Size 6",
+      "cat": "Accessories \u2014 New Arrivals",
+      "usd": 99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mky74am/a/46mm-magenta-braided-solo-loop-size-6",
+      "parts": [
+        "mky74am"
+      ]
+    },
+    {
+      "id": "42mm-mulberry-modern-buckle-medium",
+      "name": "42mm Mulberry Modern Buckle - Medium",
+      "cat": "Accessories \u2014 New Arrivals",
+      "usd": 199,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/ml3l4am/a/42mm-mulberry-modern-buckle-medium",
+      "parts": [
+        "ml3l4am"
+      ]
+    },
+    {
+      "id": "42mm-burgundy-solo-loop-size-5",
+      "name": "42mm Burgundy Solo Loop - Size 5",
+      "cat": "Accessories \u2014 New Arrivals",
+      "usd": 49,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mkjn4am/a/42mm-burgundy-solo-loop-size-5",
+      "parts": [
+        "mkjn4am"
+      ]
+    },
+    {
+      "id": "42mm-chalk-calm-nike-sport-band-m-l",
+      "name": "42mm Chalk Calm Nike Sport Band - M/L",
+      "cat": "Accessories \u2014 New Arrivals",
+      "usd": 49,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mktk4am/a/42mm-chalk-calm-nike-sport-band-m-l",
+      "parts": [
+        "mktk4am"
+      ]
+    },
+    {
+      "id": "46mm-camel-magnetic-link-m-l",
+      "name": "46mm Camel Magnetic Link - M/L",
+      "cat": "Accessories \u2014 New Arrivals",
+      "usd": 99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mkrw4am/a/46mm-camel-magnetic-link-m-l",
+      "parts": [
+        "mkrw4am"
+      ]
+    },
+    {
+      "id": "49mm-translucent-kelp-ocean-band-natural-titanium-finish",
+      "name": "49mm Translucent Kelp Ocean Band - Natural Titanium Finish",
+      "cat": "Accessories \u2014 New Arrivals",
+      "usd": 99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mk7m4am/a/49mm-translucent-kelp-ocean-band-natural-titanium-finish",
+      "parts": [
+        "mk7m4am"
+      ]
+    },
+    {
+      "id": "42mm-dark-bronze-milanese-loop",
+      "name": "42mm Dark Bronze Milanese Loop",
+      "cat": "Accessories \u2014 New Arrivals",
+      "usd": 99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mjnj4am/a/42mm-dark-bronze-milanese-loop",
+      "parts": [
+        "mjnj4am"
+      ]
+    },
+    {
+      "id": "46mm-radiant-gold-link-bracelet",
+      "name": "46mm Radiant Gold Link Bracelet",
+      "cat": "Accessories \u2014 New Arrivals",
+      "usd": 349,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mjny4am/a/46mm-radiant-gold-link-bracelet",
+      "parts": [
+        "mjny4am"
+      ]
+    },
+    {
+      "id": "49mm-dark-olive-alpine-loop-medium-natural-titanium-finish",
+      "name": "49mm Dark Olive Alpine Loop - Medium - Natural Titanium Finish",
+      "cat": "Accessories \u2014 New Arrivals",
+      "usd": 99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mk7a4am/a/49mm-dark-olive-alpine-loop-medium-natural-titanium-finish",
+      "parts": [
+        "mk7a4am"
+      ]
+    },
+    {
+      "id": "49mm-natural-titanium-milanese-loop-medium",
+      "name": "49mm Natural Titanium Milanese Loop - Medium",
+      "cat": "Accessories \u2014 New Arrivals",
+      "usd": 199,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mk0d4am/a/49mm-natural-titanium-milanese-loop-medium",
+      "parts": [
+        "mk0d4am"
+      ]
+    },
+    {
+      "id": "49mm-burgundy-trail-loop-m-l-black-titanium-finish",
+      "name": "49mm Burgundy Trail Loop - M/L - Black Titanium Finish",
+      "cat": "Accessories \u2014 New Arrivals",
+      "usd": 99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mka94am/a/49mm-burgundy-trail-loop-m-l-black-titanium-finish",
+      "parts": [
+        "mka94am"
+      ]
+    },
+    {
+      "id": "studio-display-standard-glass-tilt-adjustable-stand",
+      "name": "Studio Display - Standard glass - Tilt-adjustable stand",
+      "cat": "Accessories \u2014 Office",
+      "usd": 1599,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mfex4ll/a/standard-glass-tilt-adjustable-stand",
+      "parts": [
+        "mfex4ll"
+      ]
+    },
+    {
+      "id": "studio-display-standard-glass-tilt-and-height-adjustable-stand",
+      "name": "Studio Display - Standard glass - Tilt- and height-adjustable stand",
+      "cat": "Accessories \u2014 Office",
+      "usd": 1999,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mfew4ll/a/standard-glass-tilt-and-height-adjustable-stand",
+      "parts": [
+        "mfew4ll"
+      ]
+    },
+    {
+      "id": "studio-display-nano-texture-glass-tilt-and-height-adjustable-stand",
+      "name": "Studio Display - Nano-texture glass - Tilt- and height-adjustable stand",
+      "cat": "Accessories \u2014 Office",
+      "usd": 2299,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mff04ll/a/nano-texture-glass-tilt-and-height-adjustable-stand",
+      "parts": [
+        "mff04ll"
+      ]
+    },
+    {
+      "id": "studio-display-nano-texture-glass-vesa-mount-adapter",
+      "name": "Studio Display - Nano-texture glass - VESA mount adapter",
+      "cat": "Accessories \u2014 Office",
+      "usd": 1899,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mff24ll/a/nano-texture-glass-vesa-mount-adapter",
+      "parts": [
+        "mff24ll"
+      ]
+    },
+    {
+      "id": "studio-display-standard-glass-vesa-mount-adapter",
+      "name": "Studio Display - Standard glass - VESA mount adapter",
+      "cat": "Accessories \u2014 Office",
+      "usd": 1599,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mfey4ll/a/standard-glass-vesa-mount-adapter",
+      "parts": [
+        "mfey4ll"
+      ]
+    },
+    {
+      "id": "studio-display-nano-texture-glass-tilt-adjustable-stand",
+      "name": "Studio Display - Nano-texture glass - Tilt-adjustable stand",
+      "cat": "Accessories \u2014 Office",
+      "usd": 1899,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mff14ll/a/nano-texture-glass-tilt-adjustable-stand",
+      "parts": [
+        "mff14ll"
+      ]
+    },
+    {
+      "id": "studio-display-xdr-standard-glass-tilt-and-height-adjustable-stand",
+      "name": "Studio Display XDR - Standard glass - Tilt- and height-adjustable stand",
+      "cat": "Accessories \u2014 Office",
+      "usd": 3299,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mfel4ll/a/standard-glass-tilt-and-height-adjustable-stand",
+      "parts": [
+        "mfel4ll"
+      ]
+    },
+    {
+      "id": "studio-display-xdr-nano-texture-glass-tilt-and-height-adjustable-stand",
+      "name": "Studio Display XDR - Nano-texture glass - Tilt- and height-adjustable stand",
+      "cat": "Accessories \u2014 Office",
+      "usd": 3599,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mfep4ll/a/nano-texture-glass-tilt-and-height-adjustable-stand",
+      "parts": [
+        "mfep4ll"
+      ]
+    },
+    {
+      "id": "studio-display-xdr-nano-texture-glass-vesa-mount-adapter-stand-not-included",
+      "name": "Studio Display XDR - Nano-texture glass - VESA mount adapter (stand not included)",
+      "cat": "Accessories \u2014 Office",
+      "usd": 3199,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mfeq4ll/a/nano-texture-glass-vesa-mount-adapter",
+      "parts": [
+        "mfeq4ll"
+      ]
+    },
+    {
+      "id": "polishing-cloth",
+      "name": "Polishing Cloth",
+      "cat": "Accessories \u2014 Office",
+      "usd": 9,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mlh74am/a/polishing-cloth",
+      "parts": [
+        "mlh74am"
+      ]
+    },
+    {
+      "id": "studio-display-xdr-standard-glass-vesa-mount-adapter-stand-not-included",
+      "name": "Studio Display XDR - Standard glass - VESA mount adapter (stand not included)",
+      "cat": "Accessories \u2014 Office",
+      "usd": 2899,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mfen4ll/a/standard-glass-vesa-mount-adapter",
+      "parts": [
+        "mfen4ll"
+      ]
+    },
+    {
+      "id": "herschel-cloudform-burrard-organizer-tech-2",
+      "name": "Herschel Cloudform Burrard Organizer Tech",
+      "cat": "Accessories \u2014 Other",
+      "usd": 58.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsm82zm/a/herschel-cloudform-burrard-organizer-tech",
+      "parts": [
+        "hsm82zm"
+      ]
+    },
+    {
+      "id": "aer-go-pack-2-2",
+      "name": "Aer Go Pack 2",
+      "cat": "Accessories \u2014 Other",
+      "usd": 99.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs7w2zm/a/aer-go-pack-2",
+      "parts": [
+        "hs7w2zm"
+      ]
+    },
+    {
+      "id": "popsockets-kick-out-grip-stand-magsafe-compatible-2",
+      "name": "PopSockets Kick-Out Grip & Stand (MagSafe compatible)",
+      "cat": "Accessories \u2014 Other",
+      "usd": 44.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsjs2zm/a/popsockets-kick-out-grip-stand-magsafe-compatible",
+      "parts": [
+        "hsjs2zm"
+      ]
+    },
+    {
+      "id": "airtag-finewoven-key-ring",
+      "name": "AirTag FineWoven Key Ring",
+      "cat": "Accessories \u2014 Other",
+      "usd": 35,
+      "variants": {
+        "color": [
+          {
+            "id": "wildflower-blue",
+            "label": "Wildflower Blue",
+            "delta": 0
+          },
+          {
+            "id": "dark-olive",
+            "label": "Dark Olive",
+            "delta": 0
+          }
+        ]
+      },
+      "url": "https://www.apple.com/shop/product/mkg14zm/a/airtag-finewoven-key-ring-wildflower-blue",
+      "parts": [
+        "mkg14zm",
+        "mkg24zm"
+      ]
+    },
+    {
+      "id": "46mm-burgundy-braided-solo-loop-size-3",
+      "name": "46mm Burgundy Braided Solo Loop - Size 3",
+      "cat": "Accessories \u2014 Other",
+      "usd": 99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/ml164am/a/46mm-burgundy-braided-solo-loop-size-3",
+      "parts": [
+        "ml164am"
+      ]
+    },
+    {
+      "id": "42mm-wildflower-blue-magnetic-link-s-m",
+      "name": "42mm Wildflower Blue Magnetic Link - S/M",
+      "cat": "Accessories \u2014 Other",
+      "usd": 99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mkre4am/a/42mm-wildflower-blue-magnetic-link-s-m",
+      "parts": [
+        "mkre4am"
+      ]
+    },
+    {
+      "id": "belkin-ultracharge-pro-20k-power-bank-with-integrated-cable",
+      "name": "Belkin UltraCharge Pro 20K Power Bank with Integrated Cable",
+      "cat": "Accessories \u2014 Other",
+      "usd": 99.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsk72zm/a/belkin-ultracharge-pro-20k-power-bank-with-integrated-cable",
+      "parts": [
+        "hsk72zm"
+      ]
+    },
+    {
+      "id": "nimble-sharepower-portable-battery-charger",
+      "name": "Nimble SharePower Portable Battery Charger",
+      "cat": "Accessories \u2014 Other",
+      "usd": 79.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsm42zm/a/nimble-sharepower-portable-battery-charger",
+      "parts": [
+        "hsm42zm"
+      ]
+    },
+    {
+      "id": "iphone-air-magsafe-battery",
+      "name": "iPhone Air MagSafe Battery",
+      "cat": "Accessories \u2014 Other",
+      "usd": 99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mgpg4am/a/iphone-air-magsafe-battery",
+      "parts": [
+        "mgpg4am"
+      ]
+    },
+    {
+      "id": "mophie-3-in-1-wireless-charge-stand",
+      "name": "mophie 3-in-1 Wireless Charge Stand",
+      "cat": "Accessories \u2014 Other",
+      "usd": 149.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsln2zm/a/mophie-3-in-1-wireless-charge-stand",
+      "parts": [
+        "hsln2zm"
+      ]
+    },
+    {
+      "id": "beats-usb-c-to-usb-c-woven-cable-1-5-m-5-ft-nitro-navy",
+      "name": "Beats USB-C to USB-C Woven Cable (1.5 m / 5 ft) \u2013 Nitro Navy",
+      "cat": "Accessories \u2014 Other",
+      "usd": 18.99,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mdge4ll/a/beats-usb-c-to-usb-c-woven-cable-15-m-5-ft-nitro-navy",
+      "parts": [
+        "mdge4ll"
+      ]
+    },
+    {
+      "id": "nimble-podium-3-in-1-wireless-charger",
+      "name": "Nimble Podium 3-in-1 Wireless Charger",
+      "cat": "Accessories \u2014 Other",
+      "usd": 139.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsl02zm/a/nimble-podium-3-in-1-wireless-charger",
+      "parts": [
+        "hsl02zm"
+      ]
+    },
+    {
+      "id": "usb-c-to-magsafe-3-cable-2-m-space-black",
+      "name": "USB-C to MagSafe 3 Cable (2 m) - Space Black",
+      "cat": "Accessories \u2014 Other",
+      "usd": 49,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/muvq3am/a/usb-c-to-magsafe-3-cable-2-m-space-black",
+      "parts": [
+        "muvq3am"
+      ]
+    },
+    {
+      "id": "scosche-watchit-keychain-apple-watch-magnetic-fast-charger-white",
+      "name": "Scosche WatchIt Keychain Apple Watch Magnetic Fast Charger - White",
+      "cat": "Accessories \u2014 Other",
+      "usd": 29.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hrxy2zm/a/scosche-watchit-keychain-apple-watch-magnetic-fast-charger-white",
+      "parts": [
+        "hrxy2zm"
+      ]
+    },
+    {
+      "id": "belkin-boostcharge-pro-power-bank-10k-with-apple-watch-charger",
+      "name": "Belkin BoostCharge Pro Power Bank 10K with Apple Watch Charger",
+      "cat": "Accessories \u2014 Other",
+      "usd": 99.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsld2zm/a/belkin-boostcharge-pro-power-bank-10k-with-apple-watch-charger",
+      "parts": [
+        "hsld2zm"
+      ]
+    },
+    {
+      "id": "twelve-south-powerclip-power-bank-charger",
+      "name": "Twelve South PowerClip Power Bank & Charger",
+      "cat": "Accessories \u2014 Other",
+      "usd": 39.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsl52zm/a/twelve-south-powerclip-power-bank-charger",
+      "parts": [
+        "hsl52zm"
+      ]
+    },
+    {
+      "id": "nimble-champ-stretch-liquid-crystal-edition-charger",
+      "name": "Nimble Champ Stretch Liquid Crystal Edition Charger",
+      "cat": "Accessories \u2014 Other",
+      "usd": 79.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsjt2zm/a/nimble-champ-stretch-liquid-crystal-edition-charger",
+      "parts": [
+        "hsjt2zm"
+      ]
+    },
+    {
+      "id": "magic-keyboard-for-ipad-pro-13-inch-m5-us-english-white",
+      "name": "Magic Keyboard for iPad Pro 13-inch (M5) - US English - White",
+      "cat": "Accessories \u2014 Other",
+      "usd": 349,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mwr43ll/a/magic-keyboard-for-ipad-pro-13",
+      "parts": [
+        "mwr43ll"
+      ]
+    },
+    {
+      "id": "twelve-south-bookarc-flex-vertical-desktop-stand-for-macbook",
+      "name": "Twelve South BookArc Flex Vertical Desktop Stand for MacBook",
+      "cat": "Accessories \u2014 Other",
+      "usd": 49.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hr2w2zm/a/twelve-south-bookarc-flex-vertical-desktop-stand-for-macbook",
+      "parts": [
+        "hr2w2zm"
+      ]
+    },
+    {
+      "id": "twelve-south-hoverbar-duo-for-ipad",
+      "name": "Twelve South HoverBar Duo for iPad",
+      "cat": "Accessories \u2014 Other",
+      "usd": 79.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hq432zm/a/twelve-south-hoverbar-duo-for-ipad",
+      "parts": [
+        "hq432zm"
+      ]
+    },
+    {
+      "id": "twelve-south-curve-stand-for-macbook",
+      "name": "Twelve South Curve Stand for MacBook",
+      "cat": "Accessories \u2014 Other",
+      "usd": 59.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hlst2zm/a/twelve-south-curve-stand-for-macbook",
+      "parts": [
+        "hlst2zm"
+      ]
+    },
+    {
+      "id": "philips-hue-starter-kit-4-a19-e26-smart-bulbs-bridge-pro",
+      "name": "Philips Hue Starter Kit: 4 A19 E26 Smart Bulbs + Bridge Pro",
+      "cat": "Accessories \u2014 Smart Home",
+      "usd": 289.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsc72zm/a/philips-hue-starter-kit-4-a19-e26-smart-bulbs-bridge-pro",
+      "parts": [
+        "hsc72zm"
+      ]
+    },
+    {
+      "id": "nanoleaf-essentials-matter-a19-smart-bulb-thread-matter-enabled-smart-led-light-bulb-white-and-color-3-pack",
+      "name": "Nanoleaf Essentials Matter A19 Smart Bulb - Thread & Matter-Enabled Smart LED Light Bulb - White and Color (3 Pack)",
+      "cat": "Accessories \u2014 Smart Home",
+      "usd": 49.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hqgl2zm/a/nanoleaf-essentials-matter-a19-smart-bulb-thread-matter-enabled-smart-led-light-bulb-white-and-color-3-pack",
+      "parts": [
+        "hqgl2zm"
+      ]
+    },
+    {
+      "id": "philips-festavia-globe-string-lights",
+      "name": "Philips Festavia Globe String Lights",
+      "cat": "Accessories \u2014 Smart Home",
+      "usd": 229.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs912zm/a/philips-festavia-globe-string-lights",
+      "parts": [
+        "hs912zm"
+      ]
+    },
+    {
+      "id": "nanoleaf-essentials-matter-smart-multicolor-outdoor-string-lights-smarter-kit",
+      "name": "Nanoleaf Essentials Matter Smart Multicolor Outdoor String Lights Smarter Kit",
+      "cat": "Accessories \u2014 Smart Home",
+      "usd": 129.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hre32zm/a/nanoleaf-essentials-matter-smart-multicolor-outdoor-string-lights-smarter-kit",
+      "parts": [
+        "hre32zm"
+      ]
+    },
+    {
+      "id": "eve-cam-smart-indoor-camera",
+      "name": "Eve Cam - Smart Indoor Camera",
+      "cat": "Accessories \u2014 Smart Home",
+      "usd": 149.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hr202zm/a/eve-cam-smart-indoor-camera",
+      "parts": [
+        "hr202zm"
+      ]
+    },
+    {
+      "id": "logitech-circle-view-apple-homekit-enabled-security-camera",
+      "name": "Logitech Circle View Apple HomeKit-Enabled Security Camera",
+      "cat": "Accessories \u2014 Smart Home",
+      "usd": 159.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hnre2vc/a/logitech-circle-view-apple-homekit-enabled-security-camera",
+      "parts": [
+        "hnre2vc"
+      ]
+    },
+    {
+      "id": "ge-cync-reveal-smart-a19-lights-4-pack",
+      "name": "GE Cync Reveal Smart A19 Lights (4 Pack)",
+      "cat": "Accessories \u2014 Smart Home",
+      "usd": 49.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs8x2zm/a/ge-cync-reveal-smart-a19-lights-4-pack",
+      "parts": [
+        "hs8x2zm"
+      ]
+    },
+    {
+      "id": "nanoleaf-shapes-hexagons",
+      "name": "Nanoleaf Shapes Hexagons",
+      "cat": "Accessories \u2014 Smart Home",
+      "usd": 149.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hpe42zm/a/nanoleaf-shapes-hexagons",
+      "parts": [
+        "hpe42zm"
+      ]
+    },
+    {
+      "id": "philips-hue-play-wall-washer-lamp-2-pack",
+      "name": "Philips Hue Play Wall Washer Lamp (2 Pack)",
+      "cat": "Accessories \u2014 Smart Home",
+      "usd": 399.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs8y2zm/a/philips-hue-play-wall-washer-lamp-2-pack",
+      "parts": [
+        "hs8y2zm"
+      ]
+    },
+    {
+      "id": "aqara-hub-m3-router",
+      "name": "Aqara Hub M3 Router",
+      "cat": "Accessories \u2014 Smart Home",
+      "usd": 159.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs9j2zm/a/aqara-hub-m3-router",
+      "parts": [
+        "hs9j2zm"
+      ]
+    },
+    {
+      "id": "aqara-presence-multi-sensor-fp300",
+      "name": "Aqara Presence Multi-Sensor FP300",
+      "cat": "Accessories \u2014 Smart Home",
+      "usd": 49.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsfg2zm/a/aqara-presence-multi-sensor-fp300",
+      "parts": [
+        "hsfg2zm"
+      ]
+    },
+    {
+      "id": "aqara-smart-lock-u400-deluxe-kit-shadow-black",
+      "name": "Aqara Smart Lock U400 Deluxe Kit - Shadow Black",
+      "cat": "Accessories \u2014 Smart Home",
+      "usd": 299.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs3z2zm/a/aqara-smart-lock-u400-deluxe-kit-shadow-black",
+      "parts": [
+        "hs3z2zm"
+      ]
+    },
+    {
+      "id": "eve-dimmer-switch-matter",
+      "name": "Eve Dimmer Switch (Matter)",
+      "cat": "Accessories \u2014 Smart Home",
+      "usd": 54.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs922zm/a/eve-dimmer-switch-matter",
+      "parts": [
+        "hs922zm"
+      ]
+    },
+    {
+      "id": "ge-cync-outdoor-smart-plug",
+      "name": "GE Cync Outdoor Smart Plug",
+      "cat": "Accessories \u2014 Smart Home",
+      "usd": 39.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs902zm/a/ge-cync-outdoor-smart-plug",
+      "parts": [
+        "hs902zm"
+      ]
+    },
+    {
+      "id": "aqara-g100-indoor-camera",
+      "name": "Aqara G100 Indoor Camera",
+      "cat": "Accessories \u2014 Smart Home",
+      "usd": 39.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsbh2zm/a/aqara-g100-indoor-camera",
+      "parts": [
+        "hsbh2zm"
+      ]
+    },
+    {
+      "id": "eve-outdoor-cam-smart-floodlight-camera",
+      "name": "Eve Outdoor Cam - Smart Floodlight Camera",
+      "cat": "Accessories \u2014 Smart Home",
+      "usd": 249.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hq2l2zm/a/eve-outdoor-cam-smart-floodlight-camera",
+      "parts": [
+        "hq2l2zm"
+      ]
+    },
+    {
+      "id": "eve-weather-matter-connected-weather-station",
+      "name": "Eve Weather (Matter) - Connected Weather Station",
+      "cat": "Accessories \u2014 Smart Home",
+      "usd": 79.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hrvp2zm/a/eve-weather-matter-connected-weather-station",
+      "parts": [
+        "hrvp2zm"
+      ]
+    },
+    {
+      "id": "aqara-g410-doorbell-camera-hub",
+      "name": "Aqara G410 Doorbell Camera Hub",
+      "cat": "Accessories \u2014 Smart Home",
+      "usd": 144.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs9n2zm/a/aqara-g410-doorbell-camera-hub",
+      "parts": [
+        "hs9n2zm"
+      ]
+    },
+    {
+      "id": "aqara-g5-pro-outdoor-camera-hub",
+      "name": "Aqara G5 Pro Outdoor Camera Hub",
+      "cat": "Accessories \u2014 Smart Home",
+      "usd": 199.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsbg2zm/a/aqara-g5-pro-outdoor-camera-hub",
+      "parts": [
+        "hsbg2zm"
+      ]
+    },
+    {
+      "id": "eve-energy-strip-connected-triple-outlet",
+      "name": "Eve Energy Strip - Connected Triple Outlet",
+      "cat": "Accessories \u2014 Smart Home",
+      "usd": 99.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hnee2vc/a/eve-energy-strip-connected-triple-outlet",
+      "parts": [
+        "hnee2vc"
+      ]
+    },
+    {
+      "id": "eve-water-guard-connected-water-leak-detector",
+      "name": "Eve Water Guard - Connected Water Leak Detector",
+      "cat": "Accessories \u2014 Smart Home",
+      "usd": 99.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hq262zm/a/eve-water-guard-connected-water-leak-detector",
+      "parts": [
+        "hq262zm"
+      ]
+    },
+    {
+      "id": "philips-hue-gradient-signe-floor-light",
+      "name": "Philips Hue Gradient Signe Floor Light",
+      "cat": "Accessories \u2014 Smart Home",
+      "usd": 379.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hpvn2z/a/philips-hue-gradient-signe-floor-light",
+      "parts": [
+        "hpvn2z"
+      ]
+    },
+    {
+      "id": "eve-door-window-matter-wireless-contact-sensor-3-pack",
+      "name": "Eve Door & Window (Matter) - Wireless Contact Sensor - 3-pack",
+      "cat": "Accessories \u2014 Smart Home",
+      "usd": 109.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hqxj2zm/a/eve-door-window-matter-wireless-contact-sensor-3",
+      "parts": [
+        "hqxj2zm"
+      ]
+    },
+    {
+      "id": "eve-energy-matter-smart-plug-power-meter-2-pack",
+      "name": "Eve Energy (Matter) - Smart Plug & Power Meter - 2-pack",
+      "cat": "Accessories \u2014 Smart Home",
+      "usd": 69.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hqeq2zm/a/eve-energy-matter-smart-plug-power-meter-2-pack",
+      "parts": [
+        "hqeq2zm"
+      ]
+    },
+    {
+      "id": "eve-light-switch-matter-connected-wall-switch",
+      "name": "Eve Light Switch (Matter) - Connected Wall Switch",
+      "cat": "Accessories \u2014 Smart Home",
+      "usd": 49.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hr212zm/a/eve-light-switch-matter-connected-wall-switch",
+      "parts": [
+        "hr212zm"
+      ]
+    },
+    {
+      "id": "philips-hue-go-portable-table-lamp",
+      "name": "Philips Hue Go Portable Table Lamp",
+      "cat": "Accessories \u2014 Smart Home",
+      "usd": 179.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hqeh2zm/a/philips-hue-go-portable-table-lamp",
+      "parts": [
+        "hqeh2zm"
+      ]
+    },
+    {
+      "id": "eve-motion-matter-wireless-motion-sensor",
+      "name": "Eve Motion (Matter) - Wireless Motion Sensor",
+      "cat": "Accessories \u2014 Smart Home",
+      "usd": 49.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hqwk2zm/a/eve-motion-matter-wireless-motion-sensor",
+      "parts": [
+        "hqwk2zm"
+      ]
+    },
+    {
+      "id": "tech21-flexquartz-case-for-iphone-17-pro-max-magsafe-compatible-2",
+      "name": "Tech21 FlexQuartz Case for iPhone 17 Pro Max (MagSafe compatible)",
+      "cat": "Accessories \u2014 Travel",
+      "usd": 54.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsg92zm/a/tech21-flexquartz-case-for-iphone-17-pro-max-magsafe-compatible",
+      "parts": [
+        "hsg92zm"
+      ]
+    },
+    {
+      "id": "iphone-air-bumper-light-blue",
+      "name": "iPhone Air Bumper \u2013 Light Blue",
+      "cat": "Accessories \u2014 Travel",
+      "usd": 39,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/mh024zm/a/iphone-air-bumper-light-blue",
+      "parts": [
+        "mh024zm"
+      ]
+    },
+    {
+      "id": "tech21-flexquartz-case-for-iphone-air-magsafe-compatible",
+      "name": "Tech21 FlexQuartz Case for iPhone Air (MagSafe compatible)",
+      "cat": "Accessories \u2014 Travel",
+      "usd": 54.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsgc2zm/a/tech21-flexquartz-case-for-iphone-air-magsafe-compatible",
+      "parts": [
+        "hsgc2zm"
+      ]
+    },
+    {
+      "id": "mophie-optical-check-case-for-iphone-17",
+      "name": "mophie Optical Check Case for iPhone 17",
+      "cat": "Accessories \u2014 Travel",
+      "usd": 59.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsfr2zm/a/mophie-optical-check-case-for-iphone-17",
+      "parts": [
+        "hsfr2zm"
+      ]
+    },
+    {
+      "id": "belkin-ultraglass-2-privacy-screen-protector-for-iphone-17",
+      "name": "Belkin UltraGlass 2 Privacy Screen Protector for iPhone 17",
+      "cat": "Accessories \u2014 Travel",
+      "usd": 44.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hse52zm/a/belkin-ultraglass-2-privacy-screen-protector-for-iphone-17",
+      "parts": [
+        "hse52zm"
+      ]
+    },
+    {
+      "id": "native-union-active-wallet-magnetic-stand-magsafe-compatible",
+      "name": "Native Union Active Wallet Magnetic Stand (MagSafe Compatible)",
+      "cat": "Accessories \u2014 Travel",
+      "usd": 39.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hslf2zm/a/native-union-active-wallet-magnetic-stand-magsafe-compatible",
+      "parts": [
+        "hslf2zm"
+      ]
+    },
+    {
+      "id": "herschel-cloud-sling-for-iphone",
+      "name": "Herschel Cloud Sling for iPhone",
+      "cat": "Accessories \u2014 Travel",
+      "usd": 59.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsfc2zm/a/herschel-cloud-sling-for-iphone",
+      "parts": [
+        "hsfc2zm"
+      ]
+    },
+    {
+      "id": "moft-snap-field-magsafe-wallet-stand",
+      "name": "MOFT Snap Field MagSafe Wallet Stand",
+      "cat": "Accessories \u2014 Travel",
+      "usd": 49.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsl72zm/a/moft-snap-field-magsafe-wallet-stand",
+      "parts": [
+        "hsl72zm"
+      ]
+    },
+    {
+      "id": "popsockets-low-pro-grip-stand-magsafe-compatible",
+      "name": "PopSockets Low-Pro Grip & Stand (MagSafe compatible)",
+      "cat": "Accessories \u2014 Travel",
+      "usd": 39.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hskr2zm/a/popsockets-low-pro-grip-stand-magsafe-compatible",
+      "parts": [
+        "hskr2zm"
+      ]
+    },
+    {
+      "id": "native-union-ultralight-sleeve-for-13-14-macbook",
+      "name": "Native Union Ultralight Sleeve for 13\" & 14\" MacBook",
+      "cat": "Accessories \u2014 Travel",
+      "usd": 39.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs7t2zm/a/native-union-ultralight-sleeve-for-13-14-macbook",
+      "parts": [
+        "hs7t2zm"
+      ]
+    },
+    {
+      "id": "kensington-ultrathin-magnetic-privacy-screen-filter-for-14-macbook-pro",
+      "name": "Kensington UltraThin Magnetic Privacy Screen Filter for 14\u2033 MacBook Pro",
+      "cat": "Accessories \u2014 Travel",
+      "usd": 61.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hq2w2zm/a/kensington-ultrathin-magnetic-privacy-screen-filter-for-14",
+      "parts": [
+        "hq2w2zm"
+      ]
+    },
+    {
+      "id": "kensington-ultrathin-magnetic-privacy-screen-for-13-macbook-air",
+      "name": "Kensington UltraThin Magnetic Privacy Screen for 13\u2033 MacBook Air",
+      "cat": "Accessories \u2014 Travel",
+      "usd": 49.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hrhh2zm/a/kensington-ultrathin-magnetic-privacy-screen-for-13",
+      "parts": [
+        "hrhh2zm"
+      ]
+    },
+    {
+      "id": "native-union-ultralight-sleeve-for-15-16-macbook",
+      "name": "Native Union Ultralight Sleeve for 15\" & 16\" MacBook",
+      "cat": "Accessories \u2014 Travel",
+      "usd": 39.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs7s2zm/a/native-union-ultralight-sleeve-for-15-16-macbook",
+      "parts": [
+        "hs7s2zm"
+      ]
+    },
+    {
+      "id": "mophie-slim-hardshell-case-for-15-macbook-air",
+      "name": "mophie Slim Hardshell Case for 15\" MacBook Air",
+      "cat": "Accessories \u2014 Travel",
+      "usd": 54.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsf02zm/a/mophie-slim-hardshell-case-for-15-macbook-air",
+      "parts": [
+        "hsf02zm"
+      ]
+    },
+    {
+      "id": "mophie-slim-hardshell-case-for-14-macbook-pro",
+      "name": "mophie Slim Hardshell Case for 14\" MacBook Pro",
+      "cat": "Accessories \u2014 Travel",
+      "usd": 54.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hseu2zm/a/mophie-slim-hardshell-case-for-14-macbook-pro",
+      "parts": [
+        "hseu2zm"
+      ]
+    },
+    {
+      "id": "comfyable-puffer-tote-for-13-and-14-macbook",
+      "name": "Comfyable Puffer Tote for 13\" and 14\" MacBook",
+      "cat": "Accessories \u2014 Travel",
+      "usd": 59.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsf52zm/a/comfyable-puffer-tote-for-13-and-14-macbook",
+      "parts": [
+        "hsf52zm"
+      ]
+    },
+    {
+      "id": "comfyable-puffer-tote-for-15-and-16-macbook",
+      "name": "Comfyable Puffer Tote for 15\" and 16\" MacBook",
+      "cat": "Accessories \u2014 Travel",
+      "usd": 64.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsf62zm/a/comfyable-puffer-tote-for-15-and-16-macbook",
+      "parts": [
+        "hsf62zm"
+      ]
+    },
+    {
+      "id": "moft-carry-sleeve-for-14-macbook-pro",
+      "name": "MOFT Carry Sleeve for 14\u201d MacBook Pro",
+      "cat": "Accessories \u2014 Travel",
+      "usd": 64.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs7g2zm/a/moft-carry-sleeve-for-14-macbook-pro",
+      "parts": [
+        "hs7g2zm"
+      ]
+    },
+    {
+      "id": "herschel-cloudform-burrard-organizer-tech",
+      "name": "Herschel Cloudform Burrard Organizer Tech",
+      "cat": "Accessories \u2014 Travel",
+      "usd": 58.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsm72zm/a/herschel-cloudform-burrard-organizer-tech",
+      "parts": [
+        "hsm72zm"
+      ]
+    },
+    {
+      "id": "aer-split-kit-storage-pouch",
+      "name": "Aer Split Kit Storage Pouch",
+      "cat": "Accessories \u2014 Travel",
+      "usd": 39.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsjv2zm/a/aer-split-kit-storage-pouch",
+      "parts": [
+        "hsjv2zm"
+      ]
+    },
+    {
+      "id": "native-union-active-organizer",
+      "name": "Native Union Active Organizer",
+      "cat": "Accessories \u2014 Travel",
+      "usd": 29.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hslk2zm/a/native-union-active-organizer",
+      "parts": [
+        "hslk2zm"
+      ]
+    },
+    {
+      "id": "aer-cable-kit-3-organizer",
+      "name": "Aer Cable Kit 3 Organizer",
+      "cat": "Accessories \u2014 Travel",
+      "usd": 59.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsju2zm/a/aer-cable-kit-3-organizer",
+      "parts": [
+        "hsju2zm"
+      ]
+    },
+    {
+      "id": "aer-go-pack-2",
+      "name": "Aer Go Pack 2",
+      "cat": "Accessories \u2014 Travel",
+      "usd": 99.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsll2zm/a/aer-go-pack-2",
+      "parts": [
+        "hsll2zm"
+      ]
+    },
+    {
+      "id": "herschel-cloudform-airpods-charm",
+      "name": "Herschel Cloudform AirPods Charm",
+      "cat": "Accessories \u2014 Travel",
+      "usd": 24.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hskf2zm/a/herschel-cloudform-airpods-charm",
+      "parts": [
+        "hskf2zm"
+      ]
+    },
+    {
+      "id": "aer-go-tote-2",
+      "name": "Aer Go Tote 2",
+      "cat": "Accessories \u2014 Travel",
+      "usd": 89.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hs7v2zm/a/aer-go-tote-2",
+      "parts": [
+        "hs7v2zm"
+      ]
+    },
+    {
+      "id": "rains-tote-mini-for-ipad-and-macbook",
+      "name": "Rains Tote Mini for iPad and MacBook",
+      "cat": "Accessories \u2014 Travel",
+      "usd": 125.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsb42zm/a/rains-tote-mini-for-ipad-and-macbook",
+      "parts": [
+        "hsb42zm"
+      ]
+    },
+    {
+      "id": "rains-backpack-mini-for-ipad-and-macbook",
+      "name": "Rains Backpack Mini for iPad and MacBook",
+      "cat": "Accessories \u2014 Travel",
+      "usd": 125.95,
+      "variants": {},
+      "url": "https://www.apple.com/shop/product/hsb12zm/a/rains-backpack-mini-for-ipad-and-macbook",
+      "parts": [
+        "hsb12zm"
+      ]
     }
   ],
   "us_states": [
@@ -1158,5 +5398,11 @@
     "NZ": false,
     "MX": false,
     "SA": false
-  }
+  },
+  "catalog_meta": {
+    "generated": "2026-09-21",
+    "source": "apple.com US store (en-US)",
+    "count": 331
+  },
+  "default_product": "iphone-18-pro-max"
 }

@@ -1,12 +1,16 @@
 # Apple Price Tracker
 
-Two pieces:
+Three pieces:
 
-1. **`apple_price_data.py`** — the pricing data & logic (Python port of the original
-   `tariff-board.html` tool): the Apple product catalog, international country tax/FX
-   assumptions, and US state sales-tax rates, plus the pricing formulas. Run it locally
+1. **`scrape_apple_catalog.py`** — reads apple.com's US store and writes
+   `apple_catalog.json`: every model with its real storage / colour / size / chip options
+   and prices (iPhone, iPad, Mac, Watch, Vision, AirPods, HomePod, Apple TV, AirTag...)
+   plus ~300 accessories. Re-run it whenever Apple ships something new.
+2. **`apple_price_data.py`** — the pricing data & logic (Python port of the original
+   `tariff-board.html` tool): loads that catalog, plus international country tax/FX
+   assumptions and US state sales-tax rates and the pricing formulas. Run it locally
    for a quick report, and to (re)generate `frontend/data.json`.
-2. **`frontend/`** — a static site (no build step, no server), organized as tabs
+3. **`frontend/`** — a static site (no build step, no server), organized as tabs
    that all share the same product/variant/currency/employee-discount filters at the top:
    - **World Prices** — a world choropleth (hover for a price/tax breakdown, click the
      US to jump to the USA Map tab) for the 20 countries this tool tracks, plus a table
@@ -25,16 +29,41 @@ Two pieces:
      add or remove countries; reset all edits.
    ("Ship & Customs" — buy-here-ship-there with a flat customs-% estimate — also
    exists in the code but its tab button is hidden; see `TAB_IDS` in `app.js` to bring it back.)
-   Paste an Apple product URL into the box above the tabs to jump straight to that
-   product (or add it on the spot with just its price, if it's newer than the catalog) —
-   or skip the link entirely and type a product name, category and US price directly
-   into the "no link needed" row right below it.
+   Paste any apple.com link into the box above the tabs — a marketing page
+   (`apple.com/ipad-mini/`), a buy page with options in it
+   (`.../buy-iphone/iphone-18-pro/6.9-inch-display-1tb-silver`) or an accessory page — and
+   it's matched to the catalog with the storage / colour / size from the URL pre-selected.
+   A link that isn't in the catalog (a model newer than the last scrape) gets a price
+   prompt instead of an error, or skip links entirely and type a product name, category
+   and US price into the "no link needed" row right below it.
+
+## Keeping the catalog current
+
+```bash
+python3 scrape_apple_catalog.py                  # full refresh, ~1 minute (devices + ~300 accessories)
+python3 scrape_apple_catalog.py --devices-only   # just the devices (~40 requests)
+python3 scrape_apple_catalog.py --url https://www.apple.com/shop/buy-iphone/iphone-18-pro --add
+                                                 # look up one page and merge it into the catalog
+python3 apple_price_data.py --export-only        # then rebuild frontend/data.json
+```
+
+Then drag the `frontend/` folder onto Netlify again. (A website can't do this itself:
+apple.com blocks cross-site reads, so the scraping happens here, on your machine.)
+
+How it reads prices: Apple embeds exact per-SKU prices in each product page. iPhone /
+iPad / AirPods / Apple TV / HomePod pages list every SKU (model + storage + colour);
+Mac and Watch pages have a configurator price table; anything else falls back to the
+page's starting price (flagged in the app). Options are modelled additively
+(base price + option deltas); the scraper prints a warning if a product's real prices
+don't fit that, so you'd know a combination might be off. Marketing "From $X" headlines
+can differ slightly from SKU prices (e.g. iPhone 17 shows "From $899" but its cheapest
+purchasable SKU is $929) — the SKU price is what's used.
 
 ## Using the Python tool
 
 ```bash
-python3 apple_price_data.py                          # report for iPhone 17 Pro
-python3 apple_price_data.py --product ip17pm          # iPhone 17 Pro Max
+python3 apple_price_data.py                          # report for the default product (iPhone 18 Pro Max)
+python3 apple_price_data.py --product iphone-18-pro  # any product id
 python3 apple_price_data.py --list-products           # see all product ids
 python3 apple_price_data.py --employee-discount 15    # apply a 15% discount
 python3 apple_price_data.py --export-only             # just rewrite frontend/data.json
@@ -42,9 +71,10 @@ python3 apple_price_data.py --export-only             # just rewrite frontend/da
 
 No third-party dependencies — standard library only (Python 3.8+).
 
-Edit the `PRODUCTS`, `COUNTRIES`, or `STATE_TAX` dictionaries at the top of the file
-to update prices/rates, then re-run the script — it regenerates `frontend/data.json`
-so the site picks up the change on next load.
+Edit `COUNTRIES` or `STATE_TAX` at the top of `apple_price_data.py` to update tax rates,
+then re-run it — it regenerates `frontend/data.json` so the site picks up the change on
+next load. (If `apple_catalog.json` is missing it falls back to a small built-in sample
+catalog.)
 
 ## Running the frontend locally
 

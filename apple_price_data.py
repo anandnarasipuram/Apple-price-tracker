@@ -17,8 +17,9 @@ Run it directly to:
   2. export ``frontend/data.json`` — the static data file the Netlify frontend
      (in ``frontend/``) reads to render the interactive USA price map.
 
-    python3 apple_price_data.py                       # default product (iPhone 17 Pro)
-    python3 apple_price_data.py --product ip17pm       # iPhone 17 Pro Max
+    python3 scrape_apple_catalog.py                   # (optional) refresh apple_catalog.json from apple.com
+    python3 apple_price_data.py                       # report for the default product
+    python3 apple_price_data.py --product iphone-18-pro
     python3 apple_price_data.py --list-products
     python3 apple_price_data.py --export-only          # just (re)write frontend/data.json
 
@@ -35,7 +36,12 @@ from typing import Optional
 
 
 # ---------------------------------------------------------------------------
-# Product catalog — September 2026 US Apple Store list prices (USD)
+# Product catalog — US Apple Store list prices (USD)
+#
+# The real catalog lives in apple_catalog.json, written by
+# scrape_apple_catalog.py straight from apple.com (models, storage/colour/size
+# variants, ~300 accessories). BUILTIN_PRODUCTS below is only a small
+# fallback so this module still works if that file hasn't been generated.
 # ---------------------------------------------------------------------------
 
 def _colors(*names):
@@ -43,7 +49,7 @@ def _colors(*names):
     return [{"id": n.lower().replace(" ", "-"), "label": n, "delta": 0} for n in names]
 
 
-PRODUCTS = [
+BUILTIN_PRODUCTS = [
     {"id": "ip17", "name": "iPhone 17", "cat": "iPhone", "usd": 799,
      "variants": {"storage": [{"id": "256", "label": "256GB", "delta": 0},
                                {"id": "512", "label": "512GB", "delta": 200}],
@@ -101,6 +107,33 @@ PRODUCTS = [
                   "color": _colors("Midnight", "Starlight", "Rose Gold", "Jet Black")}},
     {"id": "airpods", "name": "AirPods Pro 3", "cat": "Audio", "usd": 249, "variants": {}},
 ]
+
+
+CATALOG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "apple_catalog.json")
+
+
+def _load_catalog():
+    """(products, meta) from apple_catalog.json, or (BUILTIN_PRODUCTS, None) if it isn't there."""
+    try:
+        with open(CATALOG_PATH, encoding="utf-8") as f:
+            data = json.load(f)
+        if data.get("products"):
+            return data["products"], {"generated": data.get("generated"), "source": data.get("source"),
+                                       "count": len(data["products"])}
+    except (OSError, ValueError):
+        pass
+    return BUILTIN_PRODUCTS, None
+
+
+PRODUCTS, CATALOG_META = _load_catalog()
+
+# The product the site opens on (first match wins), then the report's default.
+PREFERRED_DEFAULTS = ("iphone-18-pro-max", "iphone-18-pro", "ip17pro")
+
+
+def default_product_id() -> str:
+    ids = {p["id"] for p in PRODUCTS}
+    return next((i for i in PREFERRED_DEFAULTS if i in ids), PRODUCTS[0]["id"])
 
 
 # ---------------------------------------------------------------------------
@@ -407,6 +440,8 @@ def export_frontend_data(out_path: str) -> None:
         "trade_in_devices": TRADE_IN_DEVICES,
         "trade_in_conditions": TRADE_IN_CONDITIONS,
         "trade_in_availability": TRADE_IN_AVAILABILITY,
+        "catalog_meta": CATALOG_META,
+        "default_product": default_product_id(),
     }
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     with open(out_path, "w") as f:
@@ -416,7 +451,7 @@ def export_frontend_data(out_path: str) -> None:
 
 def list_products() -> None:
     for p in PRODUCTS:
-        print(f"  {p['id']:<10} {p['cat']:<7} {p['name']} — ${p['usd']}")
+        print(f"  {p['id']:<28} {p['cat']:<34} {p['name']} — ${p['usd']}")
 
 
 # ---------------------------------------------------------------------------
@@ -425,7 +460,7 @@ def list_products() -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Apple price data — US state report + frontend data export.")
-    parser.add_argument("--product", default="ip17pro", help="Product id (see --list-products)")
+    parser.add_argument("--product", default=None, help="Product id (see --list-products); default: the flagship iPhone")
     parser.add_argument("--employee-discount", type=float, default=0, help="Employee discount %% to apply")
     parser.add_argument("--list-products", action="store_true", help="List product ids and exit")
     parser.add_argument("--export-only", action="store_true", help="Only (re)write frontend/data.json, skip the report")
@@ -438,7 +473,7 @@ def main() -> None:
         return
 
     if not args.export_only:
-        print_report(args.product, employee_discount_pct=args.employee_discount)
+        print_report(args.product or default_product_id(), employee_discount_pct=args.employee_discount)
 
     export_frontend_data(args.out)
 
