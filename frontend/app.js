@@ -170,21 +170,23 @@ function resolveAppleLink(rawUrl){
   return { kind:'unknown', ...unknown, notes };
 }
 
-// Reference currencies for cross-country conversion (independent of the
-// editable `countries` FX rates below — these are just the picker options).
-const CURRENCIES = [
-  { code:'USD', label:'US Dollar (USD)', per_usd:1 },
-  { code:'EUR', label:'Euro (EUR)', per_usd:0.86 },
-  { code:'GBP', label:'British Pound (GBP)', per_usd:0.75 },
-  { code:'CHF', label:'Swiss Franc (CHF)', per_usd:0.80 },
-  { code:'AED', label:'UAE Dirham (AED)', per_usd:3.67 },
-  { code:'JPY', label:'Japanese Yen (JPY)', per_usd:147 },
-  { code:'SGD', label:'Singapore Dollar (SGD)', per_usd:1.29 },
-  { code:'INR', label:'Indian Rupee (INR)', per_usd:88 },
-  { code:'AUD', label:'Australian Dollar (AUD)', per_usd:1.52 },
-  { code:'HKD', label:'Hong Kong Dollar (HKD)', per_usd:7.79 },
-  { code:'CAD', label:'Canadian Dollar (CAD)', per_usd:1.38 },
-];
+// Currencies offered in the "Currency B / C" pickers. The rates are real market rates read by
+// scrape_apple_catalog.py, with their date (DATA.fx) — not assumptions.
+const CURRENCY_NAMES = {
+  USD:'US Dollar', EUR:'Euro', GBP:'British Pound', CHF:'Swiss Franc', AED:'UAE Dirham', JPY:'Japanese Yen',
+  SGD:'Singapore Dollar', INR:'Indian Rupee', AUD:'Australian Dollar', HKD:'Hong Kong Dollar', CAD:'Canadian Dollar',
+  TWD:'New Taiwan Dollar', MOP:'Macanese Pataca', KRW:'South Korean Won', MYR:'Malaysian Ringgit', THB:'Thai Baht',
+  QAR:'Qatari Riyal', NZD:'New Zealand Dollar', MXN:'Mexican Peso', SAR:'Saudi Riyal',
+};
+let CURRENCIES = [];
+function buildCurrencies(){
+  const rates = Object.assign({ USD: 1 }, (DATA.fx && DATA.fx.rates) || {});
+  // Only when there are no scraped rates (the built-in sample data): use the countries' own fx figures.
+  DATA.countries.forEach(c => { if (!(c.currency in rates) && c.fx) rates[c.currency] = c.fx; });
+  CURRENCIES = Object.keys(rates)
+    .sort((a, b) => a === 'USD' ? -1 : b === 'USD' ? 1 : a.localeCompare(b))
+    .map(code => ({ code, label: `${CURRENCY_NAMES[code] || code} (${code})`, per_usd: rates[code] }));
+}
 
 // 'ship' (Ship & Customs) is intentionally excluded — its tab button was
 // removed from the UI, but the tab-ship section, its data, and its render
@@ -286,41 +288,86 @@ function zip3ToState(zip3){
 function variantKeyStr(){
   return Object.keys(selectedVariant).sort().map(k => k + '=' + selectedVariant[k]).join(';') || 'base';
 }
-function estimateLocalPrice(country, product){
-  return effectiveUsd(product) * country.fx * (1 + country.tax_rate) * country.premium;
+// What Apple's own online store charges in `country` for the selected configuration, in that
+// country's currency — or null when there is no such price. Nothing is converted or estimated:
+// the numbers were read from each country's Apple store by scrape_apple_catalog.py.
+function appleLocalPrice(country, product){
+  if (country.code === 'US') return effectiveUsd(product);
+  const r = product.regional && product.regional[country.code];
+  if (!r) return null;
+  if (r.table){                                   // exact price of every SKU (prices that aren't additive)
+    const dims = Object.keys(r.table[0].o);
+    const only = d => new Set(r.table.map(row => row.o[d])).size === 1;
+    const row = r.table.find(row => dims.every(d => selectedVariant[d] !== undefined ? row.o[d] === selectedVariant[d] : only(d)));
+    return row ? row.p : null;
+  }
+  let price = r.base;                             // base + the chosen option's price step, per dimension
+  for (const d of Object.keys(r.opts)){
+    const opts = r.opts[d];
+    const chosen = selectedVariant[d] !== undefined ? selectedVariant[d]
+                 : (Object.keys(opts).length === 1 ? Object.keys(opts)[0] : undefined);
+    if (chosen === undefined || opts[chosen] === undefined) return null;   // that option isn't sold there
+    price += opts[chosen];
+  }
+  return price;
 }
+// Apple's price, unless you've typed a real price over it.
 function getLocalPrice(country, product){
   const key = country.code + '_' + product.id + '_' + variantKeyStr();
   if (overrides.hasOwnProperty(key)) return overrides[key];
-  return estimateLocalPrice(country, product);
+  return appleLocalPrice(country, product);
+}
+function noPriceReason(country, product){
+  const store = country.store || 'unknown';
+  if (store === 'no_store') return `Apple has no online store in ${country.name}`;
+  if (store === 'not_scraped' || store === 'unknown') return `No Apple prices have been read for ${country.name}`;
+  if (product.regional && product.regional[country.code]) return `That storage / colour / size isn't sold on Apple's ${country.name} store`;
+  if (product.url){
+    const acc = /^Accessories/.test(product.category || '');
+    return acc ? `Not found on Apple's ${country.name} store under this part number (accessories often carry a different part number per country)`
+               : `Not listed on Apple's ${country.name} store`;
+  }
+  return `No Apple price on file for a product you added yourself — type the ${country.currency} price to see it here`;
 }
 function taxPortionAmt(price, taxRate){ return price - (price / (1 + taxRate)); }
 
+// One country's price picture for the selected product. Apple's shown price already includes tax
+// in most countries but not in the US / Canada (tax is added at checkout) — `price_includes_tax`.
 function computeWorldRow(country, product){
   const listPrice = getLocalPrice(country, product);
-  const exTax = listPrice / (1 + country.tax_rate);
+  if (listPrice === null) return { country, available: false, reason: noPriceReason(country, product) };
+  const inc = country.price_includes_tax !== false;
+  const t = country.tax_rate;
   const discount = employeeOn ? employeePct / 100 : 0;
-  const payingPrice = listPrice * (1 - discount);
+  const afterDiscount = listPrice * (1 - discount);
+  const exTax = inc ? listPrice / (1 + t) : listPrice;                  // Apple's price before tax
+  const exTaxPaid = inc ? afterDiscount / (1 + t) : afterDiscount;
+  const taxPaid = inc ? afterDiscount - exTaxPaid : afterDiscount * t;
+  const payingPrice = exTaxPaid + taxPaid;
   const refundApplies = touristMode && country.refund !== null;
-  const refundCash = refundApplies ? taxPortionAmt(payingPrice, country.tax_rate) * country.refund : 0;
+  const refundCash = refundApplies ? taxPaid * country.refund : 0;
   const finalPrice = payingPrice - refundCash;
   const usdEquivalent = finalPrice / country.fx;
-  return { country, listPrice, exTax, payingPrice, refundCash, finalPrice, usdEquivalent, refundApplies };
+  const overridden = overrides.hasOwnProperty(country.code + '_' + product.id + '_' + variantKeyStr());
+  return { country, available: true, overridden, listPrice, exTax, exTaxPaid, taxPaid, payingPrice, refundCash, finalPrice, usdEquivalent, refundApplies };
 }
 
 function computeCompareColumn(col, product){
   const country = countries.find(c => c.code === col.countryCode);
-  const listPriceOriginal = getLocalPrice(country, product);
-  const exTaxBase = listPriceOriginal / (1 + country.tax_rate);
+  const listPrice = getLocalPrice(country, product);
+  if (listPrice === null) return { country, available: false, reason: noPriceReason(country, product) };
+  const inc = country.price_includes_tax !== false;
+  const exTaxBase = inc ? listPrice / (1 + country.tax_rate) : listPrice;
   const overrideRate = (isNaN(col.taxOverride) ? country.tax_rate * 100 : col.taxOverride) / 100;
-  const listPrice = exTaxBase * (1 + overrideRate);
   const discount = col.employeeOn ? col.employeePct / 100 : 0;
-  const payingPrice = listPrice * (1 - discount);
+  const exNet = exTaxBase * (1 - discount);
+  const taxAmount = exNet * overrideRate;
+  const payingPrice = exNet + taxAmount;
   const refundApplies = col.touristOn && country.refund !== null;
-  const refundCash = refundApplies ? taxPortionAmt(payingPrice, overrideRate) * country.refund : 0;
+  const refundCash = refundApplies ? taxAmount * country.refund : 0;
   const finalPrice = payingPrice - refundCash;
   const usdEquivalent = finalPrice / country.fx;
-  return { country, listPrice, exTaxBase, overrideRate, discount, payingPrice, refundCash, finalPrice, usdEquivalent, refundApplies };
+  return { country, available: true, listPrice, exTaxBase, overrideRate, discount, exNet, taxAmount, payingPrice, refundCash, finalPrice, usdEquivalent, refundApplies };
 }
 
 function currencyRate(code){ const c = CURRENCIES.find(x => x.code === code); return c ? c.per_usd : 1; }
@@ -585,45 +632,52 @@ function updateWorldMapColors(){
   const product = getProduct(currentProductId);
   const rows = countries.map(c => computeWorldRow(c, product));
   const byCode = Object.fromEntries(rows.map(r => [r.country.code, r]));
-  const values = rows.map(r => r.usdEquivalent);
-  const min = Math.min(...values), max = Math.max(...values);
+  const priced = rows.filter(r => r.available);
+  const values = priced.map(r => r.usdEquivalent);
+  const min = values.length ? Math.min(...values) : 0, max = values.length ? Math.max(...values) : 0;
   const domain = SEQ_RAMP.map((_, i) => min + (max - min) * (i / (SEQ_RAMP.length - 1)));
   const scale = d3.scaleLinear().domain(domain).range(SEQ_RAMP).clamp(true);
   window.__worldByCode = byCode;
 
+  // grey = no Apple price to show (hover still explains why)
+  const priceOf = d => { const r = byCode[numericToCountry(d.id)]; return r && r.available ? r : null; };
   worldSvgSel.selectAll('path.country')
-    .classed('no-data', d => !byCode[numericToCountry(d.id)])
-    .attr('fill', d => {
-      const row = byCode[numericToCountry(d.id)];
-      return row ? scale(row.usdEquivalent) : '#555';
-    })
+    .classed('no-data', d => !priceOf(d))
+    .attr('fill', d => { const r = priceOf(d); return r ? scale(r.usdEquivalent) : '#555'; })
     .attr('aria-label', d => {
-      const row = byCode[numericToCountry(d.id)];
-      return row ? `${row.country.name}: ${fmtCur(row.finalPrice, row.country.currency)} total` : '';
+      const r = byCode[numericToCountry(d.id)];
+      if (!r) return '';
+      return r.available ? `${r.country.name}: ${fmtCur(r.finalPrice, r.country.currency)} total` : `${r.country.name}: ${r.reason}`;
     });
 
-  $('worldLegendMin').textContent = fmtCur(convertUsd(min, currencyB), currencyB);
-  $('worldLegendMax').textContent = fmtCur(convertUsd(max, currencyB), currencyB);
+  $('worldLegendMin').textContent = values.length ? fmtCur(convertUsd(min, currencyB), currencyB) : '–';
+  $('worldLegendMax').textContent = values.length ? fmtCur(convertUsd(max, currencyB), currencyB) : '–';
 }
 
 function onCountryHover(e){
   const code = countryCodeFromEvent(e);
   const row = window.__worldByCode && window.__worldByCode[code];
-  // A no-data country (most of the map) still needs to clear whatever
+  // A country we don't track (most of the map) still needs to clear whatever
   // tooltip a previous hover on a tracked country left on screen.
   if (!row){ onCountryLeave(e); return; }
   e.target.classList.add('hovered');
   const tt = $('worldTooltip');
   tt.hidden = false;
-  tt.innerHTML = `
-    <div class="tt-state">${row.country.flag} ${row.country.name}</div>
-    <div class="tt-spec">${productSpecLine(getProduct(currentProductId))}</div>
-    <div class="tt-row"><span>Price before tax</span><span class="v">${fmtCur(row.exTax, row.country.currency)}</span></div>
-    <div class="tt-row"><span>Tax (${(row.country.tax_rate*100).toFixed(1)}%)</span><span class="v">${fmtCur(row.listPrice - row.exTax, row.country.currency)}</span></div>
-    <div class="tt-row total"><span>Total price</span><span class="v">${fmtCur(row.finalPrice, row.country.currency)}</span></div>
-    <div class="tt-row"><span>≈ in ${currencyB}</span><span class="v">${fmtCur(convertUsd(row.usdEquivalent, currencyB), currencyB)}</span></div>
-    ${row.country.code === 'US' ? '<div class="tt-hint">Click for the full 50-state map →</div>' : ''}
-  `;
+  const c = row.country;
+  const head = `<div class="tt-state">${c.flag} ${c.name}</div><div class="tt-spec">${productSpecLine(getProduct(currentProductId))}</div>`;
+  if (!row.available){
+    tt.innerHTML = head + `<div class="tt-none">${escapeHtml(row.reason)}</div>`;
+  } else {
+    const incNote = c.price_includes_tax === false ? 'added at checkout' : 'included in Apple’s price';
+    tt.innerHTML = head + `
+      <div class="tt-row"><span>Price before tax</span><span class="v">${fmtCur(row.exTaxPaid, c.currency)}</span></div>
+      <div class="tt-row"><span>Tax (${(c.tax_rate*100).toFixed(1)}%)</span><span class="v">${fmtCur(row.taxPaid, c.currency)}</span></div>
+      ${row.refundApplies ? `<div class="tt-row"><span>Tourist refund</span><span class="v">−${fmtCur(row.refundCash, c.currency)}</span></div>` : ''}
+      <div class="tt-row total"><span>Total price</span><span class="v">${fmtCur(row.finalPrice, c.currency)}</span></div>
+      <div class="tt-row"><span>≈ in ${currencyB}</span><span class="v">${fmtCur(convertUsd(row.usdEquivalent, currencyB), currencyB)}</span></div>
+      <div class="tt-src">${row.overridden ? 'A price you typed' : `Apple ${escapeHtml(c.name)} store price`} · tax ${incNote}</div>
+      ${c.code === 'US' ? '<div class="tt-hint">Click for the full 50-state map →</div>' : ''}`;
+  }
   const stage = $('worldMapStage');
   const stageBox = stage.getBoundingClientRect();
   let x, y;
@@ -706,39 +760,52 @@ function renderTable(rows){
 function renderWorldTab(){
   const product = getProduct(currentProductId);
   $('worldTitle').textContent = `Price by country — ${product.name}`;
-  $('colFinalHead').textContent = (employeeOn || touristMode) ? "Price you'd pay" : 'List price';
+  $('colFinalHead').textContent = (employeeOn || touristMode) ? "Price you'd pay" : 'Price you’d pay incl. tax';
   $('colBHead').textContent = `In ${currencyB}`;
   $('colCHead').textContent = `In ${currencyC}`;
 
   updateWorldMapColors();
   $('worldTooltip').hidden = true;
 
-  let rows = countries.map(c => computeWorldRow(c, product));
+  const all = countries.map(c => computeWorldRow(c, product));
+  const rows = all.filter(r => r.available);
+  const noPrice = all.filter(r => !r.available).sort((a, b) => a.country.name.localeCompare(b.country.name));
   if (sortMode === 'effective') rows.sort((a, b) => a.usdEquivalent - b.usdEquivalent);
   else if (sortMode === 'local') rows.sort((a, b) => a.country.name.localeCompare(b.country.name));
   else if (sortMode === 'tax') rows.sort((a, b) => a.country.tax_rate - b.country.tax_rate);
 
-  const cheapestUsd = Math.min(...rows.map(r => r.usdEquivalent));
-  const priciestUsd = Math.max(...rows.map(r => r.usdEquivalent));
-  const cheapestRow = rows.find(r => r.usdEquivalent === cheapestUsd);
-  const priciestRow = rows.find(r => r.usdEquivalent === priciestUsd);
-  const spread = priciestUsd - cheapestUsd;
+  if (rows.length){
+    const cheapestUsd = Math.min(...rows.map(r => r.usdEquivalent));
+    const priciestUsd = Math.max(...rows.map(r => r.usdEquivalent));
+    const cheapestRow = rows.find(r => r.usdEquivalent === cheapestUsd);
+    const priciestRow = rows.find(r => r.usdEquivalent === priciestUsd);
+    const spread = priciestUsd - cheapestUsd;
+    $('worldStatRow').innerHTML = `
+      <div class="stat"><div class="k">Cheapest place to buy</div>
+        <div class="v good">${cheapestRow.country.flag} ${cheapestRow.country.name}</div>
+        <div class="d">${fmtCur(convertUsd(cheapestRow.usdEquivalent, currencyB), currencyB)} equivalent</div></div>
+      <div class="stat"><div class="k">Most expensive</div>
+        <div class="v bad">${priciestRow.country.flag} ${priciestRow.country.name}</div>
+        <div class="d">${fmtCur(convertUsd(priciestRow.usdEquivalent, currencyB), currencyB)} equivalent</div></div>
+      <div class="stat"><div class="k">Spread</div>
+        <div class="v">${fmtCur(convertUsd(spread, currencyB), currencyB)}</div>
+        <div class="d">${((spread / cheapestUsd) * 100).toFixed(0)}% more at the priciest spot</div></div>
+      <div class="stat"><div class="k">Coverage</div>
+        <div class="v">${rows.length} of ${all.length}</div>
+        <div class="d">countries have an Apple price for this product${noPrice.length ? ' — the rest are listed at the bottom of the table' : ''}</div></div>`;
+  } else {
+    $('worldStatRow').innerHTML = `<div class="stat"><div class="k">No Apple prices</div>
+      <div class="v">Nothing to compare</div><div class="d">None of the tracked countries has an Apple price for this product. Type a local price in the table view to add one.</div></div>`;
+  }
+  const cheapestUsd = rows.length ? Math.min(...rows.map(r => r.usdEquivalent)) : 0;
+  const priciestUsd = rows.length ? Math.max(...rows.map(r => r.usdEquivalent)) : 0;
 
-  $('worldStatRow').innerHTML = `
-    <div class="stat"><div class="k">Cheapest place to buy</div>
-      <div class="v good">${cheapestRow.country.flag} ${cheapestRow.country.name}</div>
-      <div class="d">${fmtCur(convertUsd(cheapestRow.usdEquivalent, currencyB), currencyB)} equivalent</div></div>
-    <div class="stat"><div class="k">Most expensive</div>
-      <div class="v bad">${priciestRow.country.flag} ${priciestRow.country.name}</div>
-      <div class="d">${fmtCur(convertUsd(priciestRow.usdEquivalent, currencyB), currencyB)} equivalent</div></div>
-    <div class="stat"><div class="k">Spread</div>
-      <div class="v">${fmtCur(convertUsd(spread, currencyB), currencyB)}</div>
-      <div class="d">${((spread / cheapestUsd) * 100).toFixed(0)}% more at the priciest spot</div></div>
-  `;
+  const countryCell = c => `<td class="country-cell"><span class="flag">${c.flag}</span>
+    <span><span class="country-name">${c.name}</span><span class="country-meta">${c.tax_name}${c.price_includes_tax === false ? ' · Apple’s price excludes tax' : ''}</span></span></td>`;
+  const keyOf = c => c.code + '_' + product.id + '_' + variantKeyStr();
 
   $('worldTableBody').innerHTML = rows.map(r => {
-    const key = r.country.code + '_' + product.id + '_' + variantKeyStr();
-    const isEdited = overrides.hasOwnProperty(key);
+    const key = keyOf(r.country);
     const isCheapest = r.usdEquivalent === cheapestUsd;
     const isPriciest = r.usdEquivalent === priciestUsd;
     const refundCell = r.country.refund === null
@@ -746,9 +813,8 @@ function renderWorldTab(){
       : (touristMode ? `<span class="num">+${fmtCur(convertUsd(r.refundCash / r.country.fx, currencyB), currencyB)}</span>` : `<span class="refund-off">eligible, not applied</span>`);
     return `
       <tr>
-        <td class="country-cell"><span class="flag">${r.country.flag}</span>
-          <span><span class="country-name">${r.country.name}</span><span class="country-meta">${r.country.tax_name}</span></span></td>
-        <td class="num-col"><input class="price-input num ${isEdited ? 'edited' : ''}" data-key="${key}" type="number" value="${r.listPrice.toFixed(0)}" step="1"><span class="est-dot" title="Estimated — click to overwrite"></span></td>
+        ${countryCell(r.country)}
+        <td class="num-col"><input class="price-input num ${r.overridden ? 'edited' : ''}" data-key="${key}" type="number" value="${Number(r.listPrice.toFixed(2))}" step="any"><span class="est-dot" title="A price you typed over Apple's"></span></td>
         <td class="num-col num">${(r.country.tax_rate * 100).toFixed(1)}%</td>
         <td class="num-col num">${fmtCur(r.exTax, r.country.currency)}</td>
         <td>${refundCell}</td>
@@ -757,7 +823,12 @@ function renderWorldTab(){
         <td class="num-col num">${fmtCur(convertUsd(r.usdEquivalent, currencyC), currencyC)}</td>
         <td class="num-col num">${isCheapest ? '—' : '+' + fmtCur(convertUsd(r.usdEquivalent - cheapestUsd, currencyB), currencyB)}</td>
       </tr>`;
-  }).join('');
+  }).join('') + noPrice.map(r => `
+      <tr class="no-price">
+        ${countryCell(r.country)}
+        <td class="num-col"><input class="price-input num" data-key="${keyOf(r.country)}" type="number" step="any" placeholder="${r.country.currency}"></td>
+        <td colspan="7" class="no-price-note">${escapeHtml(r.reason)}</td>
+      </tr>`).join('');
 
   $('worldTableBody').querySelectorAll('.price-input').forEach(inp => {
     inp.addEventListener('change', e => {
@@ -767,13 +838,13 @@ function renderWorldTab(){
     });
   });
 
-  const maxVal = priciestUsd;
   $('barChart').innerHTML = rows.slice().sort((a, b) => a.usdEquivalent - b.usdEquivalent).map(r => {
-    const pct = (r.usdEquivalent / maxVal) * 100;
+    const pct = priciestUsd ? (r.usdEquivalent / priciestUsd) * 100 : 0;
     return `<div class="bar-row"><div class="lbl">${r.country.flag} ${r.country.name}</div>
       <div class="track"><div class="fill" style="width:${pct}%"></div></div>
       <div class="val num">${fmtCur(convertUsd(r.usdEquivalent, currencyB), currencyB)}</div></div>`;
-  }).join('');
+  }).join('') + noPrice.map(r => `<div class="bar-row"><div class="lbl">${r.country.flag} ${r.country.name}</div>
+      <div class="track empty"></div><div class="val num muted">no Apple price</div></div>`).join('');
 }
 
 // ------------------------------------------------------------------
@@ -791,16 +862,15 @@ function renderCompareTab(){
   if (compareState.length === 0) initCompareState();
   const product = getProduct(currentProductId);
   const results = compareState.map(col => computeCompareColumn(col, product));
-  const cheapestUsd = Math.min(...results.map(r => r.usdEquivalent));
+  const priced = results.filter(r => r.available);
+  const cheapestUsd = priced.length ? Math.min(...priced.map(r => r.usdEquivalent)) : null;
 
   $('compareGrid').innerHTML = compareState.map((col, idx) => {
     const r = results[idx];
-    const isCheapest = r.usdEquivalent === cheapestUsd;
+    const isCheapest = r.available && priced.length > 1 && r.usdEquivalent === cheapestUsd;
     const countryOpts = countries.map(c => `<option value="${c.code}" ${c.code === col.countryCode ? 'selected' : ''}>${c.flag} ${c.name}</option>`).join('');
     const refundDisabled = r.country.refund === null;
-    return `
-      <div class="compare-card ${isCheapest ? 'cheapest' : ''}">
-        ${isCheapest ? '<div class="cc-badge">Cheapest</div>' : ''}
+    const controls = `
         <div class="cc-field">
           <label class="f-label">Country</label>
           <select data-idx="${idx}" data-role="country">${countryOpts}</select>
@@ -819,16 +889,25 @@ function renderCompareTab(){
         <label class="cc-toggle ${col.touristOn ? 'on' : ''} ${refundDisabled ? 'disabled' : ''}">
           <input type="checkbox" data-idx="${idx}" data-role="touristOn" ${col.touristOn ? 'checked' : ''} ${refundDisabled ? 'disabled' : ''}>
           <span class="lbl">${refundDisabled ? 'Tourist refund — not available here' : 'Tourist VAT/GST refund'}</span>
-        </label>
+        </label>`;
+    if (!r.available){
+      return `<div class="compare-card">${controls}<hr><div class="status-msg info" style="margin:0;">${escapeHtml(r.reason)}</div></div>`;
+    }
+    const cur = r.country.currency;
+    return `
+      <div class="compare-card ${isCheapest ? 'cheapest' : ''}">
+        ${isCheapest ? '<div class="cc-badge">Cheapest</div>' : ''}
+        ${controls}
         <hr>
         <div class="cc-breakdown">
-          <div><span>List price</span><span>${fmtCur(r.listPrice, r.country.currency)}</span></div>
-          <div><span>Ex-tax</span><span>${fmtCur(r.exTaxBase, r.country.currency)}</span></div>
-          <div><span>Discount</span><span>${col.employeeOn ? '-' + fmtCur(r.listPrice - r.payingPrice, r.country.currency) : '—'}</span></div>
-          <div><span>Refund</span><span>${r.refundApplies ? '-' + fmtCur(r.refundCash, r.country.currency) : '—'}</span></div>
+          <div><span>Apple's price</span><span>${fmtCur(r.listPrice, cur)}</span></div>
+          <div><span>Before tax</span><span>${fmtCur(r.exTaxBase, cur)}</span></div>
+          <div><span>Discount</span><span>${col.employeeOn ? '-' + fmtCur(r.exTaxBase - r.exNet, cur) : '—'}</span></div>
+          <div><span>Tax (${(r.overrideRate * 100).toFixed(1)}%)</span><span>${fmtCur(r.taxAmount, cur)}</span></div>
+          <div><span>Refund</span><span>${r.refundApplies ? '-' + fmtCur(r.refundCash, cur) : '—'}</span></div>
         </div>
         <div class="cc-final">
-          <div class="big num">${fmtCur(r.finalPrice, r.country.currency)}</div>
+          <div class="big num">${fmtCur(r.finalPrice, cur)}</div>
           <div class="conv num">${fmtCur(convertUsd(r.usdEquivalent, currencyB), currencyB)} · ${fmtCur(convertUsd(r.usdEquivalent, currencyC), currencyC)}</div>
         </div>
       </div>`;
@@ -887,8 +966,9 @@ function renderTradeInWidget(){
 
   const product = getProduct(currentProductId);
   const newDeviceRow = computeWorldRow(country, product);
-  const netLocal = newDeviceRow.finalPrice - tradeInValueLocal;
-  const netUsd = netLocal / country.fx;
+  const ok = newDeviceRow.available;
+  const netLocal = ok ? newDeviceRow.finalPrice - tradeInValueLocal : null;
+  const netUsd = ok ? netLocal / country.fx : null;
 
   $('tradeInStatRow').innerHTML = `
     <div class="stat">
@@ -898,13 +978,13 @@ function renderTradeInWidget(){
     </div>
     <div class="stat">
       <div class="k">${product.name} in ${country.name}, before trade-in</div>
-      <div class="v">${fmtCur(newDeviceRow.finalPrice, country.currency)}</div>
-      <div class="d">Reflects current tourist/employee toggles</div>
+      <div class="v">${ok ? fmtCur(newDeviceRow.finalPrice, country.currency) : '—'}</div>
+      <div class="d">${ok ? 'Apple’s price for this configuration; reflects current tourist/employee toggles' : escapeHtml(newDeviceRow.reason)}</div>
     </div>
     <div class="stat">
       <div class="k">Net price after trade-in</div>
-      <div class="v good">${fmtCur(netLocal, country.currency)}</div>
-      <div class="d">${fmtCur(convertUsd(netUsd, currencyB), currencyB)} · ${fmtCur(convertUsd(netUsd, currencyC), currencyC)}</div>
+      <div class="v good">${ok ? fmtCur(netLocal, country.currency) : '—'}</div>
+      <div class="d">${ok ? `${fmtCur(convertUsd(netUsd, currencyB), currencyB)} · ${fmtCur(convertUsd(netUsd, currencyC), currencyC)}` : 'needs an Apple price for the new device'}</div>
     </div>
   `;
   $('tradeInValueInput').addEventListener('change', e => {
@@ -926,6 +1006,10 @@ function renderShipTab(){
   const customsPct = parseFloat($('customsPct').value) || 0;
 
   const buyRow = computeWorldRow(fromCountry, product);
+  if (!buyRow.available){
+    $('shipStatRow').innerHTML = `<div class="stat"><div class="k">No Apple price</div><div class="d">${escapeHtml(buyRow.reason)}</div></div>`;
+    return;
+  }
   const withShipping = buyRow.finalPrice + shipCost;
   const customsFee = withShipping * (customsPct / 100);
   const grandTotalLocal = withShipping + customsFee;
@@ -948,12 +1032,16 @@ function renderShipTab(){
 // Tax Data tab
 // ------------------------------------------------------------------
 function renderAssumptions(){
+  const fxDate = DATA.fx && DATA.fx.date;
+  $('fxHead').textContent = fxDate ? `FX (per US$1, ${fxDate})` : 'FX (units per US$1)';
+  const storeLabel = c => ({ ok: 'Online store', no_store: 'No online store', not_scraped: 'Not read yet' }[c.store] || 'Not read yet');
   $('assumptionsBody').innerHTML = countries.map((c, idx) => `
     <tr>
       <td>${c.flag} ${c.name} <span class="country-meta">${c.note}</span></td>
+      <td><span class="pill ${c.store === 'ok' ? 'ok' : 'off'}">${storeLabel(c)}</span><span class="country-meta">${c.store === 'ok' ? `Apple’s prices ${c.price_includes_tax === false ? 'exclude' : 'include'} tax` : ''}</span></td>
       <td class="num-col"><input class="price-input num" style="width:70px" type="number" step="0.1" data-field="tax_rate" data-idx="${idx}" value="${(c.tax_rate * 100).toFixed(2)}"> %</td>
       <td>${c.tax_name}</td>
-      <td class="num-col"><input class="price-input num" style="width:80px" type="number" step="0.01" data-field="fx" data-idx="${idx}" value="${c.fx}"></td>
+      <td class="num-col"><input class="price-input num" style="width:80px" type="number" step="any" data-field="fx" data-idx="${idx}" value="${Number(Number(c.fx).toPrecision(6))}"></td>
       <td><select data-field="refundOn" data-idx="${idx}" style="width:110px; padding:5px 6px; font-size:12.5px;">
         <option value="yes" ${c.refund !== null ? 'selected' : ''}>Yes</option><option value="no" ${c.refund === null ? 'selected' : ''}>No</option></select></td>
       <td class="num-col"><input class="price-input num" style="width:70px" type="number" step="1" data-field="refund" data-idx="${idx}" value="${c.refund !== null ? (c.refund * 100).toFixed(0) : 0}" ${c.refund === null ? 'disabled' : ''}> %</td>
@@ -1294,14 +1382,19 @@ async function init(){
   countries = JSON.parse(JSON.stringify(DATA.countries));
   initCompareState();
   const meta = DATA.catalog_meta;
+  const reg = DATA.regions || {};
+  const okStores = Object.keys(reg).filter(c => c !== 'US' && reg[c].status === 'ok');
+  const noStores = Object.keys(reg).filter(c => reg[c].status === 'no_store').map(c => (DATA.countries.find(x => x.code === c) || {}).name || c);
   $('catalogNote').innerHTML = meta
-    ? `<strong>Catalog:</strong> ${meta.count} products (every model, storage/colour/size option and ${DATA.products.filter(isAccessory).length} accessories) read from apple.com's US store on ${escapeHtml(meta.generated || 'an earlier date')}. Prices are US list prices; other countries are estimates.`
+    ? `<strong>Catalog:</strong> ${meta.count} products (every model and option Apple sells in the US, plus ${DATA.products.filter(isAccessory).length} accessories), read from Apple's online stores on ${escapeHtml(meta.generated || 'an earlier date')}. Prices for ${okStores.length} other countries come from those countries' own Apple stores${noStores.length ? `; ${escapeHtml(noStores.join(' and '))} ${noStores.length > 1 ? 'have' : 'has'} no Apple online store` : ''}.`
     : `<strong>Catalog:</strong> built-in sample data — run <code>python3 scrape_apple_catalog.py</code> to load the real Apple Store catalog.`;
+  $('fxNote').textContent = DATA.fx ? `Exchange rates (only used to compare countries): ${DATA.fx.source}, ${DATA.fx.date}.` : '';
   tradeInAvailability = JSON.parse(JSON.stringify(DATA.trade_in_availability));
   tradeInDeviceId = DATA.trade_in_devices[DATA.trade_in_devices.length - 5].id; // a recent-ish model by default
 
   populateProductSelect();
   renderVariantFields();
+  buildCurrencies();
   populateCurrencySelects();
   populateShipSelects();
   populateTradeInSelects();

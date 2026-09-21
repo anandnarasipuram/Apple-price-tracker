@@ -6,7 +6,7 @@ Python port of the pricing data & logic from ``tariff-board.html``.
 
 This module is the single source of truth for:
   - the Apple product catalog (prices + configurable variants)
-  - international country tax / FX / tourist-refund assumptions
+  - international country tax / tourist-refund assumptions (prices and FX come from the scraped catalog)
   - US state sales-tax rates (+ ZIP-code -> state lookup) and Canadian
     province tax rates
   - the pricing formulas themselves (ex-tax price, tourist refund cash-back,
@@ -113,19 +113,20 @@ CATALOG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "apple_c
 
 
 def _load_catalog():
-    """(products, meta) from apple_catalog.json, or (BUILTIN_PRODUCTS, None) if it isn't there."""
+    """(products, meta, fx, regions) from apple_catalog.json, or the built-in sample if it isn't there.
+    fx = real exchange rates (with date); regions = per-country store status / currency / tax treatment."""
     try:
         with open(CATALOG_PATH, encoding="utf-8") as f:
             data = json.load(f)
         if data.get("products"):
-            return data["products"], {"generated": data.get("generated"), "source": data.get("source"),
-                                       "count": len(data["products"])}
+            meta = {"generated": data.get("generated"), "source": data.get("source"), "count": len(data["products"])}
+            return data["products"], meta, data.get("fx"), data.get("regions") or {}
     except (OSError, ValueError):
         pass
-    return BUILTIN_PRODUCTS, None
+    return BUILTIN_PRODUCTS, None, None, {}
 
 
-PRODUCTS, CATALOG_META = _load_catalog()
+PRODUCTS, CATALOG_META, CATALOG_FX, CATALOG_REGIONS = _load_catalog()
 
 # The product the site opens on (first match wins), then the report's default.
 PREFERRED_DEFAULTS = ("iphone-18-pro-max", "iphone-18-pro", "ip17pro")
@@ -137,74 +138,97 @@ def default_product_id() -> str:
 
 
 # ---------------------------------------------------------------------------
-# International country assumptions (tax, FX vs USD, regional pricing
-# premium, tourist VAT/GST refund availability + recovery rate)
+# International countries.
+#
+#   FROM APPLE / THE MARKET (scraped, never guessed): the prices themselves (each
+#   Apple store's own, in local currency — see apple_catalog.json), the exchange
+#   rates, and whether Apple's displayed price already includes sales tax.
+#
+#   ASSUMPTIONS YOU CAN EDIT (Apple's site doesn't publish them): the statutory
+#   tax_rate (used to split a tax-inclusive price into price + tax) and the tourist
+#   refund eligibility / "refund" recovery share. The "fx" written below is only a
+#   fallback for when no scraped rates exist.
 # ---------------------------------------------------------------------------
 
 COUNTRIES = [
     {"code": "US", "name": "United States", "flag": "🇺🇸", "currency": "USD", "fx": 1,
-     "tax_rate": 0.00, "tax_name": "Sales tax (varies, excluded)", "premium": 1.00, "refund": None,
+     "tax_rate": 0.00, "tax_name": "Sales tax (varies, excluded)", "refund": None,
      "note": "No national VAT; local sales tax added at register. Look up by ZIP."},
     {"code": "DE", "name": "Germany", "flag": "🇩🇪", "currency": "EUR", "fx": 0.86,
-     "tax_rate": 0.19, "tax_name": "VAT", "premium": 1.05, "refund": 0.80,
+     "tax_rate": 0.19, "tax_name": "VAT", "refund": 0.80,
      "note": "Non-EU visitors can reclaim VAT (Global Blue / Planet) when leaving the EU."},
     {"code": "GB", "name": "United Kingdom", "flag": "🇬🇧", "currency": "GBP", "fx": 0.75,
-     "tax_rate": 0.20, "tax_name": "VAT", "premium": 1.03, "refund": None,
+     "tax_rate": 0.20, "tax_name": "VAT", "refund": None,
      "note": "Tourist VAT refund scheme was abolished in 2021."},
     {"code": "CH", "name": "Switzerland", "flag": "🇨🇭", "currency": "CHF", "fx": 0.80,
-     "tax_rate": 0.081, "tax_name": "VAT", "premium": 1.08, "refund": 0.85,
+     "tax_rate": 0.081, "tax_name": "VAT", "refund": 0.85,
      "note": "Refund available above a minimum receipt value, claimed at the border."},
     {"code": "AE", "name": "UAE", "flag": "🇦🇪", "currency": "AED", "fx": 3.67,
-     "tax_rate": 0.05, "tax_name": "VAT", "premium": 1.00, "refund": 0.85,
+     "tax_rate": 0.05, "tax_name": "VAT", "refund": 0.85,
      "note": "Planet Tax Free refund at airport kiosks for tourists."},
     {"code": "JP", "name": "Japan", "flag": "🇯🇵", "currency": "JPY", "fx": 147,
-     "tax_rate": 0.10, "tax_name": "Consumption tax", "premium": 1.00, "refund": 0.90,
+     "tax_rate": 0.10, "tax_name": "Consumption tax", "refund": 0.90,
      "note": "Tax-free shopping at point of sale for tourists with passport."},
     {"code": "SG", "name": "Singapore", "flag": "🇸🇬", "currency": "SGD", "fx": 1.29,
-     "tax_rate": 0.09, "tax_name": "GST", "premium": 1.05, "refund": 0.85,
+     "tax_rate": 0.09, "tax_name": "GST", "refund": 0.85,
      "note": "eTRS refund at Changi Airport for tourists."},
     {"code": "IN", "name": "India", "flag": "🇮🇳", "currency": "INR", "fx": 88,
-     "tax_rate": 0.18, "tax_name": "GST", "premium": 1.15, "refund": None,
-     "note": "No tourist GST refund scheme; import duty pushes prices higher."},
+     "tax_rate": 0.18, "tax_name": "GST", "refund": None,
+     "note": "No tourist GST refund scheme."},
     {"code": "AU", "name": "Australia", "flag": "🇦🇺", "currency": "AUD", "fx": 1.52,
-     "tax_rate": 0.10, "tax_name": "GST", "premium": 1.05, "refund": 0.95,
+     "tax_rate": 0.10, "tax_name": "GST", "refund": 0.95,
      "note": "Tourist Refund Scheme (TRS) refunds nearly the full GST over AUD 300."},
     {"code": "HK", "name": "Hong Kong", "flag": "🇭🇰", "currency": "HKD", "fx": 7.79,
-     "tax_rate": 0.00, "tax_name": "None", "premium": 0.95, "refund": None,
-     "note": "No VAT/GST at all — often the cheapest list price in the region."},
+     "tax_rate": 0.00, "tax_name": "None", "refund": None,
+     "note": "No sales tax in Hong Kong — the price Apple shows is the price paid."},
     {"code": "CA", "name": "Canada", "flag": "🇨🇦", "currency": "CAD", "fx": 1.38,
-     "tax_rate": 0.13, "tax_name": "HST (ON)", "premium": 1.05, "refund": None,
+     "tax_rate": 0.13, "tax_name": "HST (ON)", "refund": None,
      "note": "Visitor rebate discontinued in 2007. Pick a province separately."},
 
     # --- Added for broader "cheapest countries to buy an iPhone" coverage ---
     {"code": "TW", "name": "Taiwan", "flag": "🇹🇼", "currency": "TWD", "fx": 32.0,
-     "tax_rate": 0.05, "tax_name": "VAT", "premium": 1.00, "refund": 0.80,
-     "note": "One of the lowest VAT rates of any Apple Store market — consistently cheap."},
+     "tax_rate": 0.05, "tax_name": "VAT", "refund": 0.80,
+     "note": "Apple's prices include the 5% VAT; tourists can claim a refund on qualifying purchases."},
     {"code": "MO", "name": "Macau", "flag": "🇲🇴", "currency": "MOP", "fx": 8.0,
-     "tax_rate": 0.00, "tax_name": "None", "premium": 0.97, "refund": None,
-     "note": "No sales tax, like neighbouring Hong Kong — among the cheapest list prices."},
+     "tax_rate": 0.00, "tax_name": "None", "refund": None,
+     "note": "Apple's Macau shop pages aren't publicly available, so no Apple prices can be read for Macau."},
     {"code": "KR", "name": "South Korea", "flag": "🇰🇷", "currency": "KRW", "fx": 1380,
-     "tax_rate": 0.10, "tax_name": "VAT", "premium": 1.00, "refund": 0.75,
+     "tax_rate": 0.10, "tax_name": "VAT", "refund": 0.75,
      "note": "Tax refund kiosks (Global Blue) at Incheon for tourists on qualifying purchases."},
     {"code": "MY", "name": "Malaysia", "flag": "🇲🇾", "currency": "MYR", "fx": 4.7,
-     "tax_rate": 0.00, "tax_name": "SST (exempt)", "premium": 1.05, "refund": None,
+     "tax_rate": 0.00, "tax_name": "SST (exempt)", "refund": None,
      "note": "Smartphones are currently exempt from Malaysia's Sales & Service Tax."},
     {"code": "TH", "name": "Thailand", "flag": "🇹🇭", "currency": "THB", "fx": 36.0,
-     "tax_rate": 0.07, "tax_name": "VAT", "premium": 1.05, "refund": 0.85,
+     "tax_rate": 0.07, "tax_name": "VAT", "refund": 0.85,
      "note": "VAT refund for tourists at the airport on departure, above a minimum spend."},
     {"code": "QA", "name": "Qatar", "flag": "🇶🇦", "currency": "QAR", "fx": 3.64,
-     "tax_rate": 0.00, "tax_name": "None", "premium": 1.10, "refund": None,
-     "note": "No general VAT. Apple has no official storefront here — priced via regional resellers, so treat as a rougher estimate."},
+     "tax_rate": 0.00, "tax_name": "None", "refund": None,
+     "note": "Apple has no online store in Qatar, so there are no Apple prices to read."},
     {"code": "NZ", "name": "New Zealand", "flag": "🇳🇿", "currency": "NZD", "fx": 1.66,
-     "tax_rate": 0.15, "tax_name": "GST", "premium": 1.05, "refund": None,
+     "tax_rate": 0.15, "tax_name": "GST", "refund": None,
      "note": "No tourist GST refund scheme, unlike neighbouring Australia."},
     {"code": "MX", "name": "Mexico", "flag": "🇲🇽", "currency": "MXN", "fx": 18.5,
-     "tax_rate": 0.16, "tax_name": "IVA", "premium": 1.08, "refund": 0.80,
+     "tax_rate": 0.16, "tax_name": "IVA", "refund": 0.80,
      "note": "IVA refund available to tourists at the airport for purchases over a minimum amount."},
     {"code": "SA", "name": "Saudi Arabia", "flag": "🇸🇦", "currency": "SAR", "fx": 3.75,
-     "tax_rate": 0.15, "tax_name": "VAT", "premium": 1.05, "refund": 0.85,
+     "tax_rate": 0.15, "tax_name": "VAT", "refund": 0.85,
      "note": "Tourist VAT refund available at the airport for eligible visitors since 2021."},
 ]
+
+
+def apply_catalog_to_countries():
+    """Overlay what the scraper learned: real exchange rates, whether each Apple store shows
+    tax-inclusive prices, and whether the country has an Apple online store at all."""
+    rates = (CATALOG_FX or {}).get("rates", {})
+    for c in COUNTRIES:
+        reg = CATALOG_REGIONS.get(c["code"])
+        if c["currency"] in rates:
+            c["fx"] = rates[c["currency"]]
+        c["price_includes_tax"] = reg["includes_tax"] if reg else c["code"] not in ("US", "CA")
+        c["store"] = reg["status"] if reg else "unknown"      # ok | no_store | not_scraped | unknown
+
+
+apply_catalog_to_countries()
 
 
 # ---------------------------------------------------------------------------
@@ -441,6 +465,8 @@ def export_frontend_data(out_path: str) -> None:
         "trade_in_conditions": TRADE_IN_CONDITIONS,
         "trade_in_availability": TRADE_IN_AVAILABILITY,
         "catalog_meta": CATALOG_META,
+        "fx": CATALOG_FX,
+        "regions": CATALOG_REGIONS,
         "default_product": default_product_id(),
     }
     os.makedirs(os.path.dirname(out_path), exist_ok=True)

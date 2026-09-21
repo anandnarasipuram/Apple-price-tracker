@@ -2,26 +2,36 @@
 """
 scrape_apple_catalog.py
 =======================
-Refreshes ``apple_catalog.json`` — the current US Apple Store catalog (models,
-storage / colour / size variants and their US prices, plus accessories) —
-straight from apple.com. ``apple_price_data.py`` picks that file up
-automatically and re-exports it to ``frontend/data.json``.
+Refreshes ``apple_catalog.json`` — Apple's current catalog with the EXACT prices
+each Apple online store charges, country by country — straight from apple.com.
+``apple_price_data.py`` picks that file up and re-exports it to ``frontend/data.json``.
 
-Why this is a Python script and not part of the website: apple.com does not
-send CORS headers, so a browser page can't read it. A local script can.
+What it collects
+  * The US store is the master catalog: every model, its storage / colour / size /
+    chip options, and ~300 accessories.
+  * Then it reads every other tracked country's own Apple store (apple.com/uk,
+    /de, /jp, ...) and records what that store charges, in local currency, for each
+    of those same products and options. Nothing is converted or estimated: a
+    product/option a country's store doesn't list simply has no price there.
+  * Real exchange rates (for comparing countries), with their date.
+  * New products are found by crawling Apple's store pages, not from a fixed list.
 
-    python3 scrape_apple_catalog.py                  # full refresh (~350 requests, a few minutes)
-    python3 scrape_apple_catalog.py --devices-only   # iPhone/iPad/Mac/Watch/... only (~40 requests)
-    python3 scrape_apple_catalog.py --url https://www.apple.com/shop/buy-iphone/iphone-18-pro
-    python3 scrape_apple_catalog.py --url <apple.com link> --add   # look one page up and merge it in
-    python3 scrape_apple_catalog.py --no-cache       # ignore the 12-hour on-disk page cache
+Why a Python script and not part of the website: apple.com doesn't send CORS
+headers, so a browser page can't read it. A local script (or a scheduled job) can.
 
-What gets read (all of it is embedded in apple.com's own HTML):
-  * iPhone / iPad / displays / AirPods / TV / HomePod / AirTag: the per-SKU list
-    (name incl. storage + colour, exact price).
-  * Mac / Apple Watch: the configurator's price table (size / chip / case / connectivity).
-  * Vision Pro and anything else without a table: the schema.org starting price.
-  * Accessories: every product page linked from the accessory category pages.
+    python3 scrape_apple_catalog.py                     # everything (US + all countries + accessories)
+    python3 scrape_apple_catalog.py --devices-only      # skip accessories (much faster)
+    python3 scrape_apple_catalog.py --regions DE,JP     # only refresh these countries' prices
+    python3 scrape_apple_catalog.py --no-regional       # US store only
+    python3 scrape_apple_catalog.py --no-regional-accessories
+    python3 scrape_apple_catalog.py --url https://www.apple.com/shop/buy-iphone/iphone-18-pro --add
+    python3 scrape_apple_catalog.py --no-cache          # ignore the 12-hour on-disk page cache
+
+How prices are read (all of it is embedded in apple.com's own HTML):
+  * iPhone / iPad / displays / AirPods / TV / HomePod / AirTag: the per-SKU price list.
+  * Mac / Apple Watch: the configurator's price table.
+  * Vision Pro and anything without a table: the schema.org starting price.
+  * Accessories: the product page (matched across countries by Apple part number).
 
 Standard library only.
 """
@@ -30,6 +40,7 @@ from __future__ import annotations
 
 import argparse
 import concurrent.futures as cf
+import gzip
 import hashlib
 import html
 import json
@@ -39,7 +50,8 @@ import sys
 import time
 import urllib.error
 import urllib.request
-from datetime import date
+from datetime import date, datetime
+from email.utils import parsedate_to_datetime
 from urllib.parse import urlparse
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -48,6 +60,35 @@ CACHE_DIR = os.path.join(ROOT, ".apple_cache")
 BASE = "https://www.apple.com"
 UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
       "(KHTML, like Gecko) Chrome/124.0 Safari/537.36")
+FX_URL = "https://open.er-api.com/v6/latest/USD"
+FX_SOURCE = "open.er-api.com (ExchangeRate-API), daily rates"
+
+# Every country the app tracks -> its Apple storefront path prefix, and whether the
+# price Apple displays already includes sales tax. Apple's own footnotes say so:
+# US "Tax ... due at sale", Canada "does not include applicable taxes"; UAE "inclusive
+# of VAT (5%)", Mexico "incluyen IVA (16%)", Singapore "inclusive of GST", NZ "include GST".
+REGIONS = {
+    "US": {"prefix": "",      "includes_tax": False},
+    "GB": {"prefix": "uk",    "includes_tax": True},
+    "DE": {"prefix": "de",    "includes_tax": True},
+    "CH": {"prefix": "ch-de", "includes_tax": True},
+    "AE": {"prefix": "ae",    "includes_tax": True},
+    "JP": {"prefix": "jp",    "includes_tax": True},
+    "SG": {"prefix": "sg",    "includes_tax": True},
+    "IN": {"prefix": "in",    "includes_tax": True},
+    "AU": {"prefix": "au",    "includes_tax": True},
+    "HK": {"prefix": "hk",    "includes_tax": True},   # no sales tax in Hong Kong: shown price is final
+    "CA": {"prefix": "ca",    "includes_tax": False},
+    "TW": {"prefix": "tw",    "includes_tax": True},
+    "MO": {"prefix": "mo",    "includes_tax": True},
+    "KR": {"prefix": "kr",    "includes_tax": True},
+    "MY": {"prefix": "my",    "includes_tax": True},
+    "TH": {"prefix": "th",    "includes_tax": True},
+    "QA": {"prefix": "qa",    "includes_tax": True},
+    "NZ": {"prefix": "nz",    "includes_tax": True},
+    "MX": {"prefix": "mx",    "includes_tax": True},
+    "SA": {"prefix": "sa",    "includes_tax": True},
+}
 
 # shop section -> product category shown in the app's product picker
 SECTION_CATEGORY = {
@@ -57,9 +98,11 @@ SECTION_CATEGORY = {
 }
 CATEGORY_ORDER = ["iPhone", "iPad", "Mac", "Watch", "Vision", "Audio", "Home", "Accessories"]
 
-# Landing pages whose links reveal the product families...
+# Where to look for product families. Every "/shop/buy-<section>/<family>" link found on
+# these pages (and on each section's own landing page) is followed, so a new product — or
+# a whole new section — appears without touching this file. EXTRA_FAMILIES is only a safety net.
+DISCOVERY_SEEDS = ["/store", "/shop/accessories/all"]
 LANDING_SECTIONS = ["buy-iphone", "buy-ipad", "buy-mac", "buy-watch", "buy-vision"]
-# ...plus families that have no landing page of their own.
 EXTRA_FAMILIES = [
     ("buy-airpods", "airpods-pro-3"), ("buy-airpods", "airpods-4"), ("buy-airpods", "airpods-5"),
     ("buy-airpods", "airpods-max"), ("buy-tv", "apple-tv-4k"), ("buy-homepod", "homepod"),
@@ -79,30 +122,40 @@ ACCESSORY_SECTIONS = [
     ("new-arrivals", "New Arrivals"),
 ]
 DIM_ORDER = ["size", "chip", "material", "connectivity", "glass", "finish", "storage", "stand", "color"]
+ADDITIVE_TOLERANCE = 0.51      # local-currency units; anything looser is stored as an exact price table
 
 
 # ---------------------------------------------------------------------------
 # HTTP + cache
 # ---------------------------------------------------------------------------
 
+def store_url(prefix: str, path: str) -> str:
+    """apple.com URL for a path inside one country's store ('' prefix = US)."""
+    return f"{BASE}/{prefix + '/' if prefix else ''}{path.lstrip('/')}"
+
+
 def fetch(url: str, use_cache: bool = True, ttl: int = 12 * 3600):
-    """GET a page (text). Returns None for 404 or after repeated failures."""
-    os.makedirs(CACHE_DIR, exist_ok=True)
-    path = os.path.join(CACHE_DIR, hashlib.sha1(url.encode()).hexdigest() + ".html")
-    if use_cache and os.path.exists(path) and time.time() - os.path.getmtime(path) < ttl:
-        with open(path, encoding="utf-8") as f:
-            return f.read()
+    """GET a page (text). Returns None for 403/404 (no such page) or after repeated failures."""
+    path = os.path.join(CACHE_DIR, hashlib.sha1(url.encode()).hexdigest() + ".html.gz")
+    if use_cache:
+        os.makedirs(CACHE_DIR, exist_ok=True)
+        if os.path.exists(path) and time.time() - os.path.getmtime(path) < ttl:
+            with gzip.open(path, "rt", encoding="utf-8") as f:
+                return f.read()
     last = None
     for attempt in range(3):
         try:
             req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept-Language": "en-US,en;q=0.9"})
-            with urllib.request.urlopen(req, timeout=45) as r:
+            with urllib.request.urlopen(req, timeout=60) as r:
                 body = r.read().decode("utf-8", errors="ignore")
-            with open(path, "w", encoding="utf-8") as f:
-                f.write(body)
+            if use_cache:
+                with gzip.open(path, "wt", encoding="utf-8", compresslevel=3) as f:
+                    f.write(body)
             return body
         except urllib.error.HTTPError as e:
-            if e.code == 404:
+            # 403/404, and Apple's own non-standard 541 ("not available in this store"), mean "no such
+            # page here" — answer immediately instead of retrying. Anything else may be transient.
+            if e.code in (403, 404, 541) or (400 <= e.code < 500 and e.code not in (408, 429)):
                 return None
             last = e
         except Exception as e:  # network hiccup — retry
@@ -119,8 +172,8 @@ def fetch(url: str, use_cache: bool = True, ttl: int = 12 * 3600):
 def norm(s: str) -> str:
     """Unescape entities, normalise fancy hyphens/spaces, drop invisible marks, collapse whitespace."""
     s = html.unescape(s)
-    s = s.replace("\u00a0", " ").replace("\u2011", "-").replace("\u2010", "-")
-    s = re.sub("[\u200e\u200f\u202a-\u202e]", "", s)      # invisible left/right-to-left marks
+    s = s.replace(" ", " ").replace("‑", "-").replace("‐", "-")
+    s = re.sub("[‎‏‪-‮]", "", s)      # invisible left/right-to-left marks
     return re.sub(r"\s+", " ", s).strip()
 
 
@@ -128,8 +181,14 @@ def slug(s: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", norm(s).lower()).strip("-")
 
 
+def num(x: float):
+    """2-decimal rounding that keeps whole numbers as ints (smaller JSON)."""
+    x = round(x, 2)
+    return int(x) if x == int(x) else x
+
+
 def jsonld_products(page: str) -> list[dict]:
-    """schema.org Product blocks -> [{'name', 'prices': [...]}]."""
+    """schema.org Product blocks -> [{'name', 'prices': [...], 'currency'}]."""
     out = []
     for block in re.findall(r'<script type="application/ld\+json">(.*?)</script>', page, flags=re.S):
         try:
@@ -140,7 +199,7 @@ def jsonld_products(page: str) -> list[dict]:
             if not isinstance(item, dict) or "offers" not in item:
                 continue
             offers = item["offers"] if isinstance(item["offers"], list) else [item["offers"]]
-            prices = []
+            prices, currency = [], None
             for o in offers:
                 if not isinstance(o, dict):
                     continue
@@ -148,10 +207,16 @@ def jsonld_products(page: str) -> list[dict]:
                 try:
                     prices.append(float(p))
                 except (TypeError, ValueError):
-                    pass
+                    continue
+                currency = currency or o.get("priceCurrency")
             if prices:
-                out.append({"name": norm(item.get("name", "")), "prices": prices})
+                out.append({"name": norm(item.get("name", "")), "prices": prices, "currency": currency})
     return out
+
+
+def page_currency(page: str):
+    m = re.search(r'"currency(?:Code)?":"([A-Z]{3})"', page)
+    return m.group(1) if m else None
 
 
 # ---------------------------------------------------------------------------
@@ -260,7 +325,7 @@ def pretty_chip(chip: str | None, cores: str | None) -> str:
         m = re.search(r"(\d+)-(\d+)$", cores)
         if m:
             parts.append(f"{m.group(1)}-core CPU / {m.group(2)}-core GPU")
-    return " \u00b7 ".join(parts)
+    return " · ".join(parts)
 
 
 def parse_configurator(page: str) -> list[tuple[dict, float]]:
@@ -313,7 +378,7 @@ def fold_color_into_material(skus):
     folded = []
     for d, price in skus:
         d = dict(d)
-        d["material"] = f"{d['material']} \u00b7 {d.pop('color')}"
+        d["material"] = f"{d['material']} · {d.pop('color')}"
         folded.append((d, price))
     return folded
 
@@ -336,9 +401,9 @@ def _solve(A, y):
     return [M[i][n] / M[i][i] for i in range(n)]
 
 
-def build_variants(skus: list[tuple[dict, float]]):
-    """-> (base_price, variants, max_error). Prices are modelled additively:
-    price = base + sum(option deltas), fitted by least squares."""
+def fit_skus(skus: list[tuple[dict, float]]):
+    """Model price = base + sum(option deltas), fitted by least squares.
+    -> {'base', 'dims': {dim: [(label, id, delta), ...]}, 'err'}   (err = worst miss on any real SKU)"""
     dims = [d for d in DIM_ORDER if any(d in s for s, _ in skus)]
     dims += sorted({d for s, _ in skus for d in s} - set(dims))
     order = {}
@@ -353,9 +418,9 @@ def build_variants(skus: list[tuple[dict, float]]):
     A = [[1.0] + [1.0 if s.get(d, "Standard") == v else 0.0 for d, v in cols[1:]] for s, _ in skus]
     y = [p for _, p in skus]
     x = _solve(A, y) if len(cols) > 1 else [sum(y) / len(y)]
-    max_err = max(abs(sum(a * b for a, b in zip(row, x)) - yk) for row, yk in zip(A, y))
+    err = max(abs(sum(a * b for a, b in zip(row, x)) - yk) for row, yk in zip(A, y))
     delta = {(d, v): x[i] for i, (d, v) in enumerate(cols) if i > 0}
-    variants = {}
+    out = {}
     for d in dims:
         opts, used = [], set()
         for v in order[d]:
@@ -363,20 +428,40 @@ def build_variants(skus: list[tuple[dict, float]]):
             while oid in used:
                 oid += "-2"
             used.add(oid)
-            dv = round(delta.get((d, v), 0.0), 2)
-            opts.append({"id": oid, "label": v, "delta": int(dv) if dv == int(dv) else dv})
-        if len(opts) > 1:
-            variants[d] = opts
-    base = round(x[0], 2)
-    return (int(base) if base == int(base) else base), variants, max_err
+            opts.append((v, oid, num(delta.get((d, v), 0.0))))
+        out[d] = opts
+    return {"base": num(x[0]), "dims": out, "err": err}
 
 
-def make_product(name, category, skus, url=None, note=None):
+def build_variants(skus):
+    """-> (base_price, variants, max_error) for the app's product record."""
+    f = fit_skus(skus)
+    variants = {d: [{"id": oid, "label": label, "delta": dv} for label, oid, dv in opts]
+                for d, opts in f["dims"].items() if len(opts) > 1}
+    return f["base"], variants, f["err"]
+
+
+def regional_entry(skus, currency, url):
+    """What one country's Apple store charges for a product, in that country's currency.
+    Additive (base + option deltas) when Apple's local prices really are; otherwise the exact
+    price of every SKU is kept as a table, so nothing is ever approximated."""
+    f = fit_skus(skus)
+    entry = {"currency": currency, "url": url}
+    if f["err"] <= ADDITIVE_TOLERANCE:
+        entry["base"] = f["base"]
+        entry["opts"] = {d: {oid: dv for _, oid, dv in opts} for d, opts in f["dims"].items()}
+    else:
+        ids = {d: {label: oid for label, oid, _ in opts} for d, opts in f["dims"].items()}
+        entry["table"] = [{"o": {d: ids[d][dims.get(d, "Standard")] for d in ids}, "p": num(price)}
+                          for dims, price in skus]
+    return entry
+
+
+def make_product(name, category, skus, url=None, note=None, warn=True):
     base, variants, err = build_variants(skus)
-    if err > 0.5:
-        print(f"  ~ {name}: prices are not perfectly additive (max error ${err:.0f}) — some option combos may be off",
-              file=sys.stderr)
-    p = {"id": slug(name), "name": name, "cat": category, "usd": base, "variants": variants}
+    if warn and err > 0.5:
+        print(f"  ~ {name}: US prices are not perfectly additive (max error ${err:.0f})", file=sys.stderr)
+    p = {"id": slug(name), "name": name, "cat": category, "usd": base, "variants": variants, "_skus": skus}
     if url:
         p["url"] = url
     if note:
@@ -387,13 +472,13 @@ def make_product(name, category, skus, url=None, note=None):
 def hermes_name(name: str, fam_slug: str) -> str:
     """Hermès pages reuse the base model's title in their metadata — keep them distinguishable."""
     if "hermes" in fam_slug and "herm" not in name.lower():
-        return name.replace("Apple Watch", "Apple Watch Herm\u00e8s", 1)
+        return name.replace("Apple Watch", "Apple Watch Hermès", 1)
     return name
 
 
-def parse_family(page: str, section: str, fam_slug: str):
-    """One product-family page -> list of products."""
-    category = SECTION_CATEGORY.get(section, "Accessories")
+def parse_family(page: str, section: str, fam_slug: str, warn: bool = True):
+    """One product-family page -> list of products (each carries its raw SKUs in '_skus')."""
+    category = SECTION_CATEGORY.get(section) or section.replace("buy-", "").replace("-", " ").title()
     url = f"{BASE}/shop/{section}/{fam_slug}"
     ld = jsonld_products(page)
     products = []
@@ -405,7 +490,7 @@ def parse_family(page: str, section: str, fam_slug: str):
             base, dims = split_device_sku(name, fam_slug)
             groups.setdefault(base, []).append((dims, price))
         for base, items in groups.items():
-            products.append(make_product(base, category, items, url))
+            products.append(make_product(base, category, items, url, warn=warn))
         # One family page can hold several models told apart only by display size in the URL
         # (iPhone 18 Pro = 6.3-inch, Pro Max = 6.9-inch) — remember which is which.
         for size, label in re.findall(r"dimensionScreensize_(\d+_\d+)inch:\s*\{[^}]*?displayText:\s*'Your new ([^']+?)\.'", page):
@@ -416,46 +501,53 @@ def parse_family(page: str, section: str, fam_slug: str):
 
     cfg = parse_configurator(page)
     if cfg and ld:
-        products.append(make_product(hermes_name(ld[0]["name"], fam_slug), category, cfg, url))
+        products.append(make_product(hermes_name(ld[0]["name"], fam_slug), category, cfg, url, warn=warn))
         return products
 
     for item in ld[:1]:
         products.append(make_product(
             hermes_name(item["name"], fam_slug), category, [({}, min(item["prices"]))], url,
-            note="Starting price — other configurations aren't modelled; edit the price if yours differs."))
+            note="Starting price — other configurations aren't modelled; edit the price if yours differs.", warn=warn))
     return products
 
 
 def discover_families(use_cache: bool):
-    fams, seen = [], set()
+    """Follow every /shop/buy-<section>/<family> link on Apple's store pages."""
+    fams, seen, sections = [], set(), list(LANDING_SECTIONS)
 
     def add(section, fam):
         if fam in SKIP_SLUGS or (section, fam) in seen:
             return
         seen.add((section, fam))
         fams.append((section, fam))
+        if section not in sections:
+            sections.append(section)
 
-    for section in LANDING_SECTIONS:
-        page = fetch(f"{BASE}/shop/{section}", use_cache)
-        if not page:
-            continue
-        for sect, fam in re.findall(r"/shop/(buy-[a-z0-9-]+)/([a-z0-9-]+)", page):
-            if sect == section:
-                add(sect, fam)
+    def harvest(page):
+        for sect, fam in re.findall(r"/shop/(buy-[a-z0-9-]+)/([a-z0-9-]+)", page or ""):
+            add(sect, fam)
+
+    for seed in DISCOVERY_SEEDS:
+        harvest(fetch(BASE + seed, use_cache))
+    i = 0
+    while i < len(sections):          # sections can grow while we walk them (a brand-new one)
+        page = fetch(f"{BASE}/shop/{sections[i]}", use_cache)
+        if page:
+            harvest(page)
+        i += 1
     for sect, fam in EXTRA_FAMILIES:
         add(sect, fam)
     return fams
 
 
 # ---------------------------------------------------------------------------
-# Accessories
+# Accessories (US master list)
 # ---------------------------------------------------------------------------
 
 def discover_accessory_pages(use_cache: bool):
     """-> {part: (slug, category)}"""
     found: dict[str, tuple[str, str]] = {}
-    sections = [(s, label) for s, label in ACCESSORY_SECTIONS]
-    for sec, label in sections:
+    for sec, label in ACCESSORY_SECTIONS:
         page = fetch(f"{BASE}/shop/accessories/all/{sec}", use_cache)
         if not page or "Page Not Found" in page[:6000]:
             continue
@@ -468,14 +560,17 @@ def discover_accessory_pages(use_cache: bool):
     return found
 
 
-def fetch_accessory(part: str, sl: str, use_cache: bool):
-    page = fetch(f"{BASE}/shop/product/{part}/a/{sl}", use_cache)
+def fetch_accessory(part: str, sl: str, use_cache: bool, prefix: str = ""):
+    """(title, price, currency, url) of one accessory product page, or None. The part number alone
+    identifies the product, so the same call works against any country's store."""
+    url = store_url(prefix, f"shop/product/{part}/a/{sl or 'x'}")
+    page = fetch(url, use_cache)
     if not page:
         return None
     items = jsonld_products(page)
     if not items or not items[0]["name"]:
         return None
-    return items[0]["name"], min(items[0]["prices"]), f"{BASE}/shop/product/{part}/a/{sl}"
+    return items[0]["name"], min(items[0]["prices"]), items[0]["currency"] or page_currency(page), url
 
 
 def scrape_accessories(use_cache: bool, workers: int = 5):
@@ -488,7 +583,7 @@ def scrape_accessories(use_cache: bool, workers: int = 5):
         for fut in cf.as_completed(futs):
             pn, cat = futs[fut]
             done += 1
-            if done % 50 == 0:
+            if done % 100 == 0:
                 print(f"  {done}/{len(futs)}")
             try:
                 r = fut.result()
@@ -507,23 +602,121 @@ def scrape_accessories(use_cache: bool, workers: int = 5):
         return title, None
 
     groups: dict[str, list] = {}
-    for pn, ((title, price, url), cat) in results.items():
+    for pn, ((title, price, _cur, url), cat) in results.items():
         base, color = split_color(title)
         groups.setdefault(base, []).append((color, price, url, cat, title, pn))
     products = []
     for base, items in groups.items():
-        cat = "Accessories \u2014 " + items[0][3]
+        cat = "Accessories — " + items[0][3]
         if len(items) > 1 and all(i[0] for i in items):
             skus = [({"color": i[0]}, i[1]) for i in items]
             prod = make_product(base, cat, skus, items[0][2])
             prod["parts"] = [i[5] for i in items]
+            prod["_part_dims"] = {i[5]: {"color": i[0]} for i in items}
             products.append(prod)
         else:
             for color, price, url, c, title, pn in items:
-                prod = make_product(title, "Accessories \u2014 " + c, [({}, price)], url)
+                prod = make_product(title, "Accessories — " + c, [({}, price)], url)
                 prod["parts"] = [pn]
+                prod["_part_dims"] = {pn: {}}
                 products.append(prod)
     return products
+
+
+# ---------------------------------------------------------------------------
+# Other countries: what each Apple store actually charges
+# ---------------------------------------------------------------------------
+
+def attach_regional_devices(products, fams, use_cache, regions, workers=6):
+    """For each country: read the same product-family pages from that country's Apple store and
+    record its exact local prices against the matching US product (matched by English name)."""
+    by_name = {p["name"]: p for p in products if not p["cat"].startswith("Accessories —")}
+    jobs = [(cc, sec, fam) for cc in regions if cc != "US" for sec, fam in fams]
+    print(f"Countries: {len(regions) - ('US' in regions)} stores × {len(fams)} product families = {len(jobs)} pages…")
+
+    def work(job):
+        cc, sec, fam = job
+        pref = REGIONS[cc]["prefix"]
+        page = fetch(store_url(pref, f"shop/{sec}/{fam}"), use_cache)
+        if not page:
+            return job, None, []
+        cur = page_currency(page)
+        found = []
+        for rp in parse_family(page, sec, fam, warn=False):
+            us = by_name.get(rp["name"])
+            if us:
+                found.append((us["id"], regional_entry(rp["_skus"], cur, store_url(pref, f"shop/{sec}/{fam}"))))
+        return job, cur, found
+
+    by_id = {p["id"]: p for p in products}
+    info = {cc: {"currency": None, "priced": set()} for cc in regions if cc != "US"}
+    t0, done = time.time(), 0
+    with cf.ThreadPoolExecutor(max_workers=workers) as pool:
+        for job, cur, found in pool.map(work, jobs):
+            done += 1
+            if done % 100 == 0:
+                print(f"  {done}/{len(jobs)} pages ({time.time() - t0:.0f}s)")
+            cc = job[0]
+            if cur:
+                info[cc]["currency"] = info[cc]["currency"] or cur
+            for pid, entry in found:
+                by_id[pid].setdefault("regional", {})[cc] = entry
+                info[cc]["priced"].add(pid)
+    return info
+
+
+def attach_regional_accessories(products, use_cache, regions, workers=6):
+    """Same part number, each country's store. A US-only accessory just won't exist abroad."""
+    acc = [p for p in products if p.get("parts")]
+    jobs = [(cc, p["id"], part) for cc in regions if cc != "US" for p in acc for part in p["parts"]]
+    print(f"Accessories abroad: {len(acc)} products × {len(set(j[0] for j in jobs))} stores = {len(jobs)} lookups…")
+    by_id = {p["id"]: p for p in acc}
+
+    def work(job):
+        cc, pid, part = job
+        r = fetch_accessory(part, "", False, REGIONS[cc]["prefix"])     # not cached: thousands of small pages
+        return job, r
+
+    found: dict[tuple, dict] = {}
+    t0, done = time.time(), 0
+    with cf.ThreadPoolExecutor(max_workers=workers) as pool:
+        for job, r in pool.map(work, jobs):
+            done += 1
+            if done % 500 == 0:
+                print(f"  {done}/{len(jobs)} ({time.time() - t0:.0f}s)")
+            if r:
+                cc, pid, part = job
+                found.setdefault((cc, pid), {})[part] = r
+    priced = {cc: set() for cc in regions if cc != "US"}
+    for (cc, pid), parts in found.items():
+        prod = by_id[pid]
+        skus = [(prod["_part_dims"].get(part, {}), r[1]) for part, r in parts.items()]
+        cur = next(r[2] for r in parts.values())
+        url = next(r[3] for r in parts.values())
+        prod.setdefault("regional", {})[cc] = regional_entry(skus, cur, url)
+        priced[cc].add(pid)
+    return priced
+
+
+# ---------------------------------------------------------------------------
+# Exchange rates
+# ---------------------------------------------------------------------------
+
+def fetch_fx(currencies):
+    """Real market rates (units of each currency per 1 USD) with their date."""
+    try:
+        req = urllib.request.Request(FX_URL, headers={"User-Agent": UA})
+        with urllib.request.urlopen(req, timeout=30) as r:
+            data = json.load(r)
+        rates = data["rates"]
+        when = parsedate_to_datetime(data["time_last_update_utc"]).date().isoformat()
+        missing = [c for c in currencies if c not in rates]
+        if missing:
+            print(f"  ! no exchange rate for {missing}", file=sys.stderr)
+        return {"date": when, "source": FX_SOURCE, "rates": {c: rates[c] for c in sorted(currencies) if c in rates}}
+    except Exception as e:
+        print(f"  ! exchange-rate fetch failed ({e}) — keeping the previous rates, if any", file=sys.stderr)
+        return None
 
 
 # ---------------------------------------------------------------------------
@@ -541,10 +734,9 @@ def unique_ids(products):
     return products
 
 
-def scrape_devices(use_cache: bool):
+def scrape_devices(fams, use_cache):
     products = []
-    fams = discover_families(use_cache)
-    print(f"Devices: {len(fams)} product families")
+    print(f"US store: {len(fams)} product families")
     for section, fam in fams:
         page = fetch(f"{BASE}/shop/{section}/{fam}", use_cache)
         if not page:
@@ -565,26 +757,37 @@ def category_key(cat):
     return (CATEGORY_ORDER.index(head) if head in CATEGORY_ORDER else 99, cat)
 
 
-def write_catalog(products, path=OUT_PATH):
+def clean(product):
+    return {k: v for k, v in product.items() if not k.startswith("_")}
+
+
+def write_catalog(products, meta=None, path=OUT_PATH):
     products = unique_ids(products)
     products.sort(key=lambda p: category_key(p["cat"]))  # stable: keeps scrape order within a category
-    data = {"generated": date.today().isoformat(), "source": "apple.com US store (en-US)",
-            "count": len(products), "products": products}
+    data = {"generated": date.today().isoformat(), "source": "apple.com — each country's own Apple online store",
+            "count": len(products)}
+    data.update(meta or {})
+    data["products"] = [clean(p) for p in products]
     with open(path, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=1, ensure_ascii=False)
+        json.dump(data, f, ensure_ascii=False, separators=(",", ":"))
     return data
 
 
-def lookup_url(url: str, use_cache: bool):
-    """Read a single apple.com link and return the product(s) it describes."""
+def lookup_url(url: str, use_cache: bool, regions):
+    """Read a single apple.com link (US master + every country's price) and return the product(s)."""
     parts = [p for p in urlparse(url).path.split("/") if p]
+    if parts and re.fullmatch(r"[a-z]{2}(-[a-z]{2})?", parts[0]) and parts[0] != "us":
+        parts = parts[1:]
     if "product" in parts and len(parts) > parts.index("product") + 1:
-        idx = parts.index("product")
-        pn, sl = parts[idx + 1], (parts[idx + 3] if len(parts) > idx + 3 else "")
-        r = fetch_accessory(pn, sl, use_cache)
+        pn = parts[parts.index("product") + 1]
+        r = fetch_accessory(pn, "", use_cache)
         if not r:
             return []
-        return [make_product(r[0], "Accessories", [({}, r[1])], r[2])]
+        prod = make_product(r[0], "Accessories", [({}, r[1])], r[3])
+        prod["parts"] = [pn]
+        prod["_part_dims"] = {pn: {}}
+        attach_regional_accessories([prod], use_cache, regions)
+        return [prod]
     section = fam = None
     if len(parts) >= 3 and parts[0] == "shop" and parts[1].startswith("buy-"):
         section, fam = parts[1], parts[2]
@@ -602,50 +805,120 @@ def lookup_url(url: str, use_cache: bool):
     found = parse_family(page, section, fam)
     for p in found:
         p["family"] = fam
+    attach_regional_devices(found, [(section, fam)], use_cache, regions)
     return found
 
 
+def previous_catalog():
+    if os.path.exists(OUT_PATH):
+        try:
+            with open(OUT_PATH, encoding="utf-8") as f:
+                return json.load(f)
+        except ValueError:
+            pass
+    return {"products": []}
+
+
 def main():
-    ap = argparse.ArgumentParser(description="Refresh apple_catalog.json from apple.com (US store).")
-    ap.add_argument("--devices-only", action="store_true", help="skip the ~300 accessory pages")
+    ap = argparse.ArgumentParser(description="Refresh apple_catalog.json from Apple's online stores.")
+    ap.add_argument("--devices-only", action="store_true", help="skip accessories (US and abroad)")
+    ap.add_argument("--regions", help="comma-separated country codes to (re)read, e.g. DE,JP (default: all)")
+    ap.add_argument("--no-regional", action="store_true", help="US store only — no other countries")
+    ap.add_argument("--no-regional-accessories", action="store_true", help="don't look up accessories abroad")
     ap.add_argument("--url", help="look up a single apple.com link and print what was found")
     ap.add_argument("--add", action="store_true", help="with --url: merge the result into apple_catalog.json")
     ap.add_argument("--no-cache", action="store_true", help="ignore the on-disk page cache")
     args = ap.parse_args()
     use_cache = not args.no_cache
 
+    wanted = [c.strip().upper() for c in args.regions.split(",")] if args.regions else list(REGIONS)
+    bad = [c for c in wanted if c not in REGIONS]
+    if bad:
+        sys.exit(f"Unknown country code(s): {bad}. Known: {', '.join(REGIONS)}")
+    regions = [] if args.no_regional else [c for c in wanted if c != "US"]
+
+    prev = previous_catalog()
+    prev_regions = prev.get("regions", {})
+
     if args.url:
-        found = lookup_url(args.url, use_cache)
+        found = lookup_url(args.url, use_cache, regions)
         if not found:
             print("Couldn't find a product page for that link (is it an apple.com/shop link, or a product family page?).")
             sys.exit(1)
         for p in found:
-            print(json.dumps(p, indent=1, ensure_ascii=False))
+            c = clean(p)
+            reg = c.pop("regional", {})
+            print(json.dumps(c, indent=1, ensure_ascii=False))
+            print("  prices abroad:", {cc: (e.get("base", "table"), e["currency"]) for cc, e in sorted(reg.items())})
         if args.add:
-            data = json.load(open(OUT_PATH, encoding="utf-8")) if os.path.exists(OUT_PATH) else {"products": []}
-            by_id = {p["id"]: p for p in data["products"]}
+            by_id = {p["id"]: p for p in prev["products"]}
             for p in found:
-                by_id[p["id"]] = p
-            write_catalog(list(by_id.values()))
+                by_id[p["id"]] = clean(p)
+            meta = {k: prev[k] for k in ("fx", "regions") if k in prev}
+            write_catalog(list(by_id.values()), meta)
             print(f"\nMerged {len(found)} product(s) into {OUT_PATH}. Now run: python3 apple_price_data.py --export-only")
         return
 
-    products = scrape_devices(use_cache)
+    fams = discover_families(use_cache)
+    products = scrape_devices(fams, use_cache)
+    acc = []
     if not args.devices_only:
-        extra = scrape_accessories(use_cache)
-    elif os.path.exists(OUT_PATH):  # keep accessories from the previous run
-        old = json.load(open(OUT_PATH, encoding="utf-8"))["products"]
-        extra = [p for p in old if p["cat"].startswith("Accessories —")]
-    else:
-        extra = []
+        acc = scrape_accessories(use_cache)
+    else:                                           # keep accessories (and their prices abroad) from the last run
+        acc = [p for p in prev["products"] if p["cat"].startswith("Accessories —")]
     device_names = {p["name"] for p in products}      # e.g. AirPods are also listed as an accessory
-    products += [p for p in extra if p["name"] not in device_names]
-    data = write_catalog(products)
+    acc = [p for p in acc if p["name"] not in device_names]
+
+    region_info = {}
+    if regions:
+        info = attach_regional_devices(products, fams, use_cache, regions)
+        for cc, i in info.items():
+            region_info[cc] = {"currency": i["currency"], "devices": len(i["priced"])}
+    if regions and acc and not args.devices_only and not args.no_regional_accessories:
+        ok_regions = [c for c in regions if region_info.get(c, {}).get("devices")]
+        priced = attach_regional_accessories(acc, use_cache, ok_regions)
+        for cc, s in priced.items():
+            region_info[cc]["accessories"] = len(s)
+    products += acc
+
+    # ---- region metadata: status, currency, tax treatment, coverage
+    n_dev = len([p for p in products if not p["cat"].startswith("Accessories —")])
+    n_acc = len(acc)
+    meta_regions = {}
+    for cc, r in REGIONS.items():
+        old = prev_regions.get(cc, {})
+        if cc == "US":
+            meta_regions[cc] = {"prefix": "", "currency": "USD", "includes_tax": False, "status": "ok",
+                                "devices": n_dev, "accessories": n_acc}
+            continue
+        if cc in region_info:
+            i = region_info[cc]
+            status = "ok" if i["devices"] else "no_store"
+            meta_regions[cc] = {"prefix": r["prefix"], "currency": i["currency"] or old.get("currency"),
+                                "includes_tax": r["includes_tax"], "status": status,
+                                "devices": i["devices"], "accessories": i.get("accessories", old.get("accessories", 0))}
+        elif old:
+            meta_regions[cc] = old          # not refreshed this run — keep what we knew
+        else:
+            meta_regions[cc] = {"prefix": r["prefix"], "currency": None, "includes_tax": r["includes_tax"],
+                                "status": "not_scraped", "devices": 0, "accessories": 0}
+    currencies = {r["currency"] for r in meta_regions.values() if r.get("currency")} | {"USD"}
+    fx = fetch_fx(currencies) or prev.get("fx")
+    data = write_catalog(products, {"fx": fx, "regions": meta_regions})
+
+    # ---- report
     by_cat = {}
     for p in data["products"]:
-        by_cat[p["cat"].split(" — ")[0]] = by_cat.get(p["cat"].split(" — ")[0], 0) + 1
+        h = p["cat"].split(" — ")[0]
+        by_cat[h] = by_cat.get(h, 0) + 1
     print(f"\nWrote {OUT_PATH}: {data['count']} products — " + ", ".join(f"{k} {v}" for k, v in by_cat.items()))
-    print("Next: python3 apple_price_data.py --export-only")
+    print(f"Exchange rates: {fx['date'] if fx else 'none'}\n")
+    print(f"{'':4}{'store':<9}{'currency':<9}{'devices priced':<18}{'accessories priced':<20}")
+    for cc, r in meta_regions.items():
+        dev = f"{r['devices']}/{n_dev}" if r["status"] == "ok" else "—"
+        acs = f"{r.get('accessories', 0)}/{n_acc}" if r["status"] == "ok" else "—"
+        print(f"{cc:<4}{r['status']:<9}{(r.get('currency') or '-'):<9}{dev:<18}{acs:<20}")
+    print("\nNext: python3 apple_price_data.py --export-only")
 
 
 if __name__ == "__main__":

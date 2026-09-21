@@ -1,0 +1,29 @@
+name: Refresh Apple prices
+on:
+  schedule:
+    - cron: "0 5 * * 1"   # Mondays 05:00 UTC
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Read prices from Apple's stores
+        run: python3 scrape_apple_catalog.py
+      - name: Rebuild frontend data
+        run: python3 apple_price_data.py --export-only
+      - name: Commit if changed
+        run: |
+          git config user.name "price-refresh-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add apple_catalog.json frontend/data.json
+          git diff --cached --quiet || git commit -m "Refresh Apple prices"
+          git push
